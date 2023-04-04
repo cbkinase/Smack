@@ -22,6 +22,7 @@
 
 ### Pinned Messages
 * Pinned Message
+* Unpin Message
 
 ### User Information
 * Edit User Info

@@ -86,11 +86,10 @@
 
 ### Create Message
 
-- A logged in user should be able to create a new message by typing a message into an input field (or WYSIWYG editor) located in a section below the channel/direct message pane.
+- A logged in user should be able to create a new message by typing into an input field (or WYSIWYG editor) located in a section below the channel/direct message pane.
   - /:user_token/:channel_id
-  - Upon creation, the newly created message will appear within the bottom portion of the channel/direct message pane. And, the message will be saved to the db.
-  - If the message is a direct message, a new channel will automatically be created with the both the
-    sender and recipient added as channel members. The channel name will be generated from the names of the members.
+  - Upon submission, the newly created message will instantly appear within the bottom portion of the channel/direct message pane. And, the message will be saved to the db.
+  - If the message is the very first direct message between users, a new channel will automatically be created with the both the sender and recipient added as channel members. The channel name will be automatically generated from the names of the two users.
 
 ### Edit Message
 

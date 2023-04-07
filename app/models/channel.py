@@ -11,6 +11,8 @@ class Channel(db.Model):
     subject = db.Column(db.Text, nullable=False)
     is_private = db.Column(db.Boolean, nullable=False)
     is_direct = db.Column(db.Boolean, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now())
 
     def to_dict(self):
         return {

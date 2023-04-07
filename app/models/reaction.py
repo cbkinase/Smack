@@ -1,5 +1,7 @@
 from .db import db, environment, SCHEMA
 
+
+
 class Reaction(db.Model):
     __tablename__ = 'reactions'
 

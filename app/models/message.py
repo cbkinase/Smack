@@ -16,6 +16,9 @@ class Message(db.Model):
 
     channels = db.relationship("Channel", back_populates="messages")
     users = db.relationship("User", back_populates="messages")
+<<<<<<< HEAD
+    reactions = db.relationship("Reaction", back_populates="messages")
+=======
     reactions = db.relationship("Reaction", back_populates="messages")
 
     def to_dict(self):
@@ -28,3 +31,4 @@ class Message(db.Model):
             "created_at": self.created_at,
             "updated_at": self.updated_at
         }
+>>>>>>> f2aa4e3c8b1920cf2cce18ba5942a73df37f0a44

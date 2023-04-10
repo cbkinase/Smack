@@ -2,13 +2,19 @@ from email.policy import default
 from .db import db, environment, SCHEMA
 import enum
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> f2aa4e3c8b1920cf2cce18ba5942a73df37f0a44
 class Roles(enum.Enum):
     owner = "owner"
     moderator = "moderator"
     member = "member"
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> f2aa4e3c8b1920cf2cce18ba5942a73df37f0a44
 channel_user = db.Table(
     'channel_users',
     db.Model.metadata,

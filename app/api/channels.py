@@ -1,5 +1,5 @@
-from flask import Blueprint, request
-from app.models import Channel_user, Channel, User, db
+from flask import Blueprint, request, jsonify
+from app.models import Channel_user, Channel, User, db, Message
 from flask_login import login_required, current_user
 
 channel_routes = Blueprint('channels', __name__)
@@ -110,3 +110,32 @@ def edit_channel(channel_id):
             "errors": "Please fill out all the fields."
         }
         return error_obj, 400
+
+
+### Message-related Routes
+
+@channel_routes.route("/<int:channel_id>/messages")
+@login_required
+def get_all_messages_for_channel(channel_id):
+    # We should check to ensure the conversation is accessible to the user making the request
+    # I.e. -- the channel is not private, or the user is a member of that private channel
+    channel_messages = Message.query.filter(Message.channel_id.is_(channel_id))
+    return jsonify([msg.to_dict() for msg in channel_messages])
+
+
+@channel_routes.route("<int:channel_id>", methods=["POST"])
+@login_required
+def make_post_for_channel(channel_id):
+    # We should check to ensure the conversation is accessible to the user making the request
+    # I.e. -- the channel is not private, or the user is a member of that private channel
+
+    # need to get form
+
+    try:
+        new_message = Message(**request.get_json())
+        db.session.add(new_message)
+        db.session.commit()
+        return new_message.to_dict()
+    except:
+        # This message will depend on what we check on the form. Probably message length.
+        return { "message": "Failed to create message" }, 400

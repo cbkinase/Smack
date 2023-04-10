@@ -13,6 +13,12 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+
+    channel = db.relationship(
+        "Channel",
+        secondary='channel_users',
+        back_populates="users")
+    
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     avatar = db.Column(db.String(255), default='https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512')

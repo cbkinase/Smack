@@ -16,14 +16,3 @@ class Message(db.Model):
 
     channels = db.relationship("Channel", back_populates="messages")
     users = db.relationship("User", back_populates="messages")
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'user_id': self.user_id,
-            'channel_id': self.channel_id,
-            'content': self.content,
-            'is_pinned': self.is_pinned,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }

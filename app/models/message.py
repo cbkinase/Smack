@@ -16,3 +16,4 @@ class Message(db.Model):
 
     channels = db.relationship("Channel", back_populates="messages")
     users = db.relationship("User", back_populates="messages")
+    reactions = db.relationship("Reaction", back_populates="messages")

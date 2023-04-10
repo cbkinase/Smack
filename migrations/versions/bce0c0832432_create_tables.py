@@ -1,8 +1,8 @@
 """create tables
 
-Revision ID: f24dbabdd97f
+Revision ID: bce0c0832432
 Revises: 
-Create Date: 2023-04-09 11:44:09.312221
+Create Date: 2023-04-10 13:02:06.773057
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f24dbabdd97f'
+revision = 'bce0c0832432'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,12 +30,12 @@ def upgrade():
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(length=40), nullable=False),
+    sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('hashed_password', sa.String(length=255), nullable=False),
-    sa.Column('first_name', sa.String(), nullable=False),
-    sa.Column('last_name', sa.String(), nullable=False),
-    sa.Column('avatar', sa.String(), nullable=True),
+    sa.Column('first_name', sa.String(length=50), nullable=False),
+    sa.Column('last_name', sa.String(length=50), nullable=False),
+    sa.Column('avatar', sa.String(length=255), nullable=True),
     sa.Column('bio', sa.String(length=2000), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
@@ -65,9 +65,9 @@ def upgrade():
     op.create_table('reactions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('channel_id', sa.Integer(), nullable=False),
-    sa.Column('reaction', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['channel_id'], ['channels.id'], ),
+    sa.Column('message_id', sa.Integer(), nullable=False),
+    sa.Column('reaction', sa.Enum('LIKE', 'DISLIKE', name='emoji'), nullable=False),
+    sa.ForeignKeyConstraint(['message_id'], ['messages.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

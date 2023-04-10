@@ -17,8 +17,8 @@ class Reaction(db.Model):
     message_id = db.Column(db.Integer, db.ForeignKey("messages.id"), nullable=False)
     reaction = db.Column(db.Enum(Emoji), nullable=False)
 
-    message = db.relationship("Message", back_populates="reactions")
-    user = db.relationship("User", back_populates="reactions")
+    messages = db.relationship("Message", back_populates="reactions")
+    users = db.relationship("User", back_populates="reactions")
 
     def to_dict(self):
         return {

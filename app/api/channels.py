@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import Channel_user, Channel, User, db, Message
+from app.models import channel_user, Channel, User, db, Message
 from flask_login import login_required, current_user
 
 channel_routes = Blueprint('channels', __name__)
@@ -11,7 +11,8 @@ def user_id_generator():
 @login_required
 def user_channels():
     user_id = user_id_generator()
-    joined_channels = Channel_user.query.filter(Channel_user.user_id == user_id).all()
+    joined_channels = channel_user.query.filter(channel_user.user_id == user_id).all()
+    print(joined_channels)
     channels_id = [channels.channel_id for channels in joined_channels]
     resp_obj = {"all_channels": []}
     for channel in channels_id:
@@ -27,7 +28,7 @@ def one_channel(channel_id):
     if not channel_exist:
         error_obj = {"message": "Channel with the specified id could not be found."}
         return error_obj, 404
-    member_check = Channel_user.query.filter(Channel_user.user_id == user_id, Channel_user.channel_id == channel_id).all()
+    member_check = channel_user.query.filter(channel_user.user_id == user_id, channel_user.channel_id == channel_id).all()
     if not member_check:
         error_obj = {"message": "Current user does not belong to the specified channel."}
         return error_obj, 403
@@ -48,7 +49,7 @@ def create_channel():
         )
         db.session.add(new_channel)
         db.session.commit()
-        new_cu = Channel_user(
+        new_cu = channel_user(
             user_id = user_id,
             channel_id = new_channel.id,
             role = 'Test'
@@ -71,7 +72,7 @@ def delete_channel(channel_id):
     if not channel_exist:
         error_obj = {"message": "Channel with the specified id could not be found."}
         return error_obj, 404
-    member_check = Channel_user.query.filter(Channel_user.user_id == user_id, Channel_user.channel_id == channel_id).all()
+    member_check = channel_user.query.filter(channel_user.user_id == user_id, channel_user.channel_id == channel_id).all()
     if not member_check:
         error_obj = {"message": "Current user does not belong to the specified channel."}
         return error_obj, 403
@@ -91,7 +92,7 @@ def edit_channel(channel_id):
     if not channel_exist:
         error_obj = {"message": "Channel with the specified id could not be found."}
         return error_obj, 404
-    member_check = Channel_user.query.filter(Channel_user.user_id == user_id, Channel_user.channel_id == channel_id).all()
+    member_check = channel_user.query.filter(channel_user.user_id == user_id, channel_user.channel_id == channel_id).all()
     if not member_check:
         error_obj = {"message": "Current user does not belong to the specified channel."}
         return error_obj, 403
@@ -139,3 +140,6 @@ def make_post_for_channel(channel_id):
     except:
         # This message will depend on what we check on the form. Probably message length.
         return { "message": "Failed to create message" }, 400
+
+if channel_id not in [channel.id for channel in User.query.get(user_id).channel]:
+    # return error

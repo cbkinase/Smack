@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_login import current_user, login_required
-from app.models import db, Message
+from app.models import db, Message, Reaction
 from app.forms import MessageForm
 from datetime import datetime
 
@@ -38,23 +38,23 @@ def edit_message(message_id):
     # print(message)
     # print(message.user_id)
     # print(current_user.to_dict())
-    
+
     if not message:
         return message_not_found()
 
     if this_user['id'] != message.user_id:
         return forbidden()
-        
+
     # form = MessageForm()
     # form['csrf_token'].data = request.cookies['csrf_token']
     new_content = req["content"]
     new_pinned = req["is_pinned"]
-    
+
     if new_content:
         message.content = new_content
     if new_pinned:
         message.is_pinned = new_pinned
-    
+
     message.updated_at = current_timestamp
     db.session.commit()
 
@@ -68,10 +68,10 @@ def delete_message(message_id):
 
     if not message:
         return message_not_found()
-    
+
     if this_user['id'] != message.user_id:
         return forbidden()
-    
+
     db.session.delete(message)
     db.session.commit()
 
@@ -79,3 +79,20 @@ def delete_message(message_id):
         "message": "Successfully deleted",
         "status_code": 200
     }, 200
+
+
+@message_routes.route("/<int:message_id>/reactions", methods=["POST"])
+@login_required
+def create_reaction_for_message(message_id):
+    # We should check to ensure the conversation is accessible to the user making the request
+    # I.e. -- the channel is not private, or the user is a member of that private channel
+
+    # will have to get form
+    # form["csrf_token"].data = request.cookies["csrf_token"]
+    try:
+        new_reaction = Reaction(**request.get_json())
+        db.session.add(new_reaction)
+        db.session.commit()
+        return new_reaction.to_dict()
+    except:
+        return { "message": "Failed to delete reaction" }, 400

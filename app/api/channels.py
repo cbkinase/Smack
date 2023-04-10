@@ -1,5 +1,6 @@
+from shlex import join
 from flask import Blueprint, request, jsonify
-from app.models import channel_user, Channel, User, db, Message
+from app.models import channel_user, Channel, User, db, Message, channel_user
 from flask_login import login_required, current_user
 
 channel_routes = Blueprint('channels', __name__)
@@ -10,10 +11,11 @@ def user_id_generator():
 @channel_routes.route('/')
 @login_required
 def user_channels():
-    user_id = user_id_generator()
-    joined_channels = channel_user.query.filter(channel_user.user_id == user_id).all()
-    print(joined_channels)
-    channels_id = [channels.channel_id for channels in joined_channels]
+    user_ids = user_id_generator()
+
+    user = User.query.get(user_ids)
+    channels_id = [channel.id for channel in user.channel]
+
     resp_obj = {"all_channels": []}
     for channel in channels_id:
         channel_info = Channel.query.get(channel)
@@ -28,8 +30,8 @@ def one_channel(channel_id):
     if not channel_exist:
         error_obj = {"message": "Channel with the specified id could not be found."}
         return error_obj, 404
-    member_check = channel_user.query.filter(channel_user.user_id == user_id, channel_user.channel_id == channel_id).all()
-    if not member_check:
+    this_user = User.query.get(user_id)
+    if channel_id not in [channel.id for channel in this_user.channel]:
         error_obj = {"message": "Current user does not belong to the specified channel."}
         return error_obj, 403
     one_channel = Channel.query.get(channel_id)
@@ -48,13 +50,8 @@ def create_channel():
             is_direct = request.json.get('is_direct')
         )
         db.session.add(new_channel)
-        db.session.commit()
-        new_cu = channel_user(
-            user_id = user_id,
-            channel_id = new_channel.id,
-            role = 'Test'
-        )
-        db.session.add(new_cu)
+        this_user = User.query.get(user_id)
+        new_channel.user.append(this_user)
         db.session.commit()
         return new_channel.to_dict()
     except:
@@ -72,8 +69,8 @@ def delete_channel(channel_id):
     if not channel_exist:
         error_obj = {"message": "Channel with the specified id could not be found."}
         return error_obj, 404
-    member_check = channel_user.query.filter(channel_user.user_id == user_id, channel_user.channel_id == channel_id).all()
-    if not member_check:
+    this_user = User.query.get(user_id)
+    if channel_id not in [channel.id for channel in this_user.channel]:
         error_obj = {"message": "Current user does not belong to the specified channel."}
         return error_obj, 403
     deleted_channel = Channel.query.get(channel_id)
@@ -92,8 +89,8 @@ def edit_channel(channel_id):
     if not channel_exist:
         error_obj = {"message": "Channel with the specified id could not be found."}
         return error_obj, 404
-    member_check = channel_user.query.filter(channel_user.user_id == user_id, channel_user.channel_id == channel_id).all()
-    if not member_check:
+    this_user = User.query.get(user_id)
+    if channel_id not in [channel.id for channel in this_user.channel]:
         error_obj = {"message": "Current user does not belong to the specified channel."}
         return error_obj, 403
     try:

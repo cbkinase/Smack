@@ -75,8 +75,6 @@ def delete_channel(channel_id):
         return error_obj, 403
     deleted_channel = Channel.query.get(channel_id)
     db.session.delete(deleted_channel)
-    for o in member_check:
-        db.session.delete(o)
     db.session.commit()
     resp_obj = {"message": "Channel successfully deleted."}
     return resp_obj, 200

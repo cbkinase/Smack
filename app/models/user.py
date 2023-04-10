@@ -48,4 +48,3 @@ class User(db.Model, UserMixin):
             'avatar': self.avatar,
             'bio': self.bio
         }
-

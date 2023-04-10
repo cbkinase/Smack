@@ -75,8 +75,6 @@ def delete_channel(channel_id):
         return error_obj, 403
     deleted_channel = Channel.query.get(channel_id)
     db.session.delete(deleted_channel)
-    for o in member_check:
-        db.session.delete(o)
     db.session.commit()
     resp_obj = {"message": "Channel successfully deleted."}
     return resp_obj, 200
@@ -138,5 +136,5 @@ def make_post_for_channel(channel_id):
         # This message will depend on what we check on the form. Probably message length.
         return { "message": "Failed to create message" }, 400
 
-if channel_id not in [channel.id for channel in User.query.get(user_id).channel]:
-    # return error
+# if channel_id not in [channel.id for channel in User.query.get(user_id).channel]:
+#     # return error

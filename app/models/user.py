@@ -18,6 +18,10 @@ class User(db.Model, UserMixin):
     avatar = db.Column(db.String(255), default='https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512')
     bio = db.Column(db.String(2000))
 
+    channel_users = db.relationship("Channel_user", back_populates="users")
+    reactions = db.relationship("Reaction", back_populates="users")
+    messages = db.relationship("Message", back_populates="users")
+
     @property
     def password(self):
         return self.hashed_password
@@ -35,7 +39,7 @@ class User(db.Model, UserMixin):
             'username': self.username,
             'email': self.email,
             'first_name': self.first_name,
-            'last_name': self. last_name,
+            'last_name': self.last_name,
             'avatar': self.avatar,
             'bio': self.bio
         }

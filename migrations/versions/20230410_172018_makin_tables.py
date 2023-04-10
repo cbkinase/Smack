@@ -1,8 +1,8 @@
-"""create tables
+"""makin tables
 
-Revision ID: f24dbabdd97f
+Revision ID: 8bc6cd8a810d
 Revises: 
-Create Date: 2023-04-09 11:44:09.312221
+Create Date: 2023-04-10 17:20:18.752665
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f24dbabdd97f'
+revision = '8bc6cd8a810d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,25 +30,24 @@ def upgrade():
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(length=40), nullable=False),
+    sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('hashed_password', sa.String(length=255), nullable=False),
-    sa.Column('first_name', sa.String(), nullable=False),
-    sa.Column('last_name', sa.String(), nullable=False),
-    sa.Column('avatar', sa.String(), nullable=True),
+    sa.Column('first_name', sa.String(length=50), nullable=False),
+    sa.Column('last_name', sa.String(length=50), nullable=False),
+    sa.Column('avatar', sa.String(length=255), nullable=True),
     sa.Column('bio', sa.String(length=2000), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
     op.create_table('channel_users',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('channel_id', sa.Integer(), nullable=True),
-    sa.Column('role', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['channel_id'], ['channels.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('users_id', sa.Integer(), nullable=False),
+    sa.Column('channels_id', sa.Integer(), nullable=False),
+    sa.Column('role', sa.Enum('owner', 'moderator', 'member', name='roles'), nullable=False),
+    sa.ForeignKeyConstraint(['channels_id'], ['channels.id'], ),
+    sa.ForeignKeyConstraint(['users_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('users_id', 'channels_id')
     )
     op.create_table('messages',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -65,9 +64,9 @@ def upgrade():
     op.create_table('reactions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('channel_id', sa.Integer(), nullable=False),
-    sa.Column('reaction', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['channel_id'], ['channels.id'], ),
+    sa.Column('message_id', sa.Integer(), nullable=False),
+    sa.Column('reaction', sa.Enum('LIKE', 'DISLIKE', name='emoji'), nullable=False),
+    sa.ForeignKeyConstraint(['message_id'], ['messages.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

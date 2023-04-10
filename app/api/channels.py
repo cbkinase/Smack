@@ -138,5 +138,5 @@ def make_post_for_channel(channel_id):
         # This message will depend on what we check on the form. Probably message length.
         return { "message": "Failed to create message" }, 400
 
-if channel_id not in [channel.id for channel in User.query.get(user_id).channel]:
-    # return error
+# if channel_id not in [channel.id for channel in User.query.get(user_id).channel]:
+#     # return error

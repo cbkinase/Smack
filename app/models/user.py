@@ -14,14 +14,11 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
-<<<<<<< HEAD
-=======
     channel = db.relationship(
         "Channel",
         secondary='channel_users',
         back_populates="users")
 
->>>>>>> f2aa4e3c8b1920cf2cce18ba5942a73df37f0a44
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     avatar = db.Column(db.String(255), default='https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512')
@@ -51,4 +48,3 @@ class User(db.Model, UserMixin):
             'avatar': self.avatar,
             'bio': self.bio
         }
-

@@ -1,6 +1,6 @@
 from shlex import join
 from flask import Blueprint, request, jsonify
-from app.models import channel_user, Channel, User, db, Message, channel_user
+from app.models import channel_user, Channel, User, db, Message
 from flask_login import login_required, current_user
 
 channel_routes = Blueprint('channels', __name__)
@@ -106,6 +106,53 @@ def edit_channel(channel_id):
             "errors": "Please fill out all the fields."
         }
         return error_obj, 400
+
+
+### Members-related Routes
+
+@channel_routes.route("/<int:channel_id>/users", methods=["POST"])
+@login_required
+def add_channel_member(channel_id):
+    channel = Channel.query.get(channel_id)
+    user = User.query.get(user_id_generator())
+
+    if not channel or not user:
+        return {"message": "Resource not found"}, 404
+
+    try:
+        user.channel.append(channel)
+        db.session.commit()
+        return {"message": "Successfully added user to the channel"}
+    except:
+        return {"message": "Something went wrong..."}, 404
+
+@channel_routes.route("/<int:channel_id>/users")
+@login_required
+def get_all_channel_members(channel_id):
+    channel = Channel.query.get(channel_id)
+
+    if not channel:
+        return {"message": "Resource not found"}, 404
+
+    return {"Users": [user.to_dict() for user in channel.users]}
+
+
+@channel_routes.route("/<int:channel_id>/users/<int:user_id>")
+@login_required
+def delete_channel_member(channel_id, user_id):
+    # Need to check to make sure the deleter is the channel owner
+    channel = Channel.query.get(channel_id)
+    user_to_delete = User.query.get(user_id)
+
+    if not channel or not user_to_delete:
+        return {"message": "Resource not found"}, 404
+    try:
+        channel.users.remove(user_to_delete)
+        db.session.commit()
+        return {"message": "Successfully deleted user from the channel"}
+    except:
+        return {"message": "Something went wrong..."}, 404
+
 
 
 ### Message-related Routes

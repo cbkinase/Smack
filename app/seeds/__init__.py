@@ -45,19 +45,22 @@ def seed_channels(users):
         name = 'Channel1 Name',
         subject = 'Channel1 Subject',
         is_private = True,
-        is_direct = True
+        is_direct = True,
+        owner = bobbie
     )
     channel2 = Channel(
         name = 'Channel2 Name',
         subject = 'Channel2 Subject',
         is_private = False,
-        is_direct = False
+        is_direct = False,
+        owner = marnie
     )
     channel3 = Channel(
         name = 'Channel3 Name',
         subject = 'Channel3 Subject',
         is_private = True,
-        is_direct = False
+        is_direct = False,
+        owner = demo
     )
 
     db.session.add(channel1)

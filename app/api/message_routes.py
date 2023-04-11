@@ -6,15 +6,6 @@ from datetime import datetime
 
 message_routes = Blueprint('messages', __name__)
 
-def message_to_dict(message):
-    return {
-        "id": message.id,
-        "user_id": message.user_id,
-        "channel_id": "Coming soon",
-        "content": message.content,
-        "is_pinned": message.is_pinned,
-        "updated_at": message.updated_at
-    }, 200
 
 def message_not_found():
     return {
@@ -58,7 +49,7 @@ def edit_message(message_id):
     message.updated_at = current_timestamp
     db.session.commit()
 
-    return message_to_dict(message)
+    return message.to_dict()
 
 @message_routes.route('/<message_id>', methods=["DELETE"])
 @login_required

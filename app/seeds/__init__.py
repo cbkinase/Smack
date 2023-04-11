@@ -75,7 +75,10 @@ def seed_channels(users):
     return (channel1, channel2, channel3)
 
 def undo_channels():
-    db.session.execute(text("DELETE FROM channels"))
+    if environment == "production":
+        db.session.execute(f"TRUNCATE table {SCHEMA}.channels RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute("DELETE FROM channels")
     db.session.commit()
 
 
@@ -117,7 +120,10 @@ def seed_messages(users, channels):
 
 
 def undo_messages():
-    db.session.execute(text("DELETE FROM messages"))
+    if environment == "production":
+        db.session.execute(f"TRUNCATE table {SCHEMA}.messages RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute("DELETE FROM messages")
     db.session.commit()
 
 
@@ -156,7 +162,10 @@ def seed_reactions(users, messages):
     db.session.commit()
 
 def undo_reactions():
-    db.session.execute(text("DELETE FROM reactions"))
+    if environment == "production":
+        db.session.execute(f"TRUNCATE table {SCHEMA}.reactions RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute("DELETE FROM reactions")
     db.session.commit()
 
 # Creates a seed group to hold our commands

@@ -42,15 +42,17 @@ def one_channel(channel_id):
 @login_required
 def create_channel():
     user_id = user_id_generator()
+    this_user = User.query.get(user_id)
     try:
         new_channel = Channel(
             name = request.json.get('name'),
             subject = request.json.get('subject'),
             is_private = request.json.get('is_private'),
-            is_direct = request.json.get('is_direct')
+            is_direct = request.json.get('is_direct'),
+            owner = this_user
         )
         db.session.add(new_channel)
-        this_user = User.query.get(user_id)
+
         new_channel.user.append(this_user)
         db.session.commit()
         return new_channel.to_dict()
@@ -137,10 +139,11 @@ def get_all_channel_members(channel_id):
     return {"Users": [user.to_dict() for user in channel.users]}
 
 
-@channel_routes.route("/<int:channel_id>/users/<int:user_id>")
+@channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["DELETE"])
 @login_required
 def delete_channel_member(channel_id, user_id):
     # Need to check to make sure the deleter is the channel owner
+    print("hi")
     channel = Channel.query.get(channel_id)
     user_to_delete = User.query.get(user_id)
 

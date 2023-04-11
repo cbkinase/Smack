@@ -87,3 +87,15 @@ def create_reaction_for_message(message_id):
         return new_reaction.to_dict()
     except:
         return { "message": "Failed to delete reaction" }, 400
+
+@message_routes.route("/<int:message_id>/reactions", methods=["GET"])
+@login_required
+def get_reactions_for_message(message_id):
+
+    try:
+        reactions = db.session.query(Reaction).filter(Reaction.message_id == message_id).all()
+        return {
+            "Reactions": [reaction.to_dict() for reaction in reactions]
+        }
+    except:
+        return { "message": "Failed to get reactions" }, 400

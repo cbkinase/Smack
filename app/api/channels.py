@@ -1,4 +1,3 @@
-from shlex import join
 from flask import Blueprint, request, jsonify
 from app.models import channel_user, Channel, User, db, Message
 from flask_login import login_required, current_user

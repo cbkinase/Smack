@@ -7,7 +7,19 @@ channel_routes = Blueprint('channels', __name__)
 def user_id_generator():
     return int(str(current_user).split('<User ')[1].split('>')[0])
 
-@channel_routes.route('/')
+@channel_routes.route('/all')
+@login_required
+def all_channels():
+    user_id = user_id_generator()
+    allchannels = Channel.query.all()
+    curr_user = User.query.get(user_id)
+    resp_obj = {"all_channels": []}
+    for channel in allchannels:
+        if channel in curr_user.channel or not channel.is_private:
+            resp_obj["all_channels"].append(channel.to_dict())
+    return resp_obj, 200
+
+@channel_routes.route('/user')
 @login_required
 def user_channels():
     user_ids = user_id_generator()
@@ -15,10 +27,10 @@ def user_channels():
     user = User.query.get(user_ids)
     channels_id = [channel.id for channel in user.channel]
 
-    resp_obj = {"all_channels": []}
+    resp_obj = {"user_channels": []}
     for channel in channels_id:
         channel_info = Channel.query.get(channel)
-        resp_obj["all_channels"].append(channel_info.to_dict())
+        resp_obj["user_channels"].append(channel_info.to_dict())
     return resp_obj, 200
 
 @channel_routes.route('/<channel_id>')

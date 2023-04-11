@@ -2,7 +2,7 @@ from .db import db, environment, SCHEMA, add_prefix_for_prod
 
 import enum
 
-class Emoji(enum.Enum):
+class Emoji(str, enum.Enum):
     LIKE = "like"
     DISLIKE = "dislike"
 
@@ -26,6 +26,6 @@ class Reaction(db.Model):
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'channel_id': self.channel_id,
-            'reaction': self.reaction,
+            'message_id': self.message_id,
+            'reaction': self.reaction
         }

@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
     avatar = db.Column(db.String(255), default='https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512')
     bio = db.Column(db.String(2000))
 
+    owns_channel = db.relationship("Channel", back_populates="owner")
     reactions = db.relationship("Reaction", back_populates="user")
     messages = db.relationship("Message", back_populates="users")
 

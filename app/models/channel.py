@@ -1,4 +1,4 @@
-from .db import db, environment, SCHEMA
+from .db import db, environment, SCHEMA, add_prefix_for_prod
 
 class Channel(db.Model):
     __tablename__ = 'channels'
@@ -14,6 +14,9 @@ class Channel(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now())
 
+    owner_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False)
+
+    owner = db.relationship("User", back_populates="owns_channel")
     messages = db.relationship("Message", back_populates="channels")
     users = db.relationship(
         "User",
@@ -23,6 +26,7 @@ class Channel(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'owner_id': self.owner_id,
             'name': self.name,
             'subject': self.subject,
             'is_private': self.is_private,

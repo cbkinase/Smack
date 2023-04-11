@@ -1,14 +1,8 @@
 """makin tables
 
-<<<<<<< HEAD:migrations/versions/bce0c0832432_create_tables.py
-Revision ID: bce0c0832432
-Revises: 
-Create Date: 2023-04-10 13:02:06.773057
-=======
 Revision ID: 8bc6cd8a810d
-Revises: 
+Revises:
 Create Date: 2023-04-10 17:20:18.752665
->>>>>>> f2aa4e3c8b1920cf2cce18ba5942a73df37f0a44:migrations/versions/20230410_172018_makin_tables.py
 
 """
 from alembic import op
@@ -16,11 +10,9 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<< HEAD:migrations/versions/bce0c0832432_create_tables.py
-revision = 'bce0c0832432'
-=======
+
 revision = '8bc6cd8a810d'
->>>>>>> f2aa4e3c8b1920cf2cce18ba5942a73df37f0a44:migrations/versions/20230410_172018_makin_tables.py
+
 down_revision = None
 branch_labels = None
 depends_on = None

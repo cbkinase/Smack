@@ -10,7 +10,10 @@ class Roles(enum.Enum):
 channel_user = db.Table(
     'channel_users',
     db.Model.metadata,
-    db.Column("users_id", db.Integer, db.ForeignKey('users.id'), primary_key=True),
-    db.Column("channels_id", db.Integer, db.ForeignKey('channels.id'), primary_key=True),
+    db.Column("users_id", db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), primary_key=True),
+    db.Column("channels_id", db.Integer, db.ForeignKey(add_prefix_for_prod('channels.id')), primary_key=True),
     db.Column("role", db.Enum(Roles), nullable=False, default="member")
 )
+
+if environment == "production":
+    channel_user.schema = SCHEMA

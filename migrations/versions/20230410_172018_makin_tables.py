@@ -1,7 +1,7 @@
 """makin tables
 
 Revision ID: 8bc6cd8a810d
-Revises: 
+Revises:
 Create Date: 2023-04-10 17:20:18.752665
 
 """
@@ -13,7 +13,9 @@ environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 
 # revision identifiers, used by Alembic.
+
 revision = '8bc6cd8a810d'
+
 down_revision = None
 branch_labels = None
 depends_on = None

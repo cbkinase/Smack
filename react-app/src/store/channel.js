@@ -1,7 +1,7 @@
 const initialState = {}
 
 const ALL_CHANNEL = 'channel/all'
-const USER_CHANNEL = 'channel/user'
+const USER_CHANNELS = 'channel/user'
 const GET_ONE_CHANNEL = 'channel/getone'
 const ADD_CHANNEL = 'channel/add'
 const EDIT_CHANNEL = 'channel/edit'
@@ -9,7 +9,7 @@ const DELETE_CHANNEL = 'channel/delete'
 
 export const UserChannel = (payload) => {
     return {
-        type: USER_CHANNEL,
+        type: USER_CHANNELS,
         payload
     }
 }

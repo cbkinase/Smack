@@ -101,8 +101,14 @@ def get_reactions_for_message(message_id):
 
     try:
         reactions = db.session.query(Reaction).filter(Reaction.message_id == message_id).all()
-        return {
-            "Reactions": [reaction.to_dict() for reaction in reactions]
-        }
+        reactions_data = {"Reactions" :[]}
+        for reaction in reactions:
+            reaction_data = reaction.to_dict()
+            reaction_data['User'] = {
+                'username': reaction.user.username
+            }
+            reactions_data["Reactions"].append(reaction_data)
+
+        return reactions_data
     except:
         return { "message": "Failed to get reactions" }, 400

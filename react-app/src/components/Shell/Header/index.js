@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 
-function Header ({ isLoaded }){
+function Header({ isLoaded }) {
 	const sessionUser = useSelector(state => state.session.user);
 
 	return (
@@ -16,12 +16,12 @@ function Header ({ isLoaded }){
 					</button>
 					<button id="hideshow-leftpane-arrow" onclick="hideShowLeftPane();"
 						class="hideshow-leftpane">
-						<i class="fas fa-arrow-left" style={{fontSize: "18px"}}></i>
+						<i class="fas fa-arrow-left" style={{ fontSize: "18px" }}></i>
 					</button>
 				</div>
 				<ul>
-					<li>
-						<NavLink exact to="/">Home</NavLink>
+					<li style={{ color: 'white' }}>
+						<NavLink exact to="/"><span style={{ color: 'white' }}>Home</span></NavLink>
 					</li>
 					{isLoaded && (
 						<li>

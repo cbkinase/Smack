@@ -81,12 +81,19 @@ def create_reaction_for_message(message_id):
     # will have to get form
     # form["csrf_token"].data = request.cookies["csrf_token"]
     try:
-        new_reaction = Reaction(**request.get_json())
+        # new_reaction = Reaction(**request.get_json())
+        req = request.get_json()
+        message = db.session.query(Message).get(message_id)
+
+        if not message:
+            return message_not_found()
+        
+        new_reaction = Reaction(user=current_user, messages=message, reaction = req['reaction'])
         db.session.add(new_reaction)
         db.session.commit()
         return new_reaction.to_dict()
     except:
-        return { "message": "Failed to delete reaction" }, 400
+        return { "message": "Failed to post reaction" }, 400
 
 @message_routes.route("/<int:message_id>/reactions", methods=["GET"])
 @login_required

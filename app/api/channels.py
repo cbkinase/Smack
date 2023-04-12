@@ -10,6 +10,7 @@ def user_id_generator():
 @channel_routes.route('/all')
 @login_required
 def all_channels():
+    print('!!!!!!!!!!!!!!!!!!')
     user_id = user_id_generator()
     allchannels = Channel.query.all()
     curr_user = User.query.get(user_id)

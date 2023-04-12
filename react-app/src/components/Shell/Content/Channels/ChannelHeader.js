@@ -1,37 +1,109 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams, NavLink, useHistory } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { AllChannel, UserChannelThunk, OneChannelThunk } from '../../../../store/channel';
 
 function ChannelHeader() {
 
-    return (
+    const dispatch = useDispatch()
+    const channels = useSelector(state => state.channels)
+    const [currChannel, setCurrChannel] = useState(null)
+    const [userList, setUserList] = useState(null)
+    let numMemb = 0;
 
+    useEffect(() => {
+        dispatch(AllChannel())
+        dispatch(UserChannelThunk())
+    }, [dispatch])
+
+    useEffect(() => {
+        if (channels && Object.keys(channels).length > 0) {
+            setCurrChannel(channels.user_channels[Object.keys(channels.user_channels)[0]])
+            setUserList(channels.user_channels[Object.keys(channels.user_channels)[0]].users)
+        }
+    }, [channels])
+
+    if (currChannel && userList) {
+        numMemb = Object.keys(userList).length
+    }
+
+    if (numMemb >= 4) {
+        return (
             <div class="content-heading-holder">
                 <div class="content-header-left">
-                    <button class="content-header-channelname"> 
-                        # Team Group 3
-                        <i style={{fontSize: "12px", marginLeft: "3px"}} class="fas fa-angle-down"></i>
+                    <button class="content-header-channelname">
+                        {currChannel && currChannel.name}
+                        <i style={{ fontSize: "12px", marginLeft: "3px" }} class="fas fa-angle-down"></i>
                     </button>
                     <div class="content-header-channeltopic">
-                        This channel's topic goes right here.
+                        {currChannel && currChannel.subject}
                     </div>
                 </div>
 
                 <div class="content-header-right">
                     <button class="content-header-membercount">
-                        <img style={{zIndex: 5}} class="membercount-image"
-                            src="https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512"
+                        <img style={{ zIndex: 5 }} class="membercount-image"
+                            src={userList && userList[0].avatar}
                             alt="Member"></img>
-                        <img style={{zIndex: 4, position: "relative", left: "-8px"}} class="membercount-image"
-                            src="https://ca.slack-edge.com/T03GU501J-U04B5SVB5N1-fe508f121b64-512"
+                        <img style={{ zIndex: 4, position: "relative", left: "-8px" }} class="membercount-image"
+                            src={userList && userList[1].avatar}
                             alt="Member"></img>
-                        <img style={{zIndex: 3, position: "relative", left: "-16px"}} class="membercount-image"
-                            src="https://ca.slack-edge.com/T03GU501J-U04A1FE78LF-38f81f9f415d-512"
+                        <img style={{ zIndex: 3, position: "relative", left: "-16px" }} class="membercount-image"
+                            src={userList && userList[2].avatar}
                             alt="Member"></img>
-                        <span style={{zIndex: 4, position: "relative", left: "-8px"}}>8</span>
+                        <span style={{ zIndex: 4, position: "relative", left: "-8px" }}>8</span>
                     </button>
                 </div>
             </div>
-            
-    );
+        )
+    } else if (numMemb == 3) {
+        return (
+            <div class="content-heading-holder">
+                <div class="content-header-left">
+                    <button class="content-header-channelname">
+                        {currChannel && currChannel.name}
+                        <i style={{ fontSize: "12px", marginLeft: "3px" }} class="fas fa-angle-down"></i>
+                    </button>
+                    <div class="content-header-channeltopic">
+                        {currChannel && currChannel.subject}
+                    </div>
+                </div>
+
+                <div class="content-header-right">
+                    <button class="content-header-membercount">
+                        <img style={{ zIndex: 5 }} class="membercount-image"
+                            src={userList && userList[0].avatar}></img>
+                        <img style={{ zIndex: 4, position: "relative", left: "-8px" }} class="membercount-image"
+                            src={userList && userList[1].avatar}></img>
+                        <span style={{ zIndex: 3, position: "relative", left: "-16px" }}>3</span>
+                    </button>
+                </div>
+            </div>
+        )
+    } else {
+        return (
+            <div class="content-heading-holder">
+                <div class="content-header-left">
+                    <button class="content-header-channelname">
+                        {currChannel && currChannel.name}
+                        <i style={{ fontSize: "12px", marginLeft: "3px" }} class="fas fa-angle-down"></i>
+                    </button>
+                    <div class="content-header-channeltopic">
+                        {currChannel && currChannel.subject}
+                    </div>
+                </div>
+
+                <div class="content-header-right">
+                    <button class="content-header-membercount">
+                        <img class="membercount-image"
+                            src={userList && userList[0].avatar}></img>
+                        <span style={{ padding: "0px 5px" }}>2</span>
+                    </button>
+                </div>
+            </div>
+        )
+    }
 }
 
 export default ChannelHeader;

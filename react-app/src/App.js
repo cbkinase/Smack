@@ -7,6 +7,7 @@ import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import Chat from "./components/ChatTest";
 
+
 import ReactionTestPage from "./components/ReactionTest";
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <>
+    <div id="grid-container" class="grid-container-hiderightside">
       <Navigation isLoaded={isLoaded} />
       {isLoaded && (
         <Switch>
@@ -35,7 +36,7 @@ function App() {
           </Route>
         </Switch>
       )}
-    </>
+    </div>
   );
 }
 

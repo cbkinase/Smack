@@ -14,6 +14,12 @@ function ReactionTestPage() {
 
     }, [dispatch, message_id])
 
+    const deleteHandler= (e, id) => {
+        e.preventDefault();
+        return dispatch(reactionActions.thunkDeleteReaction(id))
+        
+    }
+
     const allReactionsArr = Object.values(reactions);
 
     return (
@@ -23,6 +29,7 @@ function ReactionTestPage() {
                 <div>
                     <div>Message id: {`${reaction.message_id}`}</div>
                     <div>{reaction.reaction}</div>
+                    <button onClick={(e) => deleteHandler(e, reaction.id)}>Delete</button>
                 </div>
                 
             ))}

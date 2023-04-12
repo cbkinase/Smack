@@ -49,27 +49,6 @@ function LeftSideBar({ isLoaded }) {
                         </button>
                     </div>
 
-                    <div>
-                        <button>
-                            <span style={{width: "20px"}}><i className="fas fa-hashtag"></i></span>
-                            <span className="ellipsis-if-long">After Work Chat Channel</span>
-                        </button>
-                    </div>
-
-                    <div>
-                        <button>
-                            <span style={{width: "20px"}}><i className="fas fa-hashtag"></i></span>
-                            <span className="ellipsis-if-long">Backend Devs Meetup</span>
-                        </button>
-                    </div>
-
-                    <div>
-                        <button>
-                            <span style={{width: "20px"}}><i className="fas fa-hashtag"></i></span>
-                            <span className="ellipsis-if-long">Extra Coding Practice</span>
-                        </button>
-                    </div>
-
 
                     {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
                     <div style={{padding: "8px"}}></div>
@@ -101,15 +80,6 @@ function LeftSideBar({ isLoaded }) {
                                 alt="Brian Hitchin"
                                 style={{borderRadius: "5px", width: "20px", height:"20px", marginTop:"4px"}}></img></span>
                             <span className="ellipsis-if-long">Dave Titus</span>
-                        </button>
-                    </div>
-
-                    <div>
-                        <button>
-                            <span><img src="https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512"
-                                alt="Brian Hitchin"
-                                style={{borderRadius: "5px", width: "20px", height:"20px", marginTop:"4px"}}></img></span>
-                            <span className="ellipsis-if-long">Cynthia Liang</span>
                         </button>
                     </div>
 

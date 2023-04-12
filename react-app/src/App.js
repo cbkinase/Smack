@@ -5,6 +5,7 @@ import SignupFormPage from "./components/SignupFormPage";
 import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
+import Content from "./components/Content"
 import Chat from "./components/ChatTest";
 
 
@@ -27,6 +28,9 @@ function App() {
           </Route>
           <Route path="/signup">
             <SignupFormPage />
+          </Route>
+          <Route path="/channel">
+            <Content />
           </Route>
           <Route path="/reactions">
             <ReactionTestPage />

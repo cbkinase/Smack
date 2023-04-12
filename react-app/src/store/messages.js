@@ -25,7 +25,7 @@ const deleteMessage = (id) => {
 
 export const getChannelMessages = (id) => async (dispatch) => {
     const res = await fetch(`/api/channels/${id}/messages`, {
-        method: "GET"
+        method: "GET",
     });
 
     if (res.ok) {
@@ -68,7 +68,7 @@ export const editMessage = (message, messageId) => async (dispatch) => {
 
     if (res.ok) {
         const data = await res.json();
-        dispatch(createChannelMessage(data));
+        dispatch(addMessage(data));
         return data;
     }
 };
@@ -78,7 +78,6 @@ const initialState = { allMessages: {} };
 const messageReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_MESSAGE: {
-            console.log("HI HI");
             return {
                 ...state,
                 allMessages: {
@@ -88,7 +87,7 @@ const messageReducer = (state = initialState, action) => {
             };
         }
         case LOAD_MESSAGES: {
-            let newState = {allMessages: {}};
+            let newState = { allMessages: {} };
             action.messages.forEach((msg) => {
                 newState["allMessages"][msg.id] = msg;
             });

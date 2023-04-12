@@ -1,0 +1,610 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html,
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: #1d1d1d;
+    background-color: #ffffff;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+#root {
+    height: 100%;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -70px;
+    font-size: 12px;
+    padding: 7px 10px;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+/* %%%%%%%%%% SCROLLBAR STYLING %%%%%%%%%%% */
+
+/* Works on Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #9d9d9d white;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 18px;
+}
+
+*::-webkit-scrollbar-track {
+    background: white;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #c5c5c5;
+    border-radius: 20px;
+    border: 6px solid #ffffff;
+}
+
+/* ================= */
+
+/* Works on Firefox */
+.grid-leftside-threecolumn {
+    scrollbar-width: thin;
+    scrollbar-color: #87718a #3F0E40;
+}
+
+/* Works on Chrome, Edge, and Safari */
+.grid-leftside-threecolumn::-webkit-scrollbar {
+    width: 18px;
+}
+
+.grid-leftside-threecolumn::-webkit-scrollbar-track {
+    background: #3F0E40;
+}
+
+.grid-leftside-threecolumn::-webkit-scrollbar-thumb {
+    background-color: #87718a;
+    border-radius: 20px;
+    border: 6px solid #3F0E40;
+}
+
+/* -------- */
+
+/* Works on Firefox */
+.grid-leftside {
+    scrollbar-width: thin;
+    scrollbar-color: #87718a #3F0E40;
+}
+
+/* Works on Chrome, Edge, and Safari */
+.grid-leftside::-webkit-scrollbar {
+    width: 18px;
+}
+
+.grid-leftside::-webkit-scrollbar-track {
+    background: #3F0E40;
+}
+
+.grid-leftside::-webkit-scrollbar-thumb {
+    background-color: #87718a;
+    border-radius: 20px;
+    border: 6px solid #3F0E40;
+}
+
+/* %%%%%%%%%%%% MAIN GRID LAYOUT %%%%%%%%%%% */
+
+.grid-container {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 294px 1fr 345px;
+    grid-template-rows: 44px 55px 1fr 150px;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "header header header"
+        "leftside-heading content-heading rightside-heading"
+        "leftside content rightside"
+        "leftside editor rightside";
+}
+
+.grid-container-hiderightside {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 294px 1fr;
+    grid-template-rows: 44px 55px 1fr 150px;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "header header"
+        "leftside-heading content-heading"
+        "leftside content"
+        "leftside editor";
+}
+
+.grid-header {
+    grid-area: header;
+    background-color: #350d36;
+}
+
+.grid-leftside-heading-threecolumn {
+    grid-area: leftside-heading;
+    background-color: #3F0E40;
+    border-top: 1px solid #4e3752;
+    border-bottom: 1px solid #4e3752;
+}
+
+.grid-leftside-heading {
+    grid-area: leftside-heading;
+    background-color: #3F0E40;
+    border-top: 1px solid #4e3752;
+    border-bottom: 1px solid #4e3752;
+
+    z-index: 10;
+    /* or none */
+    display: block;
+    /* or 0px */
+    width: 294px;
+}
+
+.grid-leftside-heading-closed {
+    grid-area: leftside-heading;
+    background-color: #3F0E40;
+    border-top: 1px solid #4e3752;
+    border-bottom: 1px solid #4e3752;
+
+    z-index: 10;
+    /* or none */
+    display: none;
+    /* or 0px */
+    width: 0px;
+}
+
+.grid-leftside-threecolumn {
+    grid-area: leftside;
+    background-color: #3F0E40;
+    color: #bcafbe;
+    overflow: auto;
+}
+
+.grid-leftside {
+    grid-area: leftside;
+    background-color: #3F0E40;
+    color: #bcafbe;
+    overflow: auto;
+    z-index: 10;
+    /* or none */
+    display: block;
+    /* or 0px */
+    width: 294px;
+}
+
+.grid-leftside-closed {
+    grid-area: leftside;
+    background-color: #3F0E40;
+    color: #bcafbe;
+    overflow: auto;
+    z-index: 10;
+    /* or none */
+    display: none;
+    /* or 0px */
+    width: 0px;
+}
+
+.grid-content-heading-threecolumn {
+    grid-area: content-heading;
+    background-color: #ffffff;
+    border-bottom: 1px solid #dddddd;
+    display: flex;
+    text-align: center;
+}
+
+.grid-content-heading {
+    grid-area: content-heading;
+    background-color: #ffffff;
+    border-bottom: 1px solid #dddddd;
+    display: flex;
+    text-align: center;
+    z-index: 1;
+    grid-column: 1 / 3;
+}
+
+.grid-content-threecolumn {
+    grid-area: content;
+    background-color: #ffffff;
+    overflow: auto;
+}
+
+.grid-content {
+    grid-area: content;
+    background-color: #ffffff;
+    overflow: auto;
+    z-index: 1;
+    grid-column: 1 / 3;
+}
+
+.grid-editor-threecolumn {
+    grid-area: editor;
+    background-color: #ffffff;
+    padding: 0px 20px;
+}
+
+.grid-editor {
+    grid-area: editor;
+    background-color: #ffffff;
+    padding: 0px 20px;
+    z-index: 1;
+    grid-column: 1 / 3;
+}
+
+.grid-rightside-heading {
+    grid-area: rightside-heading;
+    background-color: #ffffff;
+    border-bottom: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    display: flex;
+}
+
+.grid-rightside-heading-hide {
+    display: none;
+}
+
+.grid-rightside {
+    grid-area: rightside;
+    background-color: #ffffff;
+    border-left: 1px solid #dddddd;
+    overflow: auto;
+    min-width: 230px;
+}
+
+.grid-rightside-hide {
+    display: none;
+}
+
+/* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
+
+.header-holder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 44px;
+}
+
+.header-holder div {
+    padding: 0px 20px;
+    color: #bdbdbd;
+}
+
+.hideshow-leftpane {
+    background-color: inherit;
+    color: inherit;
+    border: none;
+    padding: 3px 5px;
+    border-radius: 4px;
+}
+
+.hideshow-leftpane:hover {
+    background-color: rgb(255, 255, 255, 0.15);
+    color: #dfdfdf;
+}
+
+.leftside-heading-holder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-left: 20px;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.leftside-link-holder {
+    border-bottom: 1px solid #4e3752;
+
+}
+
+.leftside-channeldirect-holder {
+    padding: 12px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.leftside-channeldirect-holder div {
+    padding: 1px 12px 1px 12px;
+}
+
+.leftside-channeldirect-holder button {
+    background-color: #3F0E40;
+    text-align: left;
+    padding: 0px 14px 0px 8px;
+    height: 28px;
+    width: 100%;
+    border-radius: 8px;
+    border: none;
+    color: #bcafbe;
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 7px;
+}
+
+.leftside-channeldirect-holder button:first-child {
+    padding-top: 0px;
+}
+
+.leftside-channeldirect-holder button:hover {
+    background-color: rgb(255, 255, 255, 0.1);
+}
+
+.ellipsis-if-long {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.content-heading-holder {
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 20px 0px 12px;
+    width: 100%;
+    align-items: center;
+    text-align: left;
+}
+
+.content-header-left {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: fit-content;
+}
+
+.content-header-channelname {
+    font-size: 18px;
+    font-weight: 800;
+    margin-right: 20px;
+    border: none;
+    background-color: inherit;
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+.content-header-channelname:hover {
+    background-color: #efefef;
+}
+
+.content-header-channeltopic {
+    font-size: 13px;
+    font-weight: 300;
+    margin-right: 20px;
+    line-height: 13px;
+}
+
+.content-header-membercount {
+    display: flex;
+    flex-direction: row;
+    height: 34px;
+    align-items: center;
+    background-color: inherit;
+    background-color: inherit;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    padding: 3px 3px;
+    margin: 0px;
+    color: #6d6d6d;
+}
+
+.content-header-membercount:hover {
+    background-color: rgb(0, 0, 0, 0.035);
+}
+
+.membercount-image {
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    border: 2px solid #FFFFFF;
+}
+
+
+.pinned-message-holder {
+    border-bottom: 1px solid #dddddd;
+    padding: 5px 20px;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: inherit;
+    font-size: 13px;
+}
+
+.pinned-message-holder button {
+    color: #777777;
+    border: none;
+    background-color: inherit;
+    padding: 3px 6px;
+    border-radius: 6px;
+}
+
+.pinned-message-holder button:hover {
+    background-color: rgb(0, 0, 0, 0.05);
+}
+
+.rightside-heading-holder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+    font-size: 17px;
+    font-weight: 600;
+    width: 100%;
+}
+
+.rightside-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+.rightside-close-btn {
+    background-color: inherit;
+    border: none;
+    transform: scale(1.1, 1);
+    color: #797979;
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.rightside-close-btn:hover {
+    background-color: #efefef;
+    color: #494949;
+}
+
+
+/* %%%%%%%%%%%%% MESSAGE CARD %%%%%%%%%%%%%% */
+
+.message-card {
+    display: flex;
+    flex-direction: row;
+    gap: 11px;
+    padding: 12px 20px 12px 20px;
+}
+
+.message-card:hover {
+    background-color: #f7f7f7;
+}
+
+.message-card:hover .message-card-makechangebox {
+    visibility: visible;
+}
+
+.message-card-content {
+    width: 100%;
+}
+
+.message-card-header {
+    margin-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message-card-name {
+    font-weight: 900;
+    margin-bottom: 3px;
+    margin-right: 10px;
+}
+
+.message-card-name:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.message-card-time {
+    font-size: 12px;
+    color: #616161;
+    font-weight: 300;
+    white-space: nowrap;
+}
+
+.message-card-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.message-card-reaction {
+    background-color: #f1efef;
+    border: 1px solid #f1efef;
+    border-radius: 15px;
+    padding: 0px 6px;
+    margin-right: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.message-card-reaction:hover {
+    border: 1px solid #ababab;
+    cursor: pointer;
+}
+
+.message-card-reaction-count {
+    padding-left: 5px;
+    font-size: 11px;
+}
+
+.message-card-makechangebox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    visibility: hidden;
+}
+
+.message-card-makechangebox span {
+    padding: 1px 3px;
+    border-radius: 4px;
+    color: #a8a8a8;
+}
+
+.message-card-makechangebox span:hover {
+    color: #555555;
+    cursor: pointer;
+}
+
+.message-adjust-text {
+    width: 88px;
+    text-align: center;
+    font-size: 11px;
+}
+
+/* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
+
+@media screen and (max-width:768px) {
+    .grid-container {
+        grid-template-columns: 294px 1fr 1fr;
+    }
+}
+
+/* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */

@@ -153,7 +153,7 @@ const channelReducer = (state = initialState, action) => {
             if (Object.keys(newState.channels.single_channel).includes(action.payload.id)) {
                 newState.channels.single_channel = action.payload
             }
-            return newState    
+            return newState
         case ADD_CHANNEL:
             newState = Object.assign({}, state)
             newState.channels.all_channels[action.payload.id] = action.payload

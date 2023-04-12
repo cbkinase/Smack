@@ -12,6 +12,7 @@ from .api.reaction_routes import reaction_routes
 from .api.channels import channel_routes
 from .seeds import seed_commands
 from .config import Config
+from .socket import socketio
 
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
 
@@ -36,6 +37,7 @@ app.register_blueprint(reaction_routes, url_prefix='/api/reactions')
 app.register_blueprint(channel_routes, url_prefix='/api/channels')
 db.init_app(app)
 Migrate(app, db)
+socketio.init_app(app)
 
 # Application Security
 CORS(app)
@@ -95,3 +97,8 @@ def react_root(path):
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
+
+
+
+if __name__ == '__main__':
+    socketio.run(app)

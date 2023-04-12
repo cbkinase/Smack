@@ -1,14 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import LeftSideHeader from './LeftSideHeader';
 
-function LeftSideBar({ isLoaded }) {
+function LeftSideLinks() {
     const sessionUser = useSelector(state => state.session.user);
 
     return (
-        <>
-            <LeftSideHeader />
 
             <div id="grid-leftside" className="grid-leftside-threecolumn">
 
@@ -87,8 +83,7 @@ function LeftSideBar({ isLoaded }) {
 
 
             </div>
-        </>
     );
 }
 
-export default LeftSideBar;
+export default LeftSideLinks;

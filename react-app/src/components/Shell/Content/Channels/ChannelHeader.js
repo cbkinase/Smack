@@ -1,9 +1,9 @@
 import React from 'react';
 
-function ChannelHeading({ isLoaded }) {
+function ChannelHeader() {
 
     return (
-        <>
+
             <div class="content-heading-holder">
                 <div class="content-header-left">
                     <button class="content-header-channelname"> 
@@ -31,8 +31,7 @@ function ChannelHeading({ isLoaded }) {
                 </div>
             </div>
             
-        </>
     );
 }
 
-export default ChannelHeading;
+export default ChannelHeader;

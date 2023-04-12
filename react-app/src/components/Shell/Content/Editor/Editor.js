@@ -1,6 +1,6 @@
 import React from 'react';
 
-function MessageForm() {
+function Editor() {
 
     return (
         <div className="editor">
@@ -16,4 +16,4 @@ function MessageForm() {
     );
 }
 
-export default MessageForm;
+export default Editor;

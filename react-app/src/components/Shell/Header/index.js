@@ -2,14 +2,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
-import LeftSideBar from './LeftSideBar';
-import './Navigation.css';
 
-function Navigation({ isLoaded }){
+function Header ({ isLoaded }){
 	const sessionUser = useSelector(state => state.session.user);
 
 	return (
-		<>
 		<div className="grid-header">
 			<div className="header-holder">
 				<div>
@@ -34,9 +31,7 @@ function Navigation({ isLoaded }){
 				</ul>
 			</div>
 		</div>
-			<LeftSideBar isLoaded={isLoaded}/>
-		</>
 	);
 }
 
-export default Navigation;
+export default Header;

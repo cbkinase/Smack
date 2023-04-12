@@ -46,9 +46,14 @@ export const thunkDeleteReaction = (reaction_id) => async (dispatch) => {
         method: 'DELETE'
     });
 
-    await response.json();
-    dispatch(deleteReaction(reaction_id));
+    if (response.ok) {
+        await response.json();
+        
+        dispatch(deleteReaction(reaction_id));
+    }
+    
     return response;
+
 };
 
 const initialState = {};

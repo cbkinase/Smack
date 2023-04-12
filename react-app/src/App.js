@@ -5,6 +5,7 @@ import SignupFormPage from "./components/SignupFormPage";
 import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
+import Chat from "./components/ChatTest";
 
 import ReactionTestPage from "./components/ReactionTest";
 
@@ -28,6 +29,9 @@ function App() {
           </Route>
           <Route path="/reactions">
             <ReactionTestPage />
+          </Route>
+          <Route path="/chat_test/:channelId">
+            <Chat />
           </Route>
         </Switch>
       )}

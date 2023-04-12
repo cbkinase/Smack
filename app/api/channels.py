@@ -176,8 +176,19 @@ def delete_channel_member(channel_id, user_id):
 def get_all_messages_for_channel(channel_id):
     # We should check to ensure the conversation is accessible to the user making the request
     # I.e. -- the channel is not private, or the user is a member of that private channel
-    channel_messages = Message.query.filter(Message.channel_id.is_(channel_id))
-    return jsonify([msg.to_dict() for msg in channel_messages])
+    channel_messages = Message.query.filter(Message.channel_id.is_(
+        channel_id)).all()
+    channel_messages_data = []
+
+    for msg in channel_messages:
+        msg_data = msg.to_dict()
+        msg_data['User'] = {
+            'username': msg.users.username,
+            'avatar': msg.users.avatar
+        }
+        channel_messages_data.append(msg_data)
+
+    return jsonify(channel_messages_data)
 
 
 @channel_routes.route("<int:channel_id>", methods=["POST"])

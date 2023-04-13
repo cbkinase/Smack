@@ -28,10 +28,11 @@ def user_channels():
     user = User.query.get(user_ids)
     channels_id = [channel.id for channel in user.channel]
 
-    resp_obj = {"user_channels": []}
+    resp_obj = {"user_channels": [], "members": []}
     for channel in channels_id:
         channel_info = Channel.query.get(channel)
         resp_obj["user_channels"].append(channel_info.to_dict())
+        resp_obj["members"].append([user.to_dict() for user in channel_info.users])
     return resp_obj, 200
 
 @channel_routes.route('/<channel_id>')
@@ -43,11 +44,12 @@ def one_channel(channel_id):
         error_obj = {"message": "Channel with the specified id could not be found."}
         return error_obj, 404
     this_user = User.query.get(user_id)
-    if channel_id not in [channel.id for channel in this_user.channel]:
-        error_obj = {"message": "Current user does not belong to the specified channel."}
-        return error_obj, 403
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', this_user.channel)
+    #if channel_id not in [channel.id for channel in this_user.channel]:
+        #error_obj = {"message": "Current user does not belong to the specified channel."}
+        #return error_obj, 403
     one_channel = Channel.query.get(channel_id)
-    return one_channel.to_dict()
+    return {"single_channel": one_channel.to_dict()}
 
 
 @channel_routes.route('/', methods=['POST'])
@@ -64,8 +66,7 @@ def create_channel():
             owner = this_user
         )
         db.session.add(new_channel)
-
-        new_channel.user.append(this_user)
+        new_channel.users.append(this_user)
         db.session.commit()
         return new_channel.to_dict()
     except:

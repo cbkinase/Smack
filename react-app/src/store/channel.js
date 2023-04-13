@@ -1,7 +1,7 @@
 const initialState = {}
 
 const ALL_CHANNEL = 'channel/all'
-const USER_CHANNEL = 'channel/user'
+const USER_CHANNELS = 'channel/user'
 const GET_ONE_CHANNEL = 'channel/getone'
 const ADD_CHANNEL = 'channel/add'
 const EDIT_CHANNEL = 'channel/edit'
@@ -9,7 +9,7 @@ const DELETE_CHANNEL = 'channel/delete'
 
 export const UserChannel = (payload) => {
     return {
-        type: USER_CHANNEL,
+        type: USER_CHANNELS,
         payload
     }
 }
@@ -105,12 +105,12 @@ export const DeleteChannelThunk = (id) => async dispatch => {
 }
 
 export const AddChannelThunk = (value) => async dispatch => {
-    const response = await fetch('/api/groups', {
+    const response = await fetch('/api/channels', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(value)
+        body: value
     })
 
     if (response.ok) {
@@ -123,17 +123,19 @@ const channelReducer = (state = initialState, action) => {
     let newState;
     switch (action.type) {
         case ALL_CHANNEL:
-            console.log('!!!!!!!!!!!!!!!!!!!', action.payload)
             newState = { ...state, ...action.payload}
             return newState;
-        case USER_CHANNEL:
+        case USER_CHANNELS:
             newState = { ...state, ...action.payload}
             return newState;
         case GET_ONE_CHANNEL:
             newState = { ...state, ...action.payload}
             return newState;
+        case ADD_CHANNEL:
+            newState = { ...state, groups: { ...state.groups, "all_channels": { ...state.groups.all_channels, [action.payload.id]: action.payload }}}
+            return newState;
         default:
-            return state
+            return state;
     }
 }
 

@@ -35,3 +35,14 @@ def delete_reaction(reaction_id):
         "message": "Successfully deleted",
         "status_code": 200
     }, 200
+
+# @reaction_routes.route('/reactiontest', methods=["POST"])
+# @login_required
+# def test_reaction():
+
+#     req = request.get_json()
+#     print(req['emoji'])
+#     print(type(req['emoji']))
+#     return {
+#         "testing": "emoji"
+#     }

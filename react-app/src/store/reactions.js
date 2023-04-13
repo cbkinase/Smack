@@ -3,26 +3,24 @@ const GET_REACTIONS = "session/GET_REACTIONS";
 const CREATE_REACTION = "session/CREATE_REACTION";
 const DELETE_REACTION = "session/DELETE_REACTION";
 
-
-
 const getReactions = (reactions) => ({
     type: GET_REACTIONS,
-    payload: reactions
+    payload: reactions,
 });
 
 const createReaction = (reaction) => ({
     type: CREATE_REACTION,
-    payload: reaction
+    payload: reaction,
 });
 
-const deleteReaction = (reactionId) => ({
+const deleteReaction = (reaction) => ({
     type: DELETE_REACTION,
-    payload: reactionId
+    payload: reaction,
 });
 
 export const thunkGetReactions = (message_id) => async (dispatch) => {
     const response = await fetch(`/api/messages/${message_id}/reactions`, {
-        method: 'GET',
+        method: "GET",
     });
 
     const data = await response.json();
@@ -30,35 +28,33 @@ export const thunkGetReactions = (message_id) => async (dispatch) => {
     return response;
 };
 
-export const thunkCreateReaction = (message_id, new_reaction) => async (dispatch) => {
-    const response = await fetch(`/api/messages/${message_id}/reactions`, {
-        method: 'POST',
-        body: new_reaction
-    });
+export const thunkCreateReaction =
+    (message_id, new_reaction) => async (dispatch) => {
+        const response = await fetch(`/api/messages/${message_id}/reactions`, {
+            method: "POST",
+            body: new_reaction,
+        });
 
-    const data = await response.json();
-    dispatch(createReaction(data));
-    return response;
-};
+        const data = await response.json();
+        dispatch(createReaction(data));
+        return response;
+    };
 
-export const thunkDeleteReaction = (reaction_id) => async (dispatch) => {
-    const response = await fetch(`/api/reactions/${reaction_id}`, {
-        method: 'DELETE'
+export const thunkDeleteReaction = (reaction) => async (dispatch) => {
+    const response = await fetch(`/api/reactions/${reaction.id}`, {
+        method: "DELETE",
     });
 
     if (response.ok) {
         await response.json();
-        
-        dispatch(deleteReaction(reaction_id));
-    }
-    
-    return response;
 
+        dispatch(deleteReaction(reaction));
+    }
+
+    return response;
 };
 
 const initialState = {};
-
-
 
 export default function reactionReducer(state = initialState, action) {
     let newState;
@@ -70,11 +66,11 @@ export default function reactionReducer(state = initialState, action) {
             return newState;
         case CREATE_REACTION:
             newState = Object.assign({}, state);
-            newState = {...state};
-            newState[action.payload.id] = action.payload
+            newState = { ...state };
+            newState[action.payload.id] = action.payload;
             return newState;
         case DELETE_REACTION:
-            delete state[action.payload]
+            delete state[action.payload];
             newState = Object.assign({}, state);
             newState = { ...state };
             return newState;
@@ -85,10 +81,9 @@ export default function reactionReducer(state = initialState, action) {
 
 const normalizeData = (dataArr) => {
     const normalizeObj = {};
-    dataArr.forEach(element => {
-        normalizeObj[element.id] = element
+    dataArr.forEach((element) => {
+        normalizeObj[element.id] = element;
     });
 
     return normalizeObj;
-
-}
+};

@@ -14,15 +14,13 @@ const EditChannel2 = () => {
     const dispatch = useDispatch();
     const history = useHistory();
 
+    let edited;
+
     const handleSubmit = (e) => {
         e.preventDefault();
         setErrors([]);
-        return dispatch(EditChannelThunk(channelId, { name, subject, is_private, is_direct })).then(history.push(`/`))
-        .catch(async (res) => {
-            const data = await res.json();
-            console.log(data, data.errors)
-            if (data && data.errors) setErrors(data.errors);
-          })
+        edited = dispatch(EditChannelThunk(channelId, { name: name, subject: subject, is_private: Boolean(is_private), is_direct: Boolean(is_direct) }))
+        if (!edited.errors) {(history.push(`/`))}
     }
 
     return (

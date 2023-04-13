@@ -1,4 +1,4 @@
-const initialState = {}
+const initialState = {channels: {all_channels: []}}
 
 const ALL_CHANNEL = 'channel/all'
 const USER_CHANNELS = 'channel/user'
@@ -105,14 +105,13 @@ export const DeleteChannelThunk = (id) => async dispatch => {
 }
 
 export const AddChannelThunk = (value) => async dispatch => {
-    const response = await fetch('/api/channels', {
+    const response = await fetch('/api/channels/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: value
+        body: JSON.stringify(value)
     })
-
     if (response.ok) {
         const data = await response.json()
         dispatch(AddChannel(data))
@@ -132,8 +131,15 @@ const channelReducer = (state = initialState, action) => {
             newState = { ...state, ...action.payload}
             return newState;
         case ADD_CHANNEL:
-            newState = { ...state, groups: { ...state.groups, "all_channels": { ...state.groups.all_channels, [action.payload.id]: action.payload }}}
+            newState = { ...state, channels: { ...state.channels, "all_channels": [action.payload]}}
             return newState;
+        case EDIT_CHANNEL:
+            newState = { ...state, channels: { ...state.channels, "all_channels": [action.payload]}}
+            return newState
+        case DELETE_CHANNEL:
+            newState = {...state, channels: { ...state.channels, all_channels: [...state.channels.all_channels]}}
+            newState.channels.all_channels = newState.channels.all_channels.filter(channel => channel.id !== action.id)
+            return newState
         default:
             return state;
     }

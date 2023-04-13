@@ -1,8 +1,8 @@
-"""makin tables
+"""create tables
 
-Revision ID: a4083cc1144d
-Revises:
-Create Date: 2023-04-11 14:23:53.872371
+Revision ID: c28f8589d2b8
+Revises: 
+Create Date: 2023-04-13 09:27:16.980487
 
 """
 from alembic import op
@@ -12,9 +12,8 @@ import os
 environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 
-
 # revision identifiers, used by Alembic.
-revision = 'a4083cc1144d'
+revision = 'c28f8589d2b8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -67,7 +66,6 @@ def upgrade():
     if environment == "production":
         op.execute(f"ALTER TABLE channel_users SET SCHEMA {SCHEMA};")
 
-
     op.create_table('messages',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -84,12 +82,11 @@ def upgrade():
     if environment == "production":
         op.execute(f"ALTER TABLE messages SET SCHEMA {SCHEMA};")
 
-
     op.create_table('reactions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('message_id', sa.Integer(), nullable=False),
-    sa.Column('reaction', sa.Enum('LIKE', 'DISLIKE', name='emoji'), nullable=False),
+    sa.Column('reaction', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['message_id'], ['messages.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -97,6 +94,7 @@ def upgrade():
 
     if environment == "production":
         op.execute(f"ALTER TABLE reactions SET SCHEMA {SCHEMA};")
+
     # ### end Alembic commands ###
 
 

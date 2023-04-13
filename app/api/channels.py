@@ -10,7 +10,6 @@ def user_id_generator():
 @channel_routes.route('/all')
 @login_required
 def all_channels():
-    print('!!!!!!!!!!!!!!!!!!')
     user_id = user_id_generator()
     allchannels = Channel.query.all()
     curr_user = User.query.get(user_id)
@@ -41,13 +40,9 @@ def one_channel(channel_id):
     user_id = user_id_generator()
     channel_exist = Channel.query.get(channel_id)
     if not channel_exist:
-        error_obj = {"message": "Channel with the specified id could not be found."}
+        error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
     this_user = User.query.get(user_id)
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', this_user.channel)
-    #if channel_id not in [channel.id for channel in this_user.channel]:
-        #error_obj = {"message": "Current user does not belong to the specified channel."}
-        #return error_obj, 403
     one_channel = Channel.query.get(channel_id)
     return {"single_channel": one_channel.to_dict()}
 
@@ -82,11 +77,11 @@ def delete_channel(channel_id):
     user_id = user_id_generator()
     channel_exist = Channel.query.get(channel_id)
     if not channel_exist:
-        error_obj = {"message": "Channel with the specified id could not be found."}
+        error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
     this_user = User.query.get(user_id)
-    if channel_id not in [channel.id for channel in this_user.channel]:
-        error_obj = {"message": "Current user does not belong to the specified channel."}
+    if user_id not in [channel.id for channel in channel_exist.users]:
+        error_obj = {"errors": "Current user does not belong to the specified channel."}
         return error_obj, 403
     deleted_channel = Channel.query.get(channel_id)
     db.session.delete(deleted_channel)
@@ -100,11 +95,11 @@ def edit_channel(channel_id):
     user_id = user_id_generator()
     channel_exist = Channel.query.get(channel_id)
     if not channel_exist:
-        error_obj = {"message": "Channel with the specified id could not be found."}
+        error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
     this_user = User.query.get(user_id)
-    if channel_id not in [channel.id for channel in this_user.channel]:
-        error_obj = {"message": "Current user does not belong to the specified channel."}
+    if user_id not in [channel.id for channel in channel_exist.users]:
+        error_obj = {"errors": "Current user does not belong to the specified channel."}
         return error_obj, 403
     try:
         edited_channel = Channel.query.get(channel_id)

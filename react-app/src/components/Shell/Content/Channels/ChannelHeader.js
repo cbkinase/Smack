@@ -2,11 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, NavLink, useHistory } from 'react-router-dom'
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
-import { AllChannel, UserChannelThunk, OneChannelThunk } from '../../../../store/channel';
-=======
 import { AllChannelThunk, UserChannelThunk} from '../../../../store/channel';
->>>>>>> brian3
 
 function ChannelHeader() {
 
@@ -17,34 +13,20 @@ function ChannelHeader() {
     let numMemb = 0;
 
     useEffect(() => {
-<<<<<<< HEAD
-        dispatch(AllChannel())
-=======
         dispatch(AllChannelThunk())
->>>>>>> brian3
         dispatch(UserChannelThunk())
     }, [dispatch])
 
     useEffect(() => {
-<<<<<<< HEAD
-        if (channels && Object.keys(channels).length > 0) {
-            setCurrChannel(channels.user_channels[Object.keys(channels.user_channels)[0]])
-            setUserList(channels.user_channels[Object.keys(channels.user_channels)[0]].users)
-=======
         if (channels.user_channels && channels.user_channels.length > 0) {
             setCurrChannel(channels.user_channels[Object.keys(channels.user_channels)[0]])
             setUserList(channels["members"][0])
             console.log(channels["members"])
->>>>>>> brian3
         }
     }, [channels])
 
     if (currChannel && userList) {
-<<<<<<< HEAD
-        numMemb = Object.keys(userList).length
-=======
         numMemb = userList.length
->>>>>>> brian3
     }
 
     if (numMemb >= 4) {

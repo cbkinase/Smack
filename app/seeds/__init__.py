@@ -138,26 +138,24 @@ def seed_reactions(users, messages):
 
     rctions = []
     reaction_marnie_demo_message_2 = Reaction(
-        user=marnie, messages=demo_message_2, reaction="LIKE"
+        user=marnie, messages=demo_message_2, reaction="👍"
     )
     rctions.append(reaction_marnie_demo_message_2)
 
     reaction_bobbie_demo_message_2 = Reaction(
-        user=bobbie, messages=demo_message_2, reaction="DISLIKE"
+        user=bobbie, messages=demo_message_2, reaction="👍"
     )
     rctions.append(reaction_bobbie_demo_message_2)
 
     reaction_bobbie_marnie_message_2 = Reaction(
-        user=bobbie, messages=marnie_message_2, reaction="DISLIKE"
+        user=bobbie, messages=marnie_message_2, reaction="👍"
     )
-    rctions.append(
-    reaction_bobbie_marnie_message_2)
+    rctions.append(reaction_bobbie_marnie_message_2)
 
     reaction_demo_bobbie_message_1 = Reaction(
-        user=demo, messages=bob_message_1, reaction="LIKE"
+        user=demo, messages=bob_message_1, reaction="👍"
     )
-    rctions.append(
-    reaction_demo_bobbie_message_1)
+    rctions.append(reaction_demo_bobbie_message_1)
 
     for rction in rctions:
         db.session.add(rction)

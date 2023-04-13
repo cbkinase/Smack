@@ -24,3 +24,12 @@ def handle_delete(data):
 @socketio.on("edit")
 def handle_delete(data):
     emit("delete", data, broadcast=True)
+
+@socketio.on("addReaction")
+def handle_add_reaction(data):
+    emit("addReaction", data, broadcast=True)
+
+
+@socketio.on("deleteReaction")
+def handle_delete_reaction(data):
+    emit("deleteReaction", data, broadcast=True)

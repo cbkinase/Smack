@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import channel_user, Channel, User, db, Message
+from app.models import channel_user, Channel, User, db, Message, Reaction
 from flask_login import login_required, current_user
 
 channel_routes = Blueprint('channels', __name__)
@@ -183,6 +183,7 @@ def get_all_messages_for_channel(channel_id):
             'username': msg.users.username,
             'avatar': msg.users.avatar
         }
+        msg_data['Reactions'] = {reaction.id:reaction.to_dict() for reaction in msg.reactions}
         channel_messages_data.append(msg_data)
 
     return jsonify(channel_messages_data)

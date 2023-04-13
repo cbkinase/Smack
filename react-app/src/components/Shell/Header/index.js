@@ -20,9 +20,9 @@ function Header({ isLoaded }) {
 					</button>
 				</div>
 				<ul>
-					<li style={{ color: 'white' }}>
+					{/* <li style={{ color: 'white' }}>
 						<NavLink exact to="/"><span style={{ color: 'white' }}>Home</span></NavLink>
-					</li>
+					</li> */}
 					{isLoaded && (
 						<li>
 							<ProfileButton user={sessionUser} />

@@ -4,8 +4,10 @@ import { Route, Switch } from "react-router-dom";
 import SignupFormPage from "./components/SignupFormPage";
 import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
-import Header from "./components/Shell/Header";
 import Shell from "./components/Shell";
+import CreateChannel from "./components/Shell/Content/Channels/ChannelCreator"
+import EditChannel2 from "./components/Shell/Content/Channels/ChannelEditor";
+import OneChannel from "./components/OneChannel";
 
 function App() {
   const dispatch = useDispatch();
@@ -18,42 +20,21 @@ function App() {
 
   return (
     <>
-      { 
-        (sessionUser ? 
-        (
+      <Switch>
+        <Route path='/' exact>
           < Shell isLoaded={isLoaded} />
-        ):
-        (
-          <LoginFormPage />
-          // <LoginSignupPage />
-        ))
-        
-      }
+        </Route>
+        <Route path="/create" exact>
+          <CreateChannel />
+        </Route>
+        <Route path="/:channelId" exact>
+          <OneChannel />
+        </Route>
+        <Route path="/:channelId/edit" exact>
+          <EditChannel2 />
+        </Route>
+      </Switch>
     </>
-
-    // <div id="grid-container" class="grid-container-hiderightside">
-    //   <Header isLoaded={isLoaded} />
-
-    //   {isLoaded && (
-    //     <Switch>
-    //       <Route path="/login" >
-    //         <LoginFormPage />
-    //       </Route>
-    //       <Route path="/signup">
-    //         <SignupFormPage />
-    //       </Route>
-    //       <Route path="/channel">
-    //         <Content />
-    //       </Route>
-    //       <Route path="/reactions">
-    //         <ReactionTestPage />
-    //       </Route>
-    //       <Route path="/chat_test/:channelId">
-    //         <Chat />
-    //       </Route>
-    //     </Switch>
-    //   )}
-    // </div>
   );
 }
 

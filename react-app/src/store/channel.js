@@ -131,6 +131,9 @@ const channelReducer = (state = initialState, action) => {
         case GET_ONE_CHANNEL:
             newState = { ...state, ...action.payload}
             return newState;
+        case ADD_CHANNEL:
+            newState = { ...state, groups: { ...state.groups, "all_channels": { ...state.groups.all_channels, [action.payload.id]: action.payload }}}
+            return newState;
         default:
             return state;
     }

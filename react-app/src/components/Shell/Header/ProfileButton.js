@@ -21,6 +21,13 @@ function ProfileButton({ user }) {
     const closeMenu = (e) => {
       if (!ulRef.current.contains(e.target)) {
         setShowMenu(false);
+
+        setShowType('info');
+        setFirstName(user.first_name);
+        setLastName(user.last_name);
+        setAvatar(user.avatar);
+        setBio(user.bio);
+        setErrors([]);
       }
     };
 
@@ -38,10 +45,39 @@ function ProfileButton({ user }) {
 
   // ###### EDIT USER ######
 
-  const [first_name, setFirstName] = useState("");
-  const [last_name, setLastName] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [bio, setBio] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [showType, setShowType] = useState('info')
+  const [first_name, setFirstName] = useState(user.first_name);
+  const [last_name, setLastName] = useState(user.last_name);
+  const [avatar, setAvatar] = useState(user.avatar);
+  const [bio, setBio] = useState(user.bio);
+
+  let showInfo = useRef(null);
+  let editInfo = useRef(null);
+
+  useEffect(() => {
+    const seeInfo = showInfo.current;
+    const seeEdit = editInfo.current;
+
+    setFirstName(user.first_name);
+    setLastName(user.last_name);
+    setAvatar(user.avatar);
+    setBio(user.bio);
+    setErrors([]);
+
+    if (bio.length === 0) {
+      setBio('https://ca.slack-edge.com/T03GU501J-U04NRD14YTE-953c1a69bded-512')
+    }
+
+    if (showType === 'info') {
+      seeInfo.style.display = "block";
+      seeEdit.style.display = "none";
+    } else {
+      seeInfo.style.display = "none";
+      seeEdit.style.display = "block";
+    }
+
+  }, [showType])
 
   const handleEditUser = async (e) => {
     // e.preventDefault();
@@ -65,7 +101,7 @@ function ProfileButton({ user }) {
 
           {/* =================== */}
           {/* VIEW USER INFO */}
-          <div style={{ display: 'none' }}>
+          <div ref={showInfo} style={{ display: 'block' }}>
             <div className="profile-popup" style={{ padding: '12px 0px 2px 0px', margin: '0px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 
@@ -76,7 +112,7 @@ function ProfileButton({ user }) {
 
                 </div>
 
-                <div><button className="edit-user-btn">Edit</button></div>
+                <div><button className="edit-user-btn" onClick={() => { setShowType('edit') }}>Edit</button></div>
 
               </div>
 
@@ -92,40 +128,74 @@ function ProfileButton({ user }) {
 
           {/* =================== */}
           {/* EDIT USER INFO */}
-          <div style={{ display: 'block' }}>
+          <div ref={editInfo} style={{ display: 'none' }}>
             <div className="profile-popup" style={{ padding: '12px 0px 2px 0px', margin: '0px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '0px', margin: '0px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0px', margin: '0px', width: '100%' }}>
 
-                  <div style={{ padding: '0px', margin: '0px' }}><img style={{ borderRadius: '4px', width: '38px', height: '38px' }} src={user.avatar} alt={user.first_name + " " + user.last_name} /></div>
-                  <div style={{ padding: '0px', margin: '0px 0px 0px 10px', fontWeight: 700 }}>{user.first_name} {user.last_name}</div>
-
+                  <div style={{ padding: '0px', margin: '0px', width: '48px', height: '48px' }}>
+                    {avatar.length > 0 &&
+                      <img style={{ borderRadius: '4px', width: '48px', height: '48px' }} src={avatar} alt="" />
+                    }
+                    {avatar.length === 0 &&
+                      <img style={{ borderRadius: '4px', width: '48px', height: '48px' }} src="https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512" alt="" />
+                    }
+                  </div>
                 </div>
 
               </div>
               <form onSubmit={handleEditUser}>
-                <input className="login-input-field" type="text" value={avatar} onChange={(e) => setFirstName(e.target.value)} placeholder={user.avatar}
-                  required />
-                <div style={{ borderTop: '1px solid #cfcfcf', margin: '14px 0px 14px 0px', padding: '0px' }}></div>
-                <input className="login-input-field" type="text" value={first_name} onChange={(e) => setFirstName(e.target.value)} placeholder={user.first_name}
-                  required />
-                <div style={{ borderTop: '1px solid #cfcfcf', margin: '14px 0px 14px 0px', padding: '0px' }}></div>
-                <input className="login-input-field" type="text" value={last_name} onChange={(e) => setLastName(e.target.value)} placeholder={user.last_name}
-                  required />
-                <div style={{ borderTop: '1px solid #cfcfcf', margin: '14px 0px 14px 0px', padding: '0px' }}></div>
-                <div>{user.bio}</div>
-                <div style={{ borderTop: '1px solid #cfcfcf', margin: '14px 0px 0px 0px', padding: '0px' }}></div>
 
-                <div><button className="save-useredit-btn" type="submit" onClick={handleLogout}>Save</button></div>
+
+                {errors.length > 0 &&
+                  <div style={{ padding: '10px 0px 8px 20px', color: 'red', display: 'block' }}>
+                    <li>URL is not valid</li>
+                  </div >
+                }
+
+                <div>
+                  <input className="edituser-input-field" type="text" value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="Avatar URL"
+                    required />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
+
+                <div>
+                  <input className="edituser-input-field" type="text" value={first_name} onChange={(e) => setFirstName(e.target.value)} placeholder={user.first_name}
+                    required />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
+
+                <div>
+                  <input className="edituser-input-field" type="text" value={last_name} onChange={(e) => setLastName(e.target.value)}
+                    required />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
+
+                <div>
+                  <textarea className="edituser-input-field" style={{ resize: 'none' }} rows={4} value={bio} defaultValue={user.bio} onChange={(e) => setBio(e.target.value)} />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '4px 0px 8px 0px', padding: '0px' }}></div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px', paddingBottom: '12px', alignItems: 'center' }}>
+                  <div className="cancel-edit-user" style={{ padding: '3px 5px', margin: '0px', color: '#797979' }} onClick={() => { setShowType('info') }}>Cancel</div>
+                  <button className="save-useredit-savebtn" type="submit" onClick={handleLogout}>Save</button>
+                  <div></div>
+                </div>
+
+
               </form>
             </div>
           </div>
           {/* =================== */}
 
-        </div>
+        </div >
 
-      </div>
+      </div >
 
 
     </>

@@ -603,6 +603,8 @@ button:hover {
     color: #494949;
 }
 
+/* %%%%%%%%%%%%% USER INFO / USER EDIT POPUP  %%%%%%%%%%%%%% */
+
 .topright-avatar-btn {
     background-color: inherit;
     padding: 0px;
@@ -619,7 +621,7 @@ button:hover {
 
 .profile-dropdown {
     position: absolute;
-    transform: translateX(-276px);
+    transform: translateX(-262px);
     top: 41px;
     padding: 0px;
     margin: 0px;
@@ -671,6 +673,37 @@ button:hover {
     color: #494949;
 }
 
+.edituser-input-field {
+    font-size: 14px;
+    padding: 4px 6px;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.save-useredit-savebtn {
+    padding: 1px 8px 3px 8px;
+    border: 1px solid #797979;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #494949;
+}
+
+.save-useredit-savebtn:hover {
+    background-color: #ebebeb;
+    color: #232323;
+}
+
+.cancel-edit-user {
+    background-color: #f7f7f7;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.cancel-edit-user:hover {
+    background-color: #ededed;
+    cursor: pointer;
+}
 
 /* %%%%%%%%%%%%% MESSAGE CARD %%%%%%%%%%%%%% */
 

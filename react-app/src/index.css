@@ -1,15 +1,20 @@
+/* TODO Add site wide styles */
+
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
 }
 
-html,
-body {
+html, body, textarea, select, label {
     font-family: 'Lato', sans-serif;
     font-size: 15px;
     color: #1d1d1d;
     background-color: #ffffff;
+}
+
+button, input {
+    font-family: 'Lato', sans-serif;
 }
 
 button:hover {
@@ -124,6 +129,104 @@ button:hover {
     background-color: #87718a;
     border-radius: 20px;
     border: 6px solid #3F0E40;
+}
+
+/* %%%%%%%%%%%% LOGIN/SIGNUP LANDING PAGE %%%%%%%%%%% */
+
+.login-signup {
+    width: 416px;
+    margin: 52px auto;
+}
+
+.login-input-field {
+    font-size: 18px;
+    padding: 12px;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+}
+
+.login-input-submit {
+    font-size: 18px;
+    padding: 12px;
+    margin-top: 4px;
+    color: #ffffff;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    background-color: #3F0E40;
+}
+
+.login-input-submit:hover {
+    background-color: #5c1f5d;
+}
+
+.create-account {
+    padding-top: 12px;
+    border: none;
+    background-color: inherit;
+    font-size: 15px;
+    color: #2078bc;
+}
+
+.create-account:hover {
+    text-decoration: underline;
+}
+
+.demo-user {
+    padding-top: 12px;
+    border: none;
+    background-color: inherit;
+    font-size: 12px;
+    color: #bababa;
+}
+
+.demo-user:hover {
+    text-decoration: underline;
+}
+
+.footer-holder {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 18px 35px;
+    background-color: #ffffff;
+}
+
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+}
+
+.footer-link {
+    font-size: 15px;
+    color: #969696;
+    cursor: pointer;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}
+
+.footer-button {
+    background-color: inherit;
+    margin: 0px 5px;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    color: #969696;
+    cursor: pointer;
+}
+
+.footer-button:hover {
+    /* background-color: #f3f3f3; */
+    filter: invert(100%);
 }
 
 /* %%%%%%%%%%%% MAIN GRID LAYOUT %%%%%%%%%%% */

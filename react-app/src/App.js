@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import SignupFormPage from "./components/SignupFormPage";
-import LoginFormPage from "./components/LoginFormPage";
+// import { Route, Switch } from "react-router-dom";
+// import SignupFormPage from "./components/SignupFormPage";
+// import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
+// import Header from "./components/Shell/Header";
 import Shell from "./components/Shell";
-import CreateChannel from "./components/Shell/Content/Channels/ChannelCreator"
-import EditChannel2 from "./components/Shell/Content/Channels/ChannelEditor";
-import OneChannel from "./components/OneChannel";
+import LoginSignupPage from "./components/LoginSignupPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,7 +19,7 @@ function App() {
 
   return (
     <>
-     {
+      {
         (sessionUser ?
           (
             < Shell isLoaded={isLoaded} />
@@ -28,6 +27,7 @@ function App() {
           (
             <LoginSignupPage />
           ))
+
       }
     </>
   );

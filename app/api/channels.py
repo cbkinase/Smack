@@ -65,7 +65,7 @@ def create_channel():
             owner = this_user
         )
         db.session.add(new_channel)
-        new_channel.user.append(this_user)
+        new_channel.users.append(this_user)
         db.session.commit()
         return new_channel.to_dict()
     except:

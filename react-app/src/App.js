@@ -20,20 +20,15 @@ function App() {
 
   return (
     <>
-      <Switch>
-        <Route path='/' exact>
-          < Shell isLoaded={isLoaded} />
-        </Route>
-        <Route path="/create" exact>
-          <CreateChannel />
-        </Route>
-        <Route path="/:channelId" exact>
-          <OneChannel />
-        </Route>
-        <Route path="/:channelId/edit" exact>
-          <EditChannel2 />
-        </Route>
-      </Switch>
+     {
+        (sessionUser ?
+          (
+            < Shell isLoaded={isLoaded} />
+          ) :
+          (
+            <LoginSignupPage />
+          ))
+      }
     </>
   );
 }

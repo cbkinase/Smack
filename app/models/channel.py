@@ -22,7 +22,7 @@ class Channel(db.Model):
         "User",
         secondary='channel_users',
         back_populates="channel",
-        cascade="all, delete, delete-orphan")
+        cascade="all, delete")
 
     def to_dict(self):
         return {

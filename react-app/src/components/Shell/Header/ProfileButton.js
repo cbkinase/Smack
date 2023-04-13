@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../store/session";
+import { logout, editUser } from "../../../store/session";
 import OpenModalButton from "../../OpenModalButton";
 import LoginFormModal from "../../LoginFormModal";
 import SignupFormModal from "../../SignupFormModal";
@@ -21,6 +21,13 @@ function ProfileButton({ user }) {
     const closeMenu = (e) => {
       if (!ulRef.current.contains(e.target)) {
         setShowMenu(false);
+
+        setShowType('info');
+        setFirstName(user.first_name);
+        setLastName(user.last_name);
+        setAvatar(user.avatar);
+        setBio(user.bio);
+        setErrors([]);
       }
     };
 
@@ -35,44 +42,167 @@ function ProfileButton({ user }) {
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-  const closeMenu = () => setShowMenu(false);
+
+  // ###### EDIT USER ######
+
+  const [errors, setErrors] = useState([]);
+  const [showType, setShowType] = useState('info')
+  const [first_name, setFirstName] = useState(user.first_name);
+  const [last_name, setLastName] = useState(user.last_name);
+  const [avatar, setAvatar] = useState(user.avatar);
+  const [bio, setBio] = useState(user.bio);
+  const id = user.id
+
+  let showInfo = useRef(null);
+  let editInfo = useRef(null);
+
+  useEffect(() => {
+    const seeInfo = showInfo.current;
+    const seeEdit = editInfo.current;
+
+    setFirstName(user.first_name);
+    setLastName(user.last_name);
+    setAvatar(user.avatar);
+    setBio(user.bio);
+    setErrors([]);
+
+
+
+    if (showType === 'info') {
+      seeInfo.style.display = "block";
+      seeEdit.style.display = "none";
+    } else {
+      seeInfo.style.display = "none";
+      seeEdit.style.display = "block";
+    }
+
+  }, [showType])
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+    const data = await dispatch(editUser(first_name, last_name, avatar, bio, id));
+    if (data) {
+      setErrors(data);
+    } else {
+      setShowType('info');
+    }
+  };
+
 
   return (
+
     <>
 
-      <ul className={ulClassName} ref={ulRef}>
-        {user ? (
-          <>
+      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <button className="topright-avatar-btn" onClick={openMenu}>
+          <img style={{ borderRadius: '4px', width: '26px', height: '26px' }} src={user.avatar} alt={user.first_name + " " + user.last_name} />
+        </button>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={openMenu}>
-                <i className="fas fa-user-circle" />
-              </button>
-              <div><button onClick={handleLogout}>Log Out</button></div>
-              <div>{user.username}</div>
+        <div className={ulClassName} ref={ulRef} style={{ padding: '0px', margin: '0px' }}>
+
+          {/* =================== */}
+          {/* VIEW USER INFO */}
+          <div ref={showInfo} style={{ display: 'block' }}>
+            <div className="profile-popup" style={{ padding: '12px 0px 2px 0px', margin: '0px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '0px', margin: '0px' }}>
+
+                  <div style={{ padding: '0px', margin: '0px' }}><img style={{ borderRadius: '4px', width: '38px', height: '38px' }} src={user.avatar} alt="" /></div>
+                  <div style={{ padding: '0px', margin: '0px 0px 0px 10px', fontWeight: 700 }}>{user.first_name} {user.last_name}</div>
+
+                </div>
+
+                <div><button className="edit-user-btn" onClick={() => { setShowType('edit') }}>Edit</button></div>
+
+              </div>
+
               <div>{user.email}</div>
+              <div style={{ borderTop: '1px solid #cfcfcf', margin: '14px 0px 14px 0px', padding: '0px' }}></div>
+              <div>{user.bio}</div>
+              <div style={{ borderTop: '1px solid #cfcfcf', margin: '14px 0px 0px 0px', padding: '0px' }}></div>
+              <div><button className="logout-btn" onClick={handleLogout}>Sign out of Smack</button></div>
+
             </div>
+          </div>
+          {/* =================== */}
+
+          {/* =================== */}
+          {/* EDIT USER INFO */}
+          <div ref={editInfo} style={{ display: 'none' }}>
+            <div className="profile-popup" style={{ padding: '12px 0px 2px 0px', margin: '0px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0px', margin: '0px', width: '100%' }}>
+
+                  <div style={{ padding: '0px', margin: '0px', width: '48px', height: '48px' }}>
+                    {avatar.length > 0 &&
+                      <img style={{ borderRadius: '4px', width: '48px', height: '48px' }} src={avatar} alt="" />
+                    }
+                    {avatar.length === 0 &&
+                      <img style={{ borderRadius: '4px', width: '48px', height: '48px' }} src="https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512" alt="" />
+                    }
+                  </div>
+                </div>
+
+              </div>
+              <form onSubmit={handleEditUser}>
 
 
-          </>
-        ) : (
-          <>
-            <OpenModalButton
-              buttonText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
+                {errors.length > 0 &&
+                  <div style={{ padding: '10px 0px 8px 20px', color: 'red', display: 'block' }}>
+                    <li>URL is not valid</li>
+                  </div >
+                }
 
-            <OpenModalButton
-              buttonText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
-            />
-          </>
-        )}
-      </ul>
+                <div>
+                  <input className="edituser-input-field" type="text" value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="Avatar URL" />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
+
+                <div>
+                  <input className="edituser-input-field" type="text" value={first_name} onChange={(e) => setFirstName(e.target.value)} placeholder={user.first_name}
+                    required />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
+
+                <div>
+                  <input className="edituser-input-field" type="text" value={last_name} onChange={(e) => setLastName(e.target.value)}
+                    required />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
+
+                <div>
+                  <textarea className="edituser-input-field" style={{ resize: 'none' }} rows={4} value={bio} onChange={(e) => setBio(e.target.value)} />
+                </div>
+
+                <div style={{ borderTop: '1px solid #cfcfcf', margin: '4px 0px 8px 0px', padding: '0px' }}></div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px', paddingBottom: '12px', alignItems: 'center' }}>
+                  <div className="cancel-edit-user" style={{ padding: '3px 5px', margin: '0px', color: '#797979' }} onClick={() => { setShowType('info') }}>Cancel</div>
+                  <button className="save-useredit-savebtn" type="submit">Save</button>
+                  <div></div>
+                </div>
+
+
+              </form>
+            </div>
+          </div>
+          {/* =================== */}
+
+        </div >
+
+      </div >
+
+
     </>
+
+
   );
 }
+
 
 export default ProfileButton;

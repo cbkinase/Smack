@@ -17,11 +17,12 @@ class Channel(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False)
 
     owner = db.relationship("User", back_populates="owns_channel")
-    messages = db.relationship("Message", back_populates="channels")
+    messages = db.relationship("Message", back_populates="channels", cascade="all, delete, delete-orphan")
     users = db.relationship(
         "User",
         secondary='channel_users',
-        back_populates="channel")
+        back_populates="channel",
+        cascade="all, delete, delete-orphan")
 
     def to_dict(self):
         return {

@@ -1,11 +1,5 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 
-import enum
-
-class Emoji(str, enum.Enum):
-    LIKE = "like"
-    DISLIKE = "dislike"
-
 class Reaction(db.Model):
     __tablename__ = 'reactions'
 
@@ -15,7 +9,7 @@ class Reaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False)
     message_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("messages.id")), nullable=False)
-    reaction = db.Column(db.Enum(Emoji), nullable=False)
+    reaction = db.Column(db.String, nullable=False)
 
     messages = db.relationship("Message", back_populates="reactions")
 

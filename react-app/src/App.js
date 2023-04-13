@@ -30,30 +30,6 @@ function App() {
 
       }
     </>
-
-    // <div id="grid-container" class="grid-container-hiderightside">
-    //   <Header isLoaded={isLoaded} />
-
-    //   {isLoaded && (
-    //     <Switch>
-    //       <Route path="/login" >
-    //         <LoginFormPage />
-    //       </Route>
-    //       <Route path="/signup">
-    //         <SignupFormPage />
-    //       </Route>
-    //       <Route path="/channel">
-    //         <Content />
-    //       </Route>
-    //       <Route path="/reactions">
-    //         <ReactionTestPage />
-    //       </Route>
-    //       <Route path="/chat_test/:channelId">
-    //         <Chat />
-    //       </Route>
-    //     </Switch>
-    //   )}
-    // </div>
   );
 }
 

@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <title>Flask Starter</title>
+    <title>Smack</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg">
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -16,6 +16,46 @@
       href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
       rel="stylesheet">
   </head>
+
+  <script>
+
+    function toggleLeftPane() {
+
+      if (document.documentElement.clientWidth > 1027 ||
+        document.documentElement.clientWidth >= 717 && document.getElementById("grid-container").className === 'grid-container-hiderightside'
+      ) {
+        document.getElementById("grid-leftside-heading").className = "grid-leftside-heading-threecolumn";
+        document.getElementById("grid-leftside").className = "grid-leftside-threecolumn";
+        document.getElementById("grid-content-heading").className = "grid-content-heading-threecolumn";
+        document.getElementById("grid-content").className = "grid-content-threecolumn";
+        document.getElementById("grid-editor").className = "grid-editor-threecolumn";
+        document.getElementById("hideshow-leftpane-hamburger").style.display = "none";
+        document.getElementById("hideshow-leftpane-arrow").style.display = "none";
+      } else {
+        document.getElementById("grid-leftside-heading").className = "grid-leftside-heading-closed";
+        document.getElementById("grid-leftside").className = "grid-leftside-closed";
+        document.getElementById("grid-content-heading").className = "grid-content-heading";
+        document.getElementById("grid-content").className = "grid-content";
+        document.getElementById("grid-editor").className = "grid-editor";
+        document.getElementById("hideshow-leftpane-hamburger").style.display = "block";
+        if (document.getElementById("grid-leftside-heading").className === "grid-leftside-heading-closed") {
+          document.getElementById("hideshow-leftpane-hamburger").style.display = "block";
+          document.getElementById("hideshow-leftpane-arrow").style.display = "none";
+        } else {
+          document.getElementById("hideshow-leftpane-hamburger").style.display = "none";
+          document.getElementById("hideshow-leftpane-arrow").style.display = "block";
+        }
+      }
+
+    };
+
+    window.addEventListener("resize", toggleLeftPane);
+
+    document.addEventListener("DOMContentLoaded", function () {
+      toggleLeftPane();
+    });
+
+  </script>
 
   <body>
     <div id="root"></div>

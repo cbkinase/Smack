@@ -7,14 +7,12 @@ function LeftSideHeader({ isLoaded }) {
             id="grid-leftside-heading"
             className="grid-leftside-heading-threecolumn"
         >
-            <div classNameName="leftside-heading-holder">
+            <div className="leftside-heading-holder">
                 <img
                     src={`${logo}`}
                     alt="Smack"
                     style={{
                         width: "127px",
-                        marginLeft: "20px",
-                        marginTop: "11px",
                     }}
                 ></img>
             </div>

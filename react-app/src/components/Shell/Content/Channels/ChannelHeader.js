@@ -1,110 +1,109 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, NavLink, useHistory } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { useEffect, useState } from 'react';
-import { AllChannelThunk, UserChannelThunk} from '../../../../store/channel';
+import * as ChlActions from "../../../../store/channel";
 
 function ChannelHeader() {
-
+    const { channelId } = useParams();
     const dispatch = useDispatch()
-    const channels = useSelector(state => state.channels)
-    const [currChannel, setCurrChannel] = useState(null)
-    const [userList, setUserList] = useState(null)
+    const singleChannel = useSelector((state) => state.channels.single_channel)
     let numMemb = 0;
+    let userList;
 
     useEffect(() => {
-        dispatch(AllChannelThunk())
-        dispatch(UserChannelThunk())
-    }, [dispatch])
+        dispatch(ChlActions.OneChannelThunk(channelId));
+    }, [dispatch, channelId])
+    
+    const currentChannel = Object.values(singleChannel);
 
-    useEffect(() => {
-        if (channels.user_channels && channels.user_channels.length > 0) {
-            setCurrChannel(channels.user_channels[Object.keys(channels.user_channels)[0]])
-            setUserList(channels["members"][0])
-            console.log(channels["members"])
-        }
-    }, [channels])
-
-    if (currChannel && userList) {
+    if (currentChannel.length) {
+        userList = Object.values(currentChannel[0].Members)
+    }
+    
+    if ( currentChannel.length && userList) {
         numMemb = userList.length
     }
 
-    if (numMemb >= 4) {
+    // if (numMemb >= 4) {
+    //     return (
+    //         <div className="content-heading-holder">
+    //             <div className="content-header-left">
+    //                 <button className="content-header-channelname">
+    //                     {currentChannel.length && currentChannel.name}
+    //                     <i style={{ fontSize: "12px", marginLeft: "3px" }} className="fas fa-angle-down"></i>
+    //                 </button>
+    //                 <div className="content-header-channeltopic">
+    //                     {currentChannel.length && currentChannel.subject}
+    //                 </div>
+    //             </div>
+
+    //             <div className="content-header-right">
+    //                 <button className="content-header-membercount">
+    //                     <img style={{ zIndex: 5 }} className="membercount-image"
+    //                         src={userList && userList[0].avatar}
+    //                         alt="Member"></img>
+    //                     <img style={{ zIndex: 4, position: "relative", left: "-8px" }} className="membercount-image"
+    //                         src={userList && userList[1].avatar}
+    //                         alt="Member"></img>
+    //                     <img style={{ zIndex: 3, position: "relative", left: "-16px" }} className="membercount-image"
+    //                         src={userList && userList[2].avatar}
+    //                         alt="Member"></img>
+    //                     <span style={{ zIndex: 4, position: "relative", left: "-8px" }}>{numMemb}</span>
+    //                 </button>
+    //             </div>
+    //         </div>
+    //     )
+    // }
+    // ******THERE IS A BUG WITH NUMMEMB=== 3 WHICH MAKES THE CHANNEL NAME DISAPPEAR ****
+    // if (numMemb === 3) {
+    //     return (
+    //         <div className="content-heading-holder">
+    //             <div className="content-header-left">
+    //                 <button className="content-header-channelname">
+    //                     {currentChannel.length && currentChannel.name}
+    //                     <i style={{ fontSize: "12px", marginLeft: "3px" }} className="fas fa-angle-down"></i>
+    //                 </button>
+    //                 <div className="content-header-channeltopic">
+    //                     {currentChannel.length && currentChannel.subject}
+    //                 </div>
+    //             </div>
+
+    //             <div className="content-header-right">
+    //                 <button className="content-header-membercount">
+    //                     <img style={{ zIndex: 5 }} className="membercount-image"
+    //                         src={userList && userList[0].avatar} alt=''></img>
+    //                     <img style={{ zIndex: 4, position: "relative", left: "-8px" }} className="membercount-image"
+    //                         src={userList && userList[1].avatar} alt=''></img>
+    //                     <span style={{ zIndex: 3, position: "relative", left: "-3px" }}>{numMemb}</span>
+    //                 </button>
+    //             </div>
+    //         </div>
+    //     )
+    // }
+    // } else {
         return (
-            <div class="content-heading-holder">
-                <div class="content-header-left">
-                    <button class="content-header-channelname">
-                        {currChannel && currChannel.name}
-                        <i style={{ fontSize: "12px", marginLeft: "3px" }} class="fas fa-angle-down"></i>
+            <div className="content-heading-holder">
+                <div className="content-header-left">
+                    <button className="content-header-channelname">
+                        {currentChannel.length && currentChannel[0].name}
+                        <i style={{ fontSize: "12px", marginLeft: "3px" }} className="fas fa-angle-down"></i>
                     </button>
-                    <div class="content-header-channeltopic">
-                        {currChannel && currChannel.subject}
+                    <div className="content-header-channeltopic">
+                        {currentChannel.length && currentChannel[0].subject}
                     </div>
                 </div>
 
-                <div class="content-header-right">
-                    <button class="content-header-membercount">
-                        <img style={{ zIndex: 5 }} class="membercount-image"
-                            src={userList && userList[0].avatar}
-                            alt="Member"></img>
-                        <img style={{ zIndex: 4, position: "relative", left: "-8px" }} class="membercount-image"
-                            src={userList && userList[1].avatar}
-                            alt="Member"></img>
-                        <img style={{ zIndex: 3, position: "relative", left: "-16px" }} class="membercount-image"
-                            src={userList && userList[2].avatar}
-                            alt="Member"></img>
-                        <span style={{ zIndex: 4, position: "relative", left: "-8px" }}>8</span>
-                    </button>
-                </div>
-            </div>
-        )
-    } else if (numMemb == 3) {
-        return (
-            <div class="content-heading-holder">
-                <div class="content-header-left">
-                    <button class="content-header-channelname">
-                        {currChannel && currChannel.name}
-                        <i style={{ fontSize: "12px", marginLeft: "3px" }} class="fas fa-angle-down"></i>
-                    </button>
-                    <div class="content-header-channeltopic">
-                        {currChannel && currChannel.subject}
-                    </div>
-                </div>
-
-                <div class="content-header-right">
-                    <button class="content-header-membercount">
-                        <img style={{ zIndex: 5 }} class="membercount-image"
-                            src={userList && userList[0].avatar}></img>
-                        <img style={{ zIndex: 4, position: "relative", left: "-8px" }} class="membercount-image"
-                            src={userList && userList[1].avatar}></img>
-                        <span style={{ zIndex: 3, position: "relative", left: "-16px" }}>3</span>
-                    </button>
-                </div>
-            </div>
-        )
-    } else {
-        return (
-            <div class="content-heading-holder">
-                <div class="content-header-left">
-                    <button class="content-header-channelname">
-                        {currChannel && currChannel.name}
-                        <i style={{ fontSize: "12px", marginLeft: "3px" }} class="fas fa-angle-down"></i>
-                    </button>
-                    <div class="content-header-channeltopic">
-                        {currChannel && currChannel.subject}
-                    </div>
-                </div>
-
-                <div class="content-header-right">
-                    <button class="content-header-membercount">
-                        <img class="membercount-image"
-                            src={userList && userList[0].avatar}></img>
-                        <span style={{ padding: "0px 5px" }}>2</span>
+                <div className="content-header-right">
+                    <button className="content-header-membercount">
+                        <img className="membercount-image"
+                            src={userList && userList[0].avatar} alt=''></img>
+                        <span style={{ padding: "0px 5px" }}>{numMemb}</span>
                     </button>
                 </div>
             </div>
         )
     }
-}
+
 
 export default ChannelHeader;

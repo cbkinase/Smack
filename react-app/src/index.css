@@ -606,6 +606,108 @@ button:hover {
     color: #494949;
 }
 
+/* %%%%%%%%%%%%% USER INFO / USER EDIT POPUP  %%%%%%%%%%%%%% */
+
+.topright-avatar-btn {
+    background-color: inherit;
+    padding: 0px;
+    padding-top: 2px;
+    border: none;
+    color: #bdbdbd;
+}
+
+.topright-avatar {
+    border-radius: "4px";
+    width: "26px";
+    height: "26px";
+}
+
+.profile-dropdown {
+    position: absolute;
+    transform: translateX(-262px);
+    top: 41px;
+    padding: 0px;
+    margin: 0px;
+    z-index: 30;
+    width: 306px;
+}
+
+.hidden {
+    display: none;
+}
+
+.profile-popup {
+    background-color: #f7f7f7;
+    border: 1px solid #cfcfcf;
+    border-radius: 8px;
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-popup div {
+    padding: 8px 0px;
+    margin: 0px;
+    color: #1d1d1d;
+    margin: 0px 20px;
+}
+
+.logout-btn {
+    border: none;
+    background-color: inherit;
+    font-size: inherit;
+    width: 100%;
+    text-align: left;
+    padding: 12px 0px 12px 0px;
+}
+
+.edit-user-btn {
+    border: none;
+    background-color: inherit;
+    font-size: 12px;
+    padding: 3px 4px 3px 4px;
+    position: absolute;
+    transform: translateY(-25px);
+
+    border-radius: 4px;
+    color: #797979;
+}
+
+.edit-user-btn:hover {
+    background-color: #ebebeb;
+    color: #494949;
+}
+
+.edituser-input-field {
+    font-size: 14px;
+    padding: 4px 6px;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.save-useredit-savebtn {
+    padding: 1px 8px 3px 8px;
+    border: 1px solid #797979;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #494949;
+}
+
+.save-useredit-savebtn:hover {
+    background-color: #ebebeb;
+    color: #232323;
+}
+
+.cancel-edit-user {
+    background-color: #f7f7f7;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.cancel-edit-user:hover {
+    background-color: #ededed;
+    cursor: pointer;
+}
+
 /* %%%%%%%%%%%%% MESSAGE CARD %%%%%%%%%%%%%% */
 
 .message-card {

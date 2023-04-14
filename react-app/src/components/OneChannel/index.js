@@ -35,17 +35,18 @@ function OneChannel() {
 
     const deleteroute = (e) => {
         e.preventDefault();
-        deleted =  dispatch(DeleteChannelThunk(channelId))
-        if (!deleted.errors) {(history.push(`/`))}
+        deleted = dispatch(DeleteChannelThunk(channelId))
+        if (!deleted.errors) { (history.push(`/`)) }
     }
 
     return (
-        <div>
+
+        <div style={{ margin: '20px', padding: '10px', border: '1px solid #cccccc' }}>
             {oneChannel && <h1>{oneChannel.name}</h1>}
             <div>
-                <button style={{ width: "80px", padding: "4px"}} onClick={createroute}><i className="fa fa-newspaper-o"></i> Create</button>
-                <button style={{ width: "80px", padding: "4px"}} onClick={editroute}><i className="fa fa-newspaper-o"></i> Edit</button>
-                <button style={{ width: "80px", padding: "4px"}} onClick={deleteroute}><i className="fa fa-newspaper-o"></i> Delete</button>
+                <button style={{ width: "80px", padding: "4px" }} onClick={createroute}><i className="fa fa-newspaper-o"></i> Create</button>
+                <button style={{ width: "80px", padding: "4px" }} onClick={editroute}><i className="fa fa-newspaper-o"></i> Edit</button>
+                <button style={{ width: "80px", padding: "4px" }} onClick={deleteroute}><i className="fa fa-newspaper-o"></i> Delete</button>
             </div>
         </div>
     )

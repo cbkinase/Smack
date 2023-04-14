@@ -1,4 +1,4 @@
-const initialState = {channels: {all_channels: []}}
+const initialState = {all_channels: {}, user_channels: {}, single_channel: {}}
 
 const ALL_CHANNEL = 'channel/all'
 const USER_CHANNELS = 'channel/user'
@@ -20,6 +20,7 @@ export const OneChannel = (payload) => {
         payload
     }
 }
+
 
 export const AddChannel = (payload) => {
     return {
@@ -115,6 +116,7 @@ export const AddChannelThunk = (value) => async dispatch => {
     if (response.ok) {
         const data = await response.json()
         dispatch(AddChannel(data))
+        return data
     }
 }
 
@@ -122,23 +124,42 @@ const channelReducer = (state = initialState, action) => {
     let newState;
     switch (action.type) {
         case ALL_CHANNEL:
-            newState = { ...state, ...action.payload}
+            newState = { ...state, all_channels : {}};
+            action.payload.all_channels.forEach((chnl) => {
+                newState.all_channels[chnl.id] = chnl
+            });
             return newState;
         case USER_CHANNELS:
-            newState = { ...state, ...action.payload}
+            newState = { ...state, user_channels:{}};
+            action.payload.user_channels.forEach((chnl) => {
+                newState.user_channels[chnl.id] = chnl
+            });
             return newState;
         case GET_ONE_CHANNEL:
-            newState = { ...state, ...action.payload}
+            newState = { ...state, single_channel:{}};
+            action.payload.single_channel.forEach((chnl) => {
+                newState.single_channel[chnl.id] = chnl
+            });
             return newState;
         case ADD_CHANNEL:
-            newState = { ...state, channels: { ...state.channels, "all_channels": [action.payload]}}
+            newState = { ...state}
+
+            newState.all_channels = {...state.all_channels};
+            newState.all_channels[action.payload.id] = action.payload;
+            newState.user_channels = {...state.user_channels};
+            newState.user_channels[action.payload.id] = action.payload;
             return newState;
         case EDIT_CHANNEL:
-            newState = { ...state, channels: { ...state.channels, "all_channels": [action.payload]}}
+            newState = { ...state, single_channel: {} }
+            newState.all_channels[action.payload.id] = action.payload;
+            newState.user_channels[action.payload.id] = action.payload;
+            newState.single_channel[action.payload.id] = action.payload;
             return newState
         case DELETE_CHANNEL:
-            newState = {...state, channels: { ...state.channels, all_channels: [...state.channels.all_channels]}}
-            newState.channels.all_channels = newState.channels.all_channels.filter(channel => channel.id !== action.id)
+            newState = { ...state }
+            delete newState.all_channels[action.id];
+            delete newState.user_channels[action.id];
+            delete newState.single_channel[action.id];
             return newState
         default:
             return state;

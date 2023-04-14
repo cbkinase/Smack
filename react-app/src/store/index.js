@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import reducer from "./session";
 import channelReducer from "./channel";
+import reactionReducer from "./reactions";
 import messageReducer from "./messages";
 
 const rootReducer = combineReducers({

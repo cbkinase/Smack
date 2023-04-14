@@ -19,33 +19,34 @@ const CreateChannel = () => {
         e.preventDefault();
         setErrors([]);
         created = dispatch(AddChannelThunk({ name: name, subject: subject, is_private: Boolean(is_private), is_direct: Boolean(is_direct) }))
-        if (!created.errors) {(history.push(`/`))}
+        if (!created.errors) { (history.push(`/`)) }
     }
 
     return (
-        <div>
+        <div style={{ margin: '20px', padding: '10px', border: '1px solid #cccccc' }}>
+            Channel Creater:<br /><br />
             <ul>
                 {Object.values(errors).map((error, idx) => <li key={idx} className="signuperror">{error}</li>)}
             </ul>
             <span>NAME</span>
-            <label for="name"></label>
+            <label htmlFor="name"></label>
             <input type="text" id="name" placeholder="NAME"
                 value={name} onChange={(e) => setName(e.target.value)}></input>
             <span>SUBJECT</span>
-            <label for="subject"></label>
+            <label htmlFor="subject"></label>
             <input type="text" id="subject" placeholder="SUBJECT"
                 value={subject} onChange={(e) => setSubject(e.target.value)}></input>
             <span>PRIVATE?</span>
-            <label for="isprivate"></label>
+            <label htmlFor="isprivate"></label>
             <select name="private" id="isprivate" value={is_private} onChange={(e) => setIsPrivate(e.target.value)}>
-                <option value="" disabled selected>(select one)</option>
+                <option disabled selected>(select one)</option>
                 <option value={true}>PRIVATE</option>
                 <option value={false}>PUBLIC</option>
             </select>
             <span>DIRECT?</span>
-            <label for="isdirect"></label>
+            <label htmlFor="isdirect"></label>
             <select name="direct" id="isdirect" value={is_direct} onChange={(e) => setIsDirect(e.target.value)}>
-                <option value="" disabled selected>(select one)</option>
+                <option disabled selected>(select one)</option>
                 <option value={true}>PRIVATE</option>
                 <option value={false}>PUBLIC</option>
             </select>

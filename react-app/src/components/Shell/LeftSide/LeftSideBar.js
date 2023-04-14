@@ -59,9 +59,9 @@ function LeftSideLinks() {
                 {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
                 <div style={{ padding: "4px" }}></div>
 
-                {channelList && channelList.map((channel) => {
+                {channelList && channelList.map((channel, idx) => {
                     return (
-                        <div>
+                        <div key={idx}>
                             <button>
                                 <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
                                 <span className="ellipsis-if-long" onClick={() => history.push(`/${channel.id}`)}>{channel.name}</span>

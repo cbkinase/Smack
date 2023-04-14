@@ -52,7 +52,6 @@ Please reference the <a href="https://github.com/brianhitchin/wack/wiki">Wiki</a
    - DATABASE_URL (default: sqlite:///dev.db)
    - SCHEMA (default: flask_schema)
 
-<br />
 
 4. Get into your pipenv, migrate your database, seed your database, and run your Flask app
 

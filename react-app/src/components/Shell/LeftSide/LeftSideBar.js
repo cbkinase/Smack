@@ -2,28 +2,23 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
-import { AllChannelThunk } from '../../../store/channel';
+import { NavLink } from 'react-router-dom';
+
+import * as ChlActions from "../../../store/channel"
 
 function LeftSideLinks() {
 
     const dispatch = useDispatch()
     const history = useHistory()
-    const { channelId } = useParams()
     const sessionUser = useSelector(state => state.session.user);
-    const channels = useSelector(state => state.channels)
-    const [channelList, setChannelList] = useState(null)
+    const userChannels = useSelector((state) => state.channels.user_channels)
+
 
     useEffect(() => {
-        dispatch(AllChannelThunk())
+        dispatch(ChlActions.UserChannelThunk());
     }, [dispatch])
 
-    useEffect(() => {
-        try {
-            setChannelList(channels.all_channels)
-        } catch {
-            setChannelList(null)
-        }
-    }, [channels])
+    const userChannelList = Object.values(userChannels);
 
     return (
 
@@ -34,19 +29,23 @@ function LeftSideLinks() {
 
                 <div className="leftside-channeldirect-holder">
 
-                    <div>
-                        <button>
-                            <span style={{ width: "20px" }}><i className="fa fa-newspaper-o"></i></span>
-                            <span className="ellipsis-if-long">All Channels</span>
-                        </button>
-                    </div>
-
+                    <NavLink exact to={`/channels/explore`}>
+                        <div>
+                            <button>
+                                <span style={{ width: "20px" }}><i className="fa fa-newspaper-o"></i></span>
+                                <span className="ellipsis-if-long">All Channels</span>
+                            </button>
+                        </div>
+                    </NavLink>
+                    
+                    <NavLink exact to={`/channels/direct`}>
                     <div>
                         <button>
                             <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
                             <span className="ellipsis-if-long">Direct Messages</span>
                         </button>
                     </div>
+                    </NavLink>
 
                 </div>
 
@@ -59,14 +58,18 @@ function LeftSideLinks() {
                 {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
                 <div style={{ padding: "4px" }}></div>
 
-                {channelList && channelList.map((channel, idx) => {
+                {userChannelList && userChannelList.map((channel, idx) => {
                     return (
-                        <div key={idx}>
-                            <button>
-                                <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
-                                <span className="ellipsis-if-long" onClick={() => history.push(`/${channel.id}`)}>{channel.name}</span>
-                            </button>
-                        </div>
+                        <NavLink exact to={`/channels/${channel.id}`}>
+                            <div key={idx}>
+
+                                <button>
+                                    <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
+                                    <span className="ellipsis-if-long" >{channel.name}</span>
+                                </button>
+                            </div>
+                        </NavLink>
+                        
                     )
                 })}
 

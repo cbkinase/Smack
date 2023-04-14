@@ -116,6 +116,7 @@ export const AddChannelThunk = (value) => async dispatch => {
     if (response.ok) {
         const data = await response.json()
         dispatch(AddChannel(data))
+        return data
     }
 }
 
@@ -142,9 +143,12 @@ const channelReducer = (state = initialState, action) => {
             return newState;
         case ADD_CHANNEL:
             newState = { ...state, single_channel: {}}
-            newState.all_channels[action.payload.id] = action.payload;
-            newState.user_channels[action.payload.id] = action.payload;
-            newState.single_channel[action.payload.id] = action.payload;
+
+            newState.all_channels = {...state.all_channels};
+            newState.all_channels[action.payload.id] = action.payload.single_channel;
+            newState.user_channels = {...state.user_channels};
+            newState.user_channels[action.payload.id] = action.payload.single_channel;
+            newState.single_channel[action.payload.id] = action.payload.single_channel;
             return newState;
         case EDIT_CHANNEL:
             newState = { ...state, single_channel: {} }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { io } from "socket.io-client";
 import {
@@ -12,6 +12,8 @@ import {
 import { OneChannelThunk } from "../../../../store/channel";
 import { useParams } from "react-router-dom";
 import Editor from "../../../ChatTest/Editor";
+import ReactionModal from "../../../ReactionModal";
+import OpenModalButton from "../../../OpenModalButton";
 let socket;
 let updatedMessage;
 
@@ -24,6 +26,28 @@ const Messages = () => {
     const dispatch = useDispatch();
     const allMessages = useSelector((state) => state.messages.allMessages);
     const { channelId } = useParams();
+    const [showMenu, setShowMenu] = useState(false);
+    const ulRef = useRef();
+
+    const openMenu = () => {
+        if (showMenu) return;
+        setShowMenu(true);
+    };
+
+    useEffect(() => {
+        if (!showMenu) return;
+
+        const closeMenu = (e) => {
+            if (!ulRef.current.contains(e.target)) {
+                setShowMenu(false);
+            }
+        };
+
+        document.addEventListener("click", closeMenu);
+
+        return () => document.removeEventListener("click", closeMenu);
+    }, [showMenu]);
+
     const currentChannel = useSelector(
         (state) => state.channels.single_channel
     );
@@ -171,7 +195,7 @@ const Messages = () => {
             reaction: reaction.reaction,
         });
     }
-    function handleAddReaction(e, msg, rxn, message) {
+    function handleAddReaction(e, msg, rxn) {
         e.preventDefault();
         dispatch(thunkCreateReaction(msg.id, { reaction: rxn }));
         socket.emit("addReaction", {
@@ -325,7 +349,17 @@ const Messages = () => {
                                 }
                                 className="message-adjust-reaction"
                             >
-                                <i className="far fa-smile"></i>
+                                <OpenModalButton
+                                    modalComponent={
+                                        <ReactionModal
+                                            socket={socket}
+                                            msg={message}
+                                            user={user}
+                                            dispatch={dispatch}
+                                        />
+                                    }
+                                    className="far fa-smile"
+                                />
                             </span>
                             {/* <span
                                 onMouseOver={(e) =>

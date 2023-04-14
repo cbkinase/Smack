@@ -68,17 +68,18 @@ def create_channel():
 @channel_routes.route('/<channel_id>', methods=['DELETE'])
 @login_required
 def delete_channel(channel_id):
-    user_id = user_id_generator()
-    channel_exist = Channel.query.get(channel_id)
-    if not channel_exist:
+    channel = Channel.query.get(channel_id)
+    user = User.query.get(current_user.id)
+    if not channel:
         error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
-    this_user = User.query.get(user_id)
-    if user_id not in [channel.id for channel in channel_exist.users]:
-        error_obj = {"errors": "Current user does not belong to the specified channel."}
+    
+    if channel.owner_id != current_user.id:
+        error_obj = {"errors": "User does not own this channel"}
         return error_obj, 403
-    deleted_channel = Channel.query.get(channel_id)
-    db.session.delete(deleted_channel)
+    
+
+    db.session.delete(channel)
     db.session.commit()
     resp_obj = {"message": "Channel successfully deleted."}
     return resp_obj, 200

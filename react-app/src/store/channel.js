@@ -150,11 +150,18 @@ const channelReducer = (state = initialState, action) => {
             newState.user_channels[action.payload.id] = action.payload;
             return newState;
         case EDIT_CHANNEL:
-            newState = { ...state, single_channel: {} }
+            newState = { ...state}
+            newState.all_channels = { ...state.all_channels };
             newState.all_channels[action.payload.id] = action.payload;
+            newState.user_channels = { ...state.user_channels };
             newState.user_channels[action.payload.id] = action.payload;
-            newState.single_channel[action.payload.id] = action.payload;
-            return newState
+            newState.single_channel = {...state.single_channel};
+
+            newState.single_channel[action.payload.id].name = action.payload.name;
+            newState.single_channel[action.payload.id].subject = action.payload.subject;
+            newState.single_channel[action.payload.id].is_private = action.payload.is_private;
+            newState.single_channel[action.payload.id].is_direct = action.payload.name;
+            return newState;
         case DELETE_CHANNEL:
             newState = { ...state }
             delete newState.all_channels[action.id];

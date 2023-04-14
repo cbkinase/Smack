@@ -164,10 +164,13 @@ const channelReducer = (state = initialState, action) => {
             return newState;
         case DELETE_CHANNEL:
             newState = { ...state }
+            newState.all_channels = { ...state.all_channels };
             delete newState.all_channels[action.id];
+            newState.user_channels = { ...state.user_channels };
             delete newState.user_channels[action.id];
+            newState.single_channel = { ...state.single_channel };
             delete newState.single_channel[action.id];
-            return newState
+            return newState;
         default:
             return state;
     }

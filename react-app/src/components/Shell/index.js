@@ -7,6 +7,7 @@ import RightSide from "./RightSide/RightSide";
 import { Route, Switch } from "react-router-dom";
 import CynChannel from "./ChannelTestCyn/ChannelTest";
 import CreateChannel from "./Content/Channels/ChannelCreator";
+import AllChannels from "./Content/Channels/AllChannels";
 
 function Shell({ isLoaded }) {
     return (
@@ -15,7 +16,7 @@ function Shell({ isLoaded }) {
             <LeftSide />
             <Switch>
                 <Route exact path="/channels/explore">
-                    <h1>All Channels here </h1>
+                    <AllChannels />
                 </Route>
                 <Route exact path="/channels/new">
                     <CreateChannel />

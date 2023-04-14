@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { io } from "socket.io-client";
 import {
@@ -11,10 +11,12 @@ import {
 } from "../../store/messages";
 import { OneChannelThunk } from "../../store/channel";
 import { useParams } from "react-router-dom";
+import Editor from "./Editor";
 let socket;
 
 const Chat = () => {
     const [chatInput, setChatInput] = useState("");
+    const [editMessageInput, setEditMessageInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);
     const user = useSelector((state) => state.session.user);
@@ -80,6 +82,10 @@ const Chat = () => {
         setChatInput(e.target.value);
     };
 
+    const updateEditMessageInput = (e) => {
+        setEditMessageInput(e.target.value);
+    };
+
     const sendChat = async (e) => {
         e.preventDefault();
 
@@ -97,11 +103,46 @@ const Chat = () => {
         dispatch(destroyMessage(msg.id));
         socket.emit("delete", { user: user.username, msg: msg.content });
     };
+
+    const editMode = (e, msg) => {
+        let content = document.getElementById(`msg-content-${msg.id}`);
+        /*
+        <form
+                        onSubmit={e => handleEdit(e, msg)}
+                    >
+                        <input
+                            value={editMessageInput}
+                            onChange={updateEditMessageInput}
+                            placeholder={`${msg.content}`}
+                        />
+                        <button type="submit">
+                            Send
+                        </button>
+                    </form>
+        */
+        let editForm = document.createElement("form");
+        editForm.onsubmit = (e) => handleEdit(e, msg);
+
+        let editInputBox = document.createElement("input");
+        editInputBox.value = editMessageInput;
+        editInputBox.onchange = updateEditMessageInput;
+        editInputBox.value = msg.content;
+
+        let editInputSubmit = document.createElement("button");
+        editInputSubmit.type = "submit";
+
+        editInputSubmit.hidden = true;
+
+        editForm.appendChild(editInputBox);
+        content.appendChild(editForm);
+    };
+
     const handleEdit = (e, msg) => {
+        e.preventDefault();
         dispatch(
             editMessage(
                 {
-                    content: "New message content - test",
+                    content: editMessageInput,
                     user_id: user.id,
                     channel_id: channelId,
                     is_pinned: false,
@@ -116,6 +157,7 @@ const Chat = () => {
             msg_id: msg.id,
         });
     };
+
     function handleDeleteReaction(e, reaction) {
         e.preventDefault();
         dispatch(thunkDeleteReaction(reaction));
@@ -202,35 +244,17 @@ const Chat = () => {
         ));
     }
 
-    function toggleRightPane(state) {
-        if (state === "close") {
-            document.getElementById("grid-container").className =
-                "grid-container-hiderightside";
-            document.getElementById("grid-rightside-heading").className =
-                "grid-rightside-heading-hide";
-            document.getElementById("grid-rightside").className =
-                "grid-rightside-hide";
-        } else {
-            document.getElementById("grid-container").className =
-                "grid-container";
-            document.getElementById("grid-rightside-heading").className =
-                "grid-rightside-heading";
-            document.getElementById("grid-rightside").className =
-                "grid-rightside";
-        }
-        // toggleLeftPane();
-    }
-
     function changeAdjustText(text, id) {
         document.getElementById(`message-adjust-text-${id}`).textContent = text;
     }
 
-    function highlightMessage(id) {
-        document.getElementById(`message-${id}`).style.backgroundColor =
-            "#fdf8ea";
-        document.getElementById("pinned-message-holder").style.display =
-            "block";
-    }
+    const messageFunctions = {
+        sendChat,
+        handleEdit,
+        chatInput,
+        updateChatInput,
+        currentChannel,
+    };
 
     return user && currentChannel && allMessages ? (
         <>
@@ -240,10 +264,21 @@ const Chat = () => {
                     id={`message-${message.id}`}
                     className="message-card"
                 >
+                    <div></div>
                     <div>
                         <img
-                            src={message.User?.avatar}
-                            alt={`${message.User?.first_name} ${message.User?.last_name}`}
+                            src={
+                                message.User ? message.User.avatar : user.avatar
+                            }
+                            alt={`${
+                                message.User
+                                    ? message.User.first_name
+                                    : user.first_name
+                            } ${
+                                message.User
+                                    ? message.User.last_name
+                                    : user.last_name
+                            }`}
                             style={{
                                 borderRadius: "5px",
                                 width: "36px",
@@ -257,8 +292,12 @@ const Chat = () => {
                                 className="message-card-name"
                                 onClick={(e) => alert("Feature coming soon!")}
                             >
-                                {message.User?.first_name}{" "}
-                                {message.User?.last_name}
+                                {message.User
+                                    ? message.User.first_name
+                                    : user.first_name}{" "}
+                                {message.User
+                                    ? message.User.last_name
+                                    : user.last_name}
                             </span>
                             <span className="message-card-time">
                                 {new Date(
@@ -297,51 +336,49 @@ const Chat = () => {
                             >
                                 <i className="far fa-dot-circle"></i>
                             </span>
+                            {user.id === message.user_id && (
+                                <span
+                                    onClick={(e) => editMode(e, message)}
+                                    onMouseOver={(e) =>
+                                        changeAdjustText(
+                                            "Edit Message",
+                                            message.id
+                                        )
+                                    }
+                                    onMouseOut={(e) =>
+                                        changeAdjustText("", message.id)
+                                    }
+                                    className="message-adjust-edit"
+                                >
+                                    <i className="far fa-edit"></i>
+                                </span>
+                            )}
+                            {user.id === message.user_id && (
+                                <span
+                                    onClick={(e) => handleDelete(e, message)}
+                                    onMouseOver={(e) =>
+                                        changeAdjustText(
+                                            "Delete Message",
+                                            message.id
+                                        )
+                                    }
+                                    onMouseOut={(e) =>
+                                        changeAdjustText("", message.id)
+                                    }
+                                    className="message-adjust-delete"
+                                >
+                                    <i className="far fa-trash-alt"></i>
+                                </span>
+                            )}
                         </div>
                     </div>
-                    <div>{message.content}</div>
+                    <div id={`msg-content-${message.id}`}>
+                        {message.content}
+                    </div>
                     {storeConverter(message, user)}
                 </div>
             ))}
-            <div className="editor">
-                <div
-                    style={{
-                        backgroundColor: "#f2f2f2",
-                        padding: "15px",
-                        borderTop: "2px solid #dddddd",
-                        borderLeft: "2px solid #dddddd",
-                        borderRight: "2px solid #dddddd",
-                        borderTopLeftRadius: "12px",
-                        borderTopRightRadius: "12px",
-                    }}
-                >
-                    Bold | Italic | Strikethrough | etc.
-                </div>
-                <div>
-                    <form onSubmit={sendChat}>
-                        <input
-                            style={{
-                                backgroundColor: "#FFFFFF",
-                                color: "#00000",
-                                height: "60px",
-                                padding: "15px",
-                                borderBottom: "2px solid #dddddd",
-                                borderLeft: "2px solid #dddddd",
-                                borderRight: "2px solid #dddddd",
-                                borderBottomLeftRadius: "12px",
-                                borderBottomRightRadius: "12px",
-                                width: "100%",
-                            }}
-                            value={chatInput}
-                            onChange={updateChatInput}
-                            placeholder={`Message # ${currentChannel.name}`}
-                        />
-                        <button hidden type="submit">
-                            Send
-                        </button>
-                    </form>
-                </div>
-            </div>
+            <Editor functions={messageFunctions} creating={true} />
         </>
     ) : null;
 };

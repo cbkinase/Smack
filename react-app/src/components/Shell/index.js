@@ -8,7 +8,7 @@ import RightSide from './RightSide/RightSide';
 function Shell({ isLoaded }) {
 
     return (
-        <div id="grid-container" class="grid-container-hiderightside">
+        <div id="grid-container" className="grid-container-hiderightside">
 
             <Header isLoaded={isLoaded} />
             <LeftSide />
@@ -16,7 +16,7 @@ function Shell({ isLoaded }) {
             <RightSide />
 
         </div>
-        
+
     );
 }
 

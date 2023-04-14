@@ -64,8 +64,11 @@ const Messages = () => {
         // open socket connection
         // create websocket
         socket = io();
-
-        socket.emit("join", { channel_id: channelId, username: user.username });
+        if (socket)
+            socket.emit("join", {
+                channel_id: channelId,
+                username: user.username,
+            });
 
         socket.on("chat", (chat) => {
             setMessages((messages) => [...messages, chat]);
@@ -122,7 +125,8 @@ const Messages = () => {
             content: chatInput,
         };
         await dispatch(createChannelMessage(newMessage));
-        socket.emit("chat", { user: user.username, msg: chatInput });
+        if (socket)
+            socket.emit("chat", { user: user.username, msg: chatInput });
         setChatInput("");
     };
 

@@ -39,12 +39,21 @@ function LeftSideLinks() {
                     </NavLink>
                     
                     <NavLink exact to={`/channels/direct`}>
-                    <div>
-                        <button>
-                            <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
-                            <span className="ellipsis-if-long">Direct Messages</span>
-                        </button>
-                    </div>
+                        <div>
+                            <button>
+                                <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
+                                <span className="ellipsis-if-long">Direct Messages</span>
+                            </button>
+                        </div>
+                    </NavLink>
+
+                    <NavLink exact to={`/channels/new`}>
+                        <div>
+                            <button>
+                                <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>
+                                <span className="ellipsis-if-long">Create New Channel</span>
+                            </button>
+                        </div>
                     </NavLink>
 
                 </div>

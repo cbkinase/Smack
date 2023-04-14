@@ -27,6 +27,10 @@ function Shell({ isLoaded }) {
                 <Route path="/channels/:channelId">
                     <Content />
                 </Route>
+
+                {/* <Route path = "/chl-test">
+                    <CynChannel />
+                </Route> */}
             </Switch>
 
             <RightSide />

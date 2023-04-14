@@ -42,7 +42,11 @@ export default function Editor({ functions, creating }) {
                                 }}
                                 value={chatInput}
                                 onChange={updateChatInput}
-                                placeholder={`Message # ${currentChannel[channelId]?.name}`}
+                                placeholder={
+                                    currentChannel[channelId]
+                                        ? `Message # ${currentChannel[channelId].name}`
+                                        : " "
+                                }
                             />
                             <button hidden type="submit">
                                 Send

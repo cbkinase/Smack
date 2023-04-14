@@ -65,6 +65,8 @@ const Messages = () => {
         // create websocket
         socket = io();
 
+        socket.emit("join", { channel_id: channelId, username: user.username });
+
         socket.on("chat", (chat) => {
             setMessages((messages) => [...messages, chat]);
         });

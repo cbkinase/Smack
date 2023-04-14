@@ -9,7 +9,8 @@ import {
     thunkDeleteReaction,
     thunkCreateReaction,
 } from "../../store/messages";
-import { useParams } from "react-router-dom";
+import { OneChannelThunk } from "../../store/channel";
+import { useParams, useHistory } from "react-router-dom";
 let socket;
 
 // function emojiRenderer(counts, msg) {
@@ -35,6 +36,14 @@ const Chat = () => {
     const dispatch = useDispatch();
     const allMessages = useSelector((state) => state.messages.allMessages);
     const { channelId } = useParams();
+    const currentChannel = useSelector(
+        (state) => state.channels.single_channel
+    );
+    const history = useHistory();
+
+    useEffect(() => {
+        dispatch(OneChannelThunk(channelId));
+    }, []);
 
     useEffect(() => {
         dispatch(getChannelMessages(channelId));
@@ -97,6 +106,7 @@ const Chat = () => {
         };
         await dispatch(createChannelMessage(newMessage));
         setChatInput("");
+        history.push(`/chat_test/${channelId}`);
     };
 
     const handleDelete = (e, msg) => {
@@ -177,65 +187,178 @@ const Chat = () => {
 
         return countEntries.map((el) => (
             <>
-                {hasUserReacted(msg, user, el[0]) ? (
-                    <button
-                        onClick={(e) =>
-                            handleDeleteReaction(
-                                e,
-                                hasUserReacted(msg, user, el[0]),
-                                msg.id
-                            )
-                        }
-                    >
-                        {el[0]} {counts[el[0]].frequency}
-                    </button>
-                ) : (
-                    <button onClick={(e) => handleAddReaction(e, msg, el[0])}>
-                        {el[0]} {counts[el[0]].frequency}
-                    </button>
-                )}
+                <div className="message-card-footer">
+                    {hasUserReacted(msg, user, el[0]) ? (
+                        <button
+                            className="message-card-reaction"
+                            onClick={(e) =>
+                                handleDeleteReaction(
+                                    e,
+                                    hasUserReacted(msg, user, el[0]),
+                                    msg.id
+                                )
+                            }
+                        >
+                            {el[0]} {counts[el[0]].frequency}
+                        </button>
+                    ) : (
+                        <button
+                            className="message-card-reaction"
+                            onClick={(e) => handleAddReaction(e, msg, el[0])}
+                        >
+                            {el[0]}{" "}
+                            <span className="message-card-reaction-count">
+                                {" "}
+                                {counts[el[0]].frequency}
+                            </span>
+                        </button>
+                    )}
+                </div>
             </>
         ));
     }
 
-    return (
-        user && (
-            <div>
-                <div>
-                    {Object.values(allMessages).map((message, ind) => (
-                        <div
-                            style={{
-                                padding: "10px 10px",
-                                display: "flex",
-                                justifyContent: "space-even",
-                            }}
-                        >
-                            <div key={ind}>
-                                {`${message.User?.username} at ${message.updated_at}: ${message.content}`}
-                            </div>
-                            {storeConverter(message, user)}
-                            {user.id === message.user_id && (
-                                <button
-                                    onClick={(e) => handleDelete(e, message)}
-                                >
-                                    Delete
-                                </button>
-                            )}
-                            {user.id === message.user_id && (
-                                <button onClick={(e) => handleEdit(e, message)}>
-                                    Edit
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-                <form onSubmit={sendChat}>
-                    <input value={chatInput} onChange={updateChatInput} />
-                    <button type="submit">Send</button>
-                </form>
-            </div>
-        )
-    );
-};
+    function toggleRightPane(state) {
+        if (state === "close") {
+            document.getElementById("grid-container").className =
+                "grid-container-hiderightside";
+            document.getElementById("grid-rightside-heading").className =
+                "grid-rightside-heading-hide";
+            document.getElementById("grid-rightside").className =
+                "grid-rightside-hide";
+        } else {
+            document.getElementById("grid-container").className =
+                "grid-container";
+            document.getElementById("grid-rightside-heading").className =
+                "grid-rightside-heading";
+            document.getElementById("grid-rightside").className =
+                "grid-rightside";
+        }
+        // toggleLeftPane();
+    }
 
+    function changeAdjustText(text, id) {
+        document.getElementById(`message-adjust-text-${id}`).textContent = text;
+    }
+
+    function highlightMessage(id) {
+        document.getElementById(`message-${id}`).style.backgroundColor =
+            "#fdf8ea";
+        document.getElementById("pinned-message-holder").style.display =
+            "block";
+    }
+
+    return user && currentChannel && allMessages ? (
+        <>
+            {Object.values(allMessages).map((message, ind) => (
+                <div
+                    key={message.id}
+                    id={`message-${message.id}`}
+                    className="message-card"
+                >
+                    <div>
+                        <img
+                            src={message.User?.avatar}
+                            alt={`${message.User?.first_name} ${message.User?.last_name}`}
+                            style={{
+                                borderRadius: "5px",
+                                width: "36px",
+                                height: "36px",
+                            }}
+                        ></img>
+                    </div>
+                    <div className="message-card-content">
+                        <div className="message-card-header">
+                            <span
+                                className="message-card-name"
+                                onClick={(e) => alert("Feature coming soon!")}
+                            >
+                                {message.User?.first_name}{" "}
+                                {message.User?.last_name}
+                            </span>
+                            <span className="message-card-time">
+                                {new Date(
+                                    message.updated_at
+                                ).toLocaleTimeString([], {
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                })}
+                            </span>
+                        </div>
+                        <div className="message-card-makechangebox">
+                            <span
+                                id={`message-adjust-text-${message.id}`}
+                                className="message-adjust-text"
+                            ></span>
+                            <span
+                                onMouseOver={(e) =>
+                                    changeAdjustText("Add Reaction", message.id)
+                                }
+                                onMouseOut={(e) =>
+                                    changeAdjustText("", message.id)
+                                }
+                                className="message-adjust-reaction"
+                            >
+                                <i className="far fa-smile"></i>
+                            </span>
+                            <span
+                                onMouseOver={(e) =>
+                                    changeAdjustText("Pin Message", message.id)
+                                }
+                                onMouseOut={(e) =>
+                                    changeAdjustText("", message.id)
+                                }
+                                className="message-adjust-pin"
+                                onClick={(e) => alert("Feature coming soon!")}
+                            >
+                                <i className="far fa-dot-circle"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div>{message.content}</div>
+                    {storeConverter(message, user)}
+                </div>
+            ))}
+            <div className="editor">
+                <div
+                    style={{
+                        backgroundColor: "#f2f2f2",
+                        padding: "15px",
+                        borderTop: "2px solid #dddddd",
+                        borderLeft: "2px solid #dddddd",
+                        borderRight: "2px solid #dddddd",
+                        borderTopLeftRadius: "12px",
+                        borderTopRightRadius: "12px",
+                    }}
+                >
+                    Bold | Italic | Strikethrough | etc.
+                </div>
+                <div>
+                    <form onSubmit={sendChat}>
+                        <input
+                            style={{
+                                backgroundColor: "#FFFFFF",
+                                color: "#00000",
+                                height: "60px",
+                                padding: "15px",
+                                borderBottom: "2px solid #dddddd",
+                                borderLeft: "2px solid #dddddd",
+                                borderRight: "2px solid #dddddd",
+                                borderBottomLeftRadius: "12px",
+                                borderBottomRightRadius: "12px",
+                                width: "100%",
+                            }}
+                            value={chatInput}
+                            onChange={updateChatInput}
+                            placeholder={`Message # ${currentChannel.name}`}
+                        />
+                        <button hidden type="submit">
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </>
+    ) : null;
+};
 export default Chat;

@@ -14,9 +14,7 @@ export default function Editor({ functions, creating }) {
                         borderTopRightRadius: "12px",
                     }}
                 >
-                    <span onClick={(e) => alert("Feature coming soon!")}>
-                        Bold | Italic | Strikethrough | etc.
-                    </span>
+                    <span>Bold | Italic | Strikethrough | etc.</span>
                 </div>
                 <div>
                     <form

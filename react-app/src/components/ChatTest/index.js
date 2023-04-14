@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { io } from "socket.io-client";
 import {
@@ -13,10 +13,11 @@ import { OneChannelThunk } from "../../store/channel";
 import { useParams } from "react-router-dom";
 import Editor from "./Editor";
 let socket;
+let updatedMessage;
 
 const Chat = () => {
+    let editCount = 0;
     const [chatInput, setChatInput] = useState("");
-    const [editMessageInput, setEditMessageInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);
     const user = useSelector((state) => state.session.user);
@@ -83,7 +84,7 @@ const Chat = () => {
     };
 
     const updateEditMessageInput = (e) => {
-        setEditMessageInput(e.target.value);
+        updatedMessage = e.target.value;
     };
 
     const sendChat = async (e) => {
@@ -106,43 +107,39 @@ const Chat = () => {
 
     const editMode = (e, msg) => {
         let content = document.getElementById(`msg-content-${msg.id}`);
-        /*
-        <form
-                        onSubmit={e => handleEdit(e, msg)}
-                    >
-                        <input
-                            value={editMessageInput}
-                            onChange={updateEditMessageInput}
-                            placeholder={`${msg.content}`}
-                        />
-                        <button type="submit">
-                            Send
-                        </button>
-                    </form>
-        */
+
         let editForm = document.createElement("form");
+        editForm.id = "edit-msg-form";
         editForm.onsubmit = (e) => handleEdit(e, msg);
 
         let editInputBox = document.createElement("input");
-        editInputBox.value = editMessageInput;
         editInputBox.onchange = updateEditMessageInput;
+
         editInputBox.value = msg.content;
 
         let editInputSubmit = document.createElement("button");
         editInputSubmit.type = "submit";
+        editInputSubmit.textContent = "Edit Message";
 
-        editInputSubmit.hidden = true;
+        let cancelEditInput = document.createElement("button");
+        cancelEditInput.textContent = "Cancel";
+        cancelEditInput.onclick = (e) => {
+            document.getElementById("edit-msg-form").remove();
+            editCount--;
+        };
 
         editForm.appendChild(editInputBox);
-        content.appendChild(editForm);
+        editForm.appendChild(editInputSubmit);
+        editForm.appendChild(cancelEditInput);
+        if (!editCount) content.appendChild(editForm);
     };
 
-    const handleEdit = (e, msg) => {
+    const handleEdit = async (e, msg) => {
         e.preventDefault();
-        dispatch(
+        await dispatch(
             editMessage(
                 {
-                    content: editMessageInput,
+                    content: updatedMessage,
                     user_id: user.id,
                     channel_id: channelId,
                     is_pinned: false,
@@ -153,7 +150,7 @@ const Chat = () => {
 
         socket.emit("edit", {
             user: user.username,
-            msg: msg.content,
+            msg: updatedMessage,
             msg_id: msg.id,
         });
     };
@@ -205,8 +202,6 @@ const Chat = () => {
 
             counts[num[0]].frequency++;
             counts[num[0]].reaction_ids.push(num[1]);
-
-            // counts[num[0]] = counts[num[0]] ? counts[num[0]] + 1 : 1;
         }
 
         let countEntries = Object.entries(counts);
@@ -324,7 +319,7 @@ const Chat = () => {
                             >
                                 <i className="far fa-smile"></i>
                             </span>
-                            <span
+                            {/* <span
                                 onMouseOver={(e) =>
                                     changeAdjustText("Pin Message", message.id)
                                 }
@@ -335,10 +330,13 @@ const Chat = () => {
                                 onClick={(e) => alert("Feature coming soon!")}
                             >
                                 <i className="far fa-dot-circle"></i>
-                            </span>
+                            </span> */}
                             {user.id === message.user_id && (
                                 <span
-                                    onClick={(e) => editMode(e, message)}
+                                    onClick={(e) => {
+                                        editMode(e, message);
+                                        editCount++;
+                                    }}
                                     onMouseOver={(e) =>
                                         changeAdjustText(
                                             "Edit Message",

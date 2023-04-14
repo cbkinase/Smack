@@ -1,7 +1,7 @@
 <h1 style="text-align: center;"> Welcome to Smack!</h1>
 
 <p align="center">
-   <img src="smack_logo.png" alt='Welcome!'/>
+   ![smacklogo](https://user-images.githubusercontent.com/63670745/232160890-e8312f62-b8a2-47c3-9be1-c45e0c73f34e.png)
 </p>
 
 <p align="center">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { EditChannelThunk } from '../../../../store/channel'
+import { DeleteChannelThunk } from '../../../../store/channel'
 
 const EditChannel2 = () => {
 
@@ -20,9 +21,15 @@ const EditChannel2 = () => {
         e.preventDefault();
         setErrors([]);
         edited = dispatch(EditChannelThunk(channelId, { name: name, subject: subject, is_private: Boolean(is_private), is_direct: Boolean(is_direct) }))
-        if (!edited.errors) { (history.push(`/channels/channelId`)) }
+        if (!edited.errors) { (history.push(`/channels/${channelId}`)) }
     }
 
+
+    const handleDelete = (e) => {
+        e.preventDefault();
+        dispatch(DeleteChannelThunk(channelId));
+        return history.push(`/channels/explore`)
+    }
     return (
         <div style={{ margin: '20px', padding: '10px', border: '1px solid #cccccc' }}>
             Channel Editor:<br /><br />
@@ -52,6 +59,8 @@ const EditChannel2 = () => {
                 <option value={false}>PUBLIC</option>
             </select> */}
             <button onClick={handleSubmit}>Edit channel</button>
+
+            <button onClick={handleDelete}>Delete channel</button>
         </div>
     )
 

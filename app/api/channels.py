@@ -55,7 +55,6 @@ def create_channel():
         new_channel.users.append(this_user)
         db.session.commit()
         new_channel_data = new_channel.to_dict()
-        new_channel_data['Members'] = {user.id:user.to_dict() for user in new_channel.users}
         return new_channel_data, 201
 
 

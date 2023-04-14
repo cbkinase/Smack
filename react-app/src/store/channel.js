@@ -142,13 +142,12 @@ const channelReducer = (state = initialState, action) => {
             });
             return newState;
         case ADD_CHANNEL:
-            newState = { ...state, single_channel: {}}
+            newState = { ...state}
 
             newState.all_channels = {...state.all_channels};
-            newState.all_channels[action.payload.id] = action.payload.single_channel;
+            newState.all_channels[action.payload.id] = action.payload;
             newState.user_channels = {...state.user_channels};
-            newState.user_channels[action.payload.id] = action.payload.single_channel;
-            newState.single_channel[action.payload.id] = action.payload.single_channel;
+            newState.user_channels[action.payload.id] = action.payload;
             return newState;
         case EDIT_CHANNEL:
             newState = { ...state, single_channel: {} }

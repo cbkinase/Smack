@@ -116,6 +116,14 @@ const Messages = () => {
         editInputBox.onchange = updateEditMessageInput;
 
         editInputBox.value = msg.content;
+        editInputBox.style.backgroundColor = "#f2f2f2";
+        editInputBox.style.padding = "15px";
+        editInputBox.style.borderTop = "2px solid #dddddd";
+        editInputBox.style.borderLeft = "2px solid #dddddd";
+        editInputBox.style.borderRight = "2px solid #dddddd";
+        editInputBox.style.borderTopLeftRadius = "12px";
+        editInputBox.style.borderTopRightRadius = "12px";
+        editInputBox.style.height = "60px";
 
         let editInputSubmit = document.createElement("button");
         editInputSubmit.type = "submit";

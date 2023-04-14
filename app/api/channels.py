@@ -10,41 +10,32 @@ def user_id_generator():
 @channel_routes.route('/all')
 @login_required
 def all_channels():
-    user_id = user_id_generator()
-    allchannels = Channel.query.all()
-    curr_user = User.query.get(user_id)
-    resp_obj = {"all_channels": []}
-    for channel in allchannels:
-        if channel in curr_user.channel or not channel.is_private:
-            resp_obj["all_channels"].append(channel.to_dict())
-    return resp_obj, 200
+    all_channels = Channel.query.all()
+    return {"all_channels": [channel.to_dict() for channel in all_channels]}, 200
 
+# GET all the channels that the user is in
 @channel_routes.route('/user')
 @login_required
 def user_channels():
-    user_ids = user_id_generator()
+    user = User.query.get(current_user.id)
+    user_channels = user.channel
+    print(user_channels)
 
-    user = User.query.get(user_ids)
-    channels_id = [channel.id for channel in user.channel]
+    return {"user_channels":[channel.to_dict() for channel in user_channels]}, 200
 
-    resp_obj = {"user_channels": [], "members": []}
-    for channel in channels_id:
-        channel_info = Channel.query.get(channel)
-        resp_obj["user_channels"].append(channel_info.to_dict())
-        resp_obj["members"].append([user.to_dict() for user in channel_info.users])
-    return resp_obj, 200
-
+# GET single channel
 @channel_routes.route('/<channel_id>')
 @login_required
 def one_channel(channel_id):
-    user_id = user_id_generator()
-    channel_exist = Channel.query.get(channel_id)
-    if not channel_exist:
+    channel = Channel.query.get(channel_id)
+    if not channel:
         error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
-    this_user = User.query.get(user_id)
-    one_channel = Channel.query.get(channel_id)
-    return {"single_channel": one_channel.to_dict()}
+    
+    channel_data = channel.to_dict()
+    channel_data['Members'] = {user.id:user.to_dict() for user in channel.users}
+    return {"single_channel": [channel_data]}, 200
+
 
 
 @channel_routes.route('/', methods=['POST'])
@@ -119,7 +110,6 @@ def edit_channel(channel_id):
 
 
 ### Members-related Routes
-
 @channel_routes.route("/<int:channel_id>/users", methods=["POST"])
 @login_required
 def add_channel_member(channel_id):
@@ -136,7 +126,8 @@ def add_channel_member(channel_id):
     except:
         return {"message": "Something went wrong..."}, 404
 
-@channel_routes.route("/<int:channel_id>/users")
+# get all members of channel
+@channel_routes.route("/<int:channel_id>/members")
 @login_required
 def get_all_channel_members(channel_id):
     channel = Channel.query.get(channel_id)
@@ -147,7 +138,7 @@ def get_all_channel_members(channel_id):
     return {"Users": [user.to_dict() for user in channel.users]}
 
 
-@channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["DELETE"])
+@channel_routes.route("/<int:channel_id>/members/<int:user_id>", methods=["DELETE"])
 @login_required
 def delete_channel_member(channel_id, user_id):
     # Need to check to make sure the deleter is the channel owner

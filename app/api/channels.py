@@ -31,7 +31,7 @@ def one_channel(channel_id):
     if not channel:
         error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
-    
+
     channel_data = channel.to_dict()
     channel_data['Members'] = {user.id:user.to_dict() for user in channel.users}
     return {"single_channel": [channel_data]}, 200
@@ -73,11 +73,11 @@ def delete_channel(channel_id):
     if not channel:
         error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
-    
+
     if channel.owner_id != current_user.id:
         error_obj = {"errors": "User does not own this channel"}
         return error_obj, 403
-    
+
 
     db.session.delete(channel)
     db.session.commit()
@@ -168,8 +168,8 @@ def delete_channel_member(channel_id, user_id):
 def get_all_messages_for_channel(channel_id):
     # We should check to ensure the conversation is accessible to the user making the request
     # I.e. -- the channel is not private, or the user is a member of that private channel
-    channel_messages = Message.query.filter(Message.channel_id.is_(
-        channel_id)).all()
+    channel_messages = Message.query.filter(Message.channel_id ==
+        channel_id).all()
     channel_messages_data = []
 
     for msg in channel_messages:

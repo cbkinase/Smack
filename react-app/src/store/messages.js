@@ -99,7 +99,6 @@ export const thunkDeleteReaction = (reaction) => async (dispatch) => {
 };
 
 export const editMessage = (message, messageId) => async (dispatch) => {
-    // console.log(message);
     const res = await fetch(`/api/messages/${messageId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

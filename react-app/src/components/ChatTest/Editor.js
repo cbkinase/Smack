@@ -35,6 +35,7 @@ export default function Editor({ functions, creating }) {
                                 borderRight: "2px solid #dddddd",
                                 borderBottomLeftRadius: "12px",
                                 borderBottomRightRadius: "12px",
+                                width: "100%",
                             }}
                             value={chatInput}
                             onChange={updateChatInput}

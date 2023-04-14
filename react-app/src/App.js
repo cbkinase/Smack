@@ -21,16 +21,17 @@ function App() {
     return (
         <>
             {sessionUser ? (
-                <Switch>
-                    <Route path="/chat_test/:channelId">
-                        <Chat isLoaded={isLoaded} />
-                    </Route>
-
-                    <Route path="/reactions">
-                        {/* <ReactionTestPage /> */}
-                    </Route>
-                </Switch>
+                <Shell isLoaded={isLoaded} />
             ) : (
+                // <Switch>
+                //     <Route path="/chat_test/:channelId">
+                //         <Chat isLoaded={isLoaded} />
+                //     </Route>
+
+                //     <Route path="/reactions">
+                //         {/* <ReactionTestPage /> */}
+                //     </Route>
+                // </Switch>
                 // <LoginFormPage />
                 <LoginSignupPage />
             )}

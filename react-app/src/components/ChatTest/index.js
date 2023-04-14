@@ -10,23 +10,8 @@ import {
     thunkCreateReaction,
 } from "../../store/messages";
 import { OneChannelThunk } from "../../store/channel";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 let socket;
-
-// function emojiRenderer(counts, msg) {
-//     let countEntries = Object.entries(counts);
-//     console.log(countEntries);
-//     return countEntries.map((el) => (
-//         <>
-//             <div>
-//                 {el[0]}: {el[1][0]}
-//             </div>
-//             <button onClick={(e) => handleDeleteReaction(e, el[1][1])}>
-//                 Delete Reaction
-//             </button>
-//         </>
-//     ));
-// }
 
 const Chat = () => {
     const [chatInput, setChatInput] = useState("");
@@ -39,7 +24,6 @@ const Chat = () => {
     const currentChannel = useSelector(
         (state) => state.channels.single_channel
     );
-    const history = useHistory();
 
     useEffect(() => {
         dispatch(OneChannelThunk(channelId));
@@ -98,15 +82,15 @@ const Chat = () => {
 
     const sendChat = async (e) => {
         e.preventDefault();
-        socket.emit("chat", { user: user.username, msg: chatInput });
+
         const newMessage = {
             user_id: user.id,
             channel_id: channelId,
             content: chatInput,
         };
         await dispatch(createChannelMessage(newMessage));
+        socket.emit("chat", { user: user.username, msg: chatInput });
         setChatInput("");
-        history.push(`/chat_test/${channelId}`);
     };
 
     const handleDelete = (e, msg) => {

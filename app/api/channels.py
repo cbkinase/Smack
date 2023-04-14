@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import channel_user, Channel, User, db, Message
+from app.models import channel_user, Channel, User, db, Message, Reaction
 from flask_login import login_required, current_user
 
 channel_routes = Blueprint('channels', __name__)
@@ -7,34 +7,35 @@ channel_routes = Blueprint('channels', __name__)
 def user_id_generator():
     return int(str(current_user).split('<User ')[1].split('>')[0])
 
-@channel_routes.route('/')
+@channel_routes.route('/all')
+@login_required
+def all_channels():
+    all_channels = Channel.query.all()
+    return {"all_channels": [channel.to_dict() for channel in all_channels]}, 200
+
+# GET all the channels that the user is in
+@channel_routes.route('/user')
 @login_required
 def user_channels():
-    user_ids = user_id_generator()
+    user = User.query.get(current_user.id)
+    user_channels = user.channel
+    print(user_channels)
 
-    user = User.query.get(user_ids)
-    channels_id = [channel.id for channel in user.channel]
+    return {"user_channels":[channel.to_dict() for channel in user_channels]}, 200
 
-    resp_obj = {"all_channels": []}
-    for channel in channels_id:
-        channel_info = Channel.query.get(channel)
-        resp_obj["all_channels"].append(channel_info.to_dict())
-    return resp_obj, 200
-
+# GET single channel
 @channel_routes.route('/<channel_id>')
 @login_required
 def one_channel(channel_id):
-    user_id = user_id_generator()
-    channel_exist = Channel.query.get(channel_id)
-    if not channel_exist:
-        error_obj = {"message": "Channel with the specified id could not be found."}
+    channel = Channel.query.get(channel_id)
+    if not channel:
+        error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
-    this_user = User.query.get(user_id)
-    if channel_id not in [channel.id for channel in this_user.channel]:
-        error_obj = {"message": "Current user does not belong to the specified channel."}
-        return error_obj, 403
-    one_channel = Channel.query.get(channel_id)
-    return one_channel.to_dict()
+    
+    channel_data = channel.to_dict()
+    channel_data['Members'] = {user.id:user.to_dict() for user in channel.users}
+    return {"single_channel": [channel_data]}, 200
+
 
 
 @channel_routes.route('/', methods=['POST'])
@@ -51,10 +52,12 @@ def create_channel():
             owner = this_user
         )
         db.session.add(new_channel)
-
-        new_channel.user.append(this_user)
+        new_channel.users.append(this_user)
         db.session.commit()
-        return new_channel.to_dict()
+        new_channel_data = new_channel.to_dict()
+        return new_channel_data, 201
+
+
     except:
         error_obj = {
             "message": "Validation Error",
@@ -68,11 +71,11 @@ def delete_channel(channel_id):
     user_id = user_id_generator()
     channel_exist = Channel.query.get(channel_id)
     if not channel_exist:
-        error_obj = {"message": "Channel with the specified id could not be found."}
+        error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
     this_user = User.query.get(user_id)
-    if channel_id not in [channel.id for channel in this_user.channel]:
-        error_obj = {"message": "Current user does not belong to the specified channel."}
+    if user_id not in [channel.id for channel in channel_exist.users]:
+        error_obj = {"errors": "Current user does not belong to the specified channel."}
         return error_obj, 403
     deleted_channel = Channel.query.get(channel_id)
     db.session.delete(deleted_channel)
@@ -86,11 +89,11 @@ def edit_channel(channel_id):
     user_id = user_id_generator()
     channel_exist = Channel.query.get(channel_id)
     if not channel_exist:
-        error_obj = {"message": "Channel with the specified id could not be found."}
+        error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
     this_user = User.query.get(user_id)
-    if channel_id not in [channel.id for channel in this_user.channel]:
-        error_obj = {"message": "Current user does not belong to the specified channel."}
+    if user_id not in [channel.id for channel in channel_exist.users]:
+        error_obj = {"errors": "Current user does not belong to the specified channel."}
         return error_obj, 403
     try:
         edited_channel = Channel.query.get(channel_id)
@@ -110,7 +113,6 @@ def edit_channel(channel_id):
 
 
 ### Members-related Routes
-
 @channel_routes.route("/<int:channel_id>/users", methods=["POST"])
 @login_required
 def add_channel_member(channel_id):
@@ -127,7 +129,8 @@ def add_channel_member(channel_id):
     except:
         return {"message": "Something went wrong..."}, 404
 
-@channel_routes.route("/<int:channel_id>/users")
+# get all members of channel
+@channel_routes.route("/<int:channel_id>/members")
 @login_required
 def get_all_channel_members(channel_id):
     channel = Channel.query.get(channel_id)
@@ -138,7 +141,7 @@ def get_all_channel_members(channel_id):
     return {"Users": [user.to_dict() for user in channel.users]}
 
 
-@channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["DELETE"])
+@channel_routes.route("/<int:channel_id>/members/<int:user_id>", methods=["DELETE"])
 @login_required
 def delete_channel_member(channel_id, user_id):
     # Need to check to make sure the deleter is the channel owner
@@ -164,8 +167,20 @@ def delete_channel_member(channel_id, user_id):
 def get_all_messages_for_channel(channel_id):
     # We should check to ensure the conversation is accessible to the user making the request
     # I.e. -- the channel is not private, or the user is a member of that private channel
-    channel_messages = Message.query.filter(Message.channel_id.is_(channel_id))
-    return jsonify([msg.to_dict() for msg in channel_messages])
+    channel_messages = Message.query.filter(Message.channel_id.is_(
+        channel_id)).all()
+    channel_messages_data = []
+
+    for msg in channel_messages:
+        msg_data = msg.to_dict()
+        msg_data['User'] = {
+            'username': msg.users.username,
+            'avatar': msg.users.avatar
+        }
+        msg_data['Reactions'] = {reaction.id:reaction.to_dict() for reaction in msg.reactions}
+        channel_messages_data.append(msg_data)
+
+    return jsonify(channel_messages_data)
 
 
 @channel_routes.route("<int:channel_id>", methods=["POST"])

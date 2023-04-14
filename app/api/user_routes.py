@@ -45,10 +45,6 @@ def user_edit(id):
     """
     Query for a user by id, edit that users information, and return that user in a dictionary
     """
-    print('hi')
-    print("THE current user is:", current_user)
-    print("THE current user ID is:", current_user.id)
-    print("THE URL ID is:", id)
 
     user = User.query.get(id)
 
@@ -61,7 +57,6 @@ def user_edit(id):
     form = EditUserForm()
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
-        user.email = form.data['email']
         user.first_name = form.data['first_name']
         user.last_name = form.data['last_name']
         user.avatar = form.data['avatar']

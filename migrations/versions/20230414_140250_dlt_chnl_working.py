@@ -1,8 +1,8 @@
-"""create tables
+"""dlt chnl working
 
-Revision ID: 0b4e2729a0f3
+Revision ID: 5e96fc97bec6
 Revises: 
-Create Date: 2023-04-13 09:50:24.623692
+Create Date: 2023-04-14 14:02:50.059116
 
 """
 from alembic import op
@@ -11,8 +11,9 @@ import sqlalchemy as sa
 import os
 environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")   
+
 # revision identifiers, used by Alembic.
-revision = '0b4e2729a0f3'
+revision = '5e96fc97bec6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -45,7 +46,7 @@ def upgrade():
     sa.Column('is_direct', sa.Boolean(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('owner_id', sa.Integer(), nullable=False),
+    sa.Column('owner_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -67,8 +68,8 @@ def upgrade():
 
     op.create_table('messages',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('channel_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('channel_id', sa.Integer(), nullable=True),
     sa.Column('content', sa.Text(), nullable=False),
     sa.Column('is_pinned', sa.Boolean(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -83,17 +84,16 @@ def upgrade():
 
     op.create_table('reactions',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('message_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('message_id', sa.Integer(), nullable=True),
     sa.Column('reaction', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['message_id'], ['messages.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-
+    
     if environment == "production":
         op.execute(f"ALTER TABLE reactions SET SCHEMA {SCHEMA};")
-
     # ### end Alembic commands ###
 
 

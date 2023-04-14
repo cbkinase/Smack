@@ -9,30 +9,17 @@ import Shell from "./components/Shell";
 import LoginSignupPage from "./components/LoginSignupPage";
 
 function App() {
-  const dispatch = useDispatch();
-  const [isLoaded, setIsLoaded] = useState(false);
-  useEffect(() => {
-    dispatch(authenticate()).then(() => setIsLoaded(true));
-  }, [dispatch]);
+    const dispatch = useDispatch();
+    const [isLoaded, setIsLoaded] = useState(false);
+    useEffect(() => {
+        dispatch(authenticate()).then(() => setIsLoaded(true));
+    }, [dispatch]);
 
-  const sessionUser = useSelector(state => state.session.user);
+    const sessionUser = useSelector((state) => state.session.user);
 
-  return (
-    <>
-      {
-        (sessionUser ?
-          (
-            < Shell isLoaded={isLoaded} />
-          ) :
-          (
-            <LoginSignupPage />
-          ))
-
-      }
-
-      
-    </>
-  );
+    return (
+        <>{sessionUser ? <Shell isLoaded={isLoaded} /> : <LoginSignupPage />}</>
+    );
 }
 
 export default App;

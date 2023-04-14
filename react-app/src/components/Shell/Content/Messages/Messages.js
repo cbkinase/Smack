@@ -275,6 +275,113 @@ const Messages = () => {
         document.getElementById(`message-adjust-text-${id}`).textContent = text;
     }
 
+    function toggleRightPane(state) {
+        if (state === "close") {
+            document.getElementById("grid-container").className =
+                "grid-container-hiderightside";
+            document.getElementById("grid-rightside-heading").className =
+                "grid-rightside-heading-hide";
+            document.getElementById("grid-rightside").className =
+                "grid-rightside-hide";
+        } else {
+            document.getElementById("grid-container").className =
+                "grid-container";
+            document.getElementById("grid-rightside-heading").className =
+                "grid-rightside-heading";
+            document.getElementById("grid-rightside").className =
+                "grid-rightside";
+        }
+        toggleLeftPane();
+    }
+
+    function toggleLeftPane() {
+        if (
+            document.documentElement.clientWidth > 1027 ||
+            (document.documentElement.clientWidth >= 717 &&
+                document.getElementById("grid-container").className ===
+                    "grid-container-hiderightside")
+        ) {
+            document.getElementById("grid-leftside-heading").className =
+                "grid-leftside-heading-threecolumn";
+            document.getElementById("grid-leftside").className =
+                "grid-leftside-threecolumn";
+            document.getElementById("grid-content-heading").className =
+                "grid-content-heading-threecolumn";
+            document.getElementById("grid-content").className =
+                "grid-content-threecolumn";
+            document.getElementById("grid-editor").className =
+                "grid-editor-threecolumn";
+            document.getElementById(
+                "hideshow-leftpane-hamburger"
+            ).style.display = "none";
+            document.getElementById("hideshow-leftpane-arrow").style.display =
+                "none";
+        } else {
+            document.getElementById("grid-leftside-heading").className =
+                "grid-leftside-heading-closed";
+            document.getElementById("grid-leftside").className =
+                "grid-leftside-closed";
+            document.getElementById("grid-content-heading").className =
+                "grid-content-heading";
+            document.getElementById("grid-content").className = "grid-content";
+            document.getElementById("grid-editor").className = "grid-editor";
+            document.getElementById(
+                "hideshow-leftpane-hamburger"
+            ).style.display = "block";
+            if (
+                document.getElementById("grid-leftside-heading").className ===
+                "grid-leftside-heading-closed"
+            ) {
+                document.getElementById(
+                    "hideshow-leftpane-hamburger"
+                ).style.display = "block";
+                document.getElementById(
+                    "hideshow-leftpane-arrow"
+                ).style.display = "none";
+            } else {
+                document.getElementById(
+                    "hideshow-leftpane-hamburger"
+                ).style.display = "none";
+                document.getElementById(
+                    "hideshow-leftpane-arrow"
+                ).style.display = "block";
+            }
+        }
+    }
+
+    function hideShowLeftPane() {
+        if (
+            document.getElementById("grid-leftside-heading").className ===
+            "grid-leftside-heading-closed"
+        ) {
+            document.getElementById("grid-leftside-heading").className =
+                "grid-leftside-heading";
+            document.getElementById("grid-leftside").className =
+                "grid-leftside";
+            document.getElementById(
+                "hideshow-leftpane-hamburger"
+            ).style.display = "none";
+            document.getElementById("hideshow-leftpane-arrow").style.display =
+                "block";
+        } else {
+            document.getElementById("grid-leftside-heading").className =
+                "grid-leftside-heading-closed";
+            document.getElementById("grid-leftside").className =
+                "grid-leftside-closed";
+            document.getElementById(
+                "hideshow-leftpane-hamburger"
+            ).style.display = "block";
+            document.getElementById("hideshow-leftpane-arrow").style.display =
+                "none";
+        }
+    }
+
+    window.addEventListener("resize", toggleLeftPane);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        toggleLeftPane();
+    });
+
     const messageFunctions = {
         sendChat,
         handleEdit,
@@ -317,7 +424,7 @@ const Messages = () => {
                         <div className="message-card-header">
                             <span
                                 className="message-card-name"
-                                // onClick={(e) => alert("Feature coming soon!")}
+                                onClick={(e) => toggleRightPane()}
                             >
                                 {message.User
                                     ? message.User.first_name

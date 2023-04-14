@@ -21,7 +21,7 @@ function Content() {
                 <Messages />
             </div>
             <div id="grid-editor" className="grid-editor-threecolumn">
-                <Editor />
+                {/* <Editor /> */}
             </div>
         </>
     );

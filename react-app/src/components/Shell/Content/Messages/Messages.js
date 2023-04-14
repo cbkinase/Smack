@@ -281,8 +281,8 @@ const Messages = () => {
         chatInput,
         updateChatInput,
         currentChannel,
+        channelId,
     };
-
     return user && currentChannel && allMessages ? (
         <>
             {Object.values(allMessages).map((message, ind) => (
@@ -317,7 +317,7 @@ const Messages = () => {
                         <div className="message-card-header">
                             <span
                                 className="message-card-name"
-                                onClick={(e) => alert("Feature coming soon!")}
+                                // onClick={(e) => alert("Feature coming soon!")}
                             >
                                 {message.User
                                     ? message.User.first_name

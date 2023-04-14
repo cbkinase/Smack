@@ -1,5 +1,6 @@
 export default function Editor({ functions, creating }) {
-    const { sendChat, chatInput, updateChatInput, currentChannel } = functions;
+    const { sendChat, chatInput, updateChatInput, currentChannel, channelId } =
+        functions;
     return (
         <>
             <div id="grid-editor" className="grid-editor-threecolumn">
@@ -41,7 +42,7 @@ export default function Editor({ functions, creating }) {
                                 }}
                                 value={chatInput}
                                 onChange={updateChatInput}
-                                placeholder={`Message # ${currentChannel.name}`}
+                                placeholder={`Message # ${currentChannel[channelId]?.name}`}
                             />
                             <button hidden type="submit">
                                 Send

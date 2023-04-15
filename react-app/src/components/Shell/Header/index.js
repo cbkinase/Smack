@@ -7,29 +7,29 @@ function Header({ isLoaded }) {
 
 	const sessionUser = useSelector(state => state.session.user);
 
-	// const toggleLeftPane = function hideShowLeftPane() {
-	// 	if (document.getElementById("grid-leftside-heading").className === "grid-leftside-heading-closed") {
-	// 		document.getElementById("grid-leftside-heading").className = "grid-leftside-heading"
-	// 		document.getElementById("grid-leftside").className = "grid-leftside";
-	// 		document.getElementById("hideshow-leftpane-hamburger").style.display = "none";
-	// 		document.getElementById("hideshow-leftpane-arrow").style.display = "block";
-	// 	} else {
-	// 		document.getElementById("grid-leftside-heading").className = "grid-leftside-heading-closed"
-	// 		document.getElementById("grid-leftside").className = "grid-leftside-closed";
-	// 		document.getElementById("hideshow-leftpane-hamburger").style.display = "block";
-	// 		document.getElementById("hideshow-leftpane-arrow").style.display = "none";
-	// 	}
-	// }
+	const toggleLeftPane = function hideShowLeftPane() {
+		if (document.getElementById("grid-leftside-heading").className === "grid-leftside-heading-closed") {
+			document.getElementById("grid-leftside-heading").className = "grid-leftside-heading"
+			document.getElementById("grid-leftside").className = "grid-leftside";
+			document.getElementById("hideshow-leftpane-hamburger").style.display = "none";
+			document.getElementById("hideshow-leftpane-arrow").style.display = "block";
+		} else {
+			document.getElementById("grid-leftside-heading").className = "grid-leftside-heading-closed"
+			document.getElementById("grid-leftside").className = "grid-leftside-closed";
+			document.getElementById("hideshow-leftpane-hamburger").style.display = "block";
+			document.getElementById("hideshow-leftpane-arrow").style.display = "none";
+		}
+	}
 
 	return (
 		<div className="grid-header">
 			<div className="header-holder">
 				<div>
-					<button id="hideshow-leftpane-hamburger" onClick={() => { window.toggleLeftPane() }}
+					<button id="hideshow-leftpane-hamburger" onClick={() => { toggleLeftPane() }}
 						className="hideshow-leftpane">
 						<i className="fas fa-bars" style={{ fontSize: "18px" }}></i>
 					</button>
-					<button id="hideshow-leftpane-arrow" onClick={() => { window.toggleLeftPane() }}
+					<button id="hideshow-leftpane-arrow" onClick={() => { toggleLeftPane() }}
 						className="hideshow-leftpane">
 						<i className="fas fa-arrow-left" style={{ fontSize: "18px" }}></i>
 					</button>

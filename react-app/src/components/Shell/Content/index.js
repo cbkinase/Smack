@@ -14,11 +14,17 @@ function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
                 className="grid-content-heading-threecolumn"
             >
                 <ChannelHeader />
+
             </div>
 
-            {/* <EditChannel2 /> */}
+
+
+
             <div id="grid-content" className="grid-content-threecolumn">
+
+                <EditChannel2 />
                 <Messages selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+
             </div>
             {/* <div id="grid-editor" className="grid-editor-threecolumn"> */}
             {/* <Editor /> */}

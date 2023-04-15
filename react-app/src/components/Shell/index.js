@@ -8,9 +8,14 @@ import { Route, Switch } from "react-router-dom";
 import CynChannel from "./ChannelTestCyn/ChannelTest";
 import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Shell({ isLoaded }) {
+
+    useEffect(() => {
+        window.toggleLeftPane();
+    }, []);
+
     const [selectedUserRightBar, setSelectedUserRightBar] = useState();
     return (
         <div id="grid-container" className="grid-container-hiderightside">
@@ -28,7 +33,7 @@ function Shell({ isLoaded }) {
                 </Route>
 
                 <Route path="/channels/:channelId">
-                    <Content selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar}  />
+                    <Content selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                 </Route>
 
                 {/* <Route path = "/chl-test">

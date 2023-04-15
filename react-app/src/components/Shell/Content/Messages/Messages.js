@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import Editor from "../../../ChatTest/Editor";
 import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
+import { UserChannelThunk } from "../../../../store/channel";
 let socket;
 let updatedMessage;
 
@@ -54,6 +55,13 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
 
     useEffect(() => {
         dispatch(OneChannelThunk(channelId));
+        (async e => {
+            await fetch(`/api/channels/${channelId}/users`, {
+                method: "POST",
+
+            })
+            dispatch(UserChannelThunk())
+        })()
     }, []);
 
     useEffect(() => {

@@ -48,6 +48,7 @@ export default function Editor({ functions, creating, setChatInput }) {
                             }
                         >
                             <input
+                            className="editor-focus"
                                 style={{
                                     backgroundColor: "#FFFFFF",
                                     color: "#00000",

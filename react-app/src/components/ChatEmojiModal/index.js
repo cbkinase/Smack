@@ -44,6 +44,7 @@ export default function ChatEmojiModal({setChatInput, chatInput}) {
                         }}
                         onClick={(e) => {
                             setChatInput(chatInput + emoji)
+                            document.getElementsByClassName("editor-focus")[0].focus()
                             closeModal();
                         }}
                     >

@@ -17,7 +17,7 @@ import OpenModalButton from "../../../OpenModalButton";
 let socket;
 let updatedMessage;
 
-const Messages = () => {
+const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
     let editCount = 0;
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
@@ -437,7 +437,10 @@ const Messages = () => {
                         <div className="message-card-header">
                             <span
                                 className="message-card-name"
-                                onClick={(e) => toggleRightPane()}
+                                onClick={(e) => {
+                                    setSelectedUserRightBar(message.User)
+                                    toggleRightPane();
+                                }}
                             >
                                 {message.User
                                     ? message.User.first_name

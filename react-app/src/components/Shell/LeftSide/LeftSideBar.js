@@ -37,8 +37,13 @@ function LeftSideLinks() {
                             </button>
                         </div>
                     </NavLink>
-                    
-                    <NavLink exact to={`/channels/direct`}>
+
+                    <NavLink onClick={
+                        e => {
+                            e.preventDefault();
+                            alert("Direct Message Feature Coming Soon")
+                        }
+                    } exact to={`/channels/direct`}>
                         <div>
                             <button>
                                 <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
@@ -78,7 +83,7 @@ function LeftSideLinks() {
                                 </button>
                             </div>
                         </NavLink>
-                        
+
                     )
                 })}
 

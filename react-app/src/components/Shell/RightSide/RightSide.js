@@ -2,12 +2,12 @@ import React from 'react';
 import RightSideHeader from './RightSideHeader';
 import RightSideInfo from './RightSideInfo';
 
-function RightSide() {
+function RightSide({selectedUserRightBar, setSelectedUserRightBar}) {
 
     return (
         <>
             <RightSideHeader />
-            <RightSideInfo />
+            <RightSideInfo selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={selectedUserRightBar}  />
         </>
     );
 }

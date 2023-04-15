@@ -535,7 +535,7 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                             )}
                         </div>
                     </div>
-                    <div id={`msg-content-${message.id}`}>
+                    <div style={{overflowWrap:"anywhere"}} id={`msg-content-${message.id}`}>
                         {message.content}
                     </div>
                     {storeConverter(message, user)}

@@ -35,6 +35,9 @@ export default function Editor({ functions, creating, setChatInput }) {
                                     className="far fa-smile"
                                 />
                             </span>
+                            {chatInput.length > 300 && <div style={{color: "red"}}>
+                            {2000 - chatInput.length} Characters Remaining
+                            </div>}
                     </div>
                     <div>
                         <form
@@ -66,7 +69,7 @@ export default function Editor({ functions, creating, setChatInput }) {
                                         : " "
                                 }
                             />
-                            <button hidden disabled={ chatInput.length === 0} type="submit">
+                            <button hidden disabled={ chatInput.length === 0 || chatInput.length > 2000} type="submit">
                                 Send
                             </button>
                         </form>

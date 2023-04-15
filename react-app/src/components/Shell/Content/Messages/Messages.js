@@ -261,9 +261,10 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
 
         return countEntries.map((el) => (
             <>
-                <div className="message-card-footer">
+                <div style={{}} className="message-card-footer">
                     {hasUserReacted(msg, user, el[0]) ? (
                         <button
+                            style={{padding: "3px 6px", backgroundColor: "#dde9f9", border: "1px solid #bad3f2"}}
                             className="message-card-reaction"
                             onClick={(e) =>
                                 handleDeleteReaction(
@@ -273,10 +274,11 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                                 )
                             }
                         >
-                            <p>{el[0]}</p> <p>{counts[el[0]].frequency}</p>
+                            <p style={{paddingRight: "5px"}}>{el[0]}</p> <p style={{fontWeight: "bold"}}>{counts[el[0]].frequency}</p>
                         </button>
                     ) : (
                         <button
+                            style={{padding: "3px 6px"}}
                             className="message-card-reaction"
                             onClick={(e) => handleAddReaction(e, msg, el[0])}
                         >

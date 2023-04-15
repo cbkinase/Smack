@@ -22,7 +22,8 @@ export default function Editor({ functions, creating, setChatInput }) {
                             borderTopRightRadius: "12px",
                         }}
                     >
-                        <span>Enter your message below</span><span
+                        <span
+
                                 className="message-adjust-reaction"
                             >
                                 <OpenModalButton

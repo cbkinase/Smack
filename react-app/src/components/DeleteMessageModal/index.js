@@ -1,7 +1,7 @@
 import { useModal } from "../../context/Modal";
 import { destroyMessage } from "../../store/messages";
 import { useDispatch } from "react-redux";
-// import "./DeleteMessage.css";
+import "./DeleteMessage.css";
 
 export default function DeleteMessageModal({ user, msg, socket }) {
     const { closeModal } = useModal();
@@ -27,29 +27,29 @@ export default function DeleteMessageModal({ user, msg, socket }) {
             <h2
                 style={{
                     fontWeight: "bold",
-                    fontSize: "22px",
+                    fontSize: "18px",
                     marginBottom: "10px",
                 }}
             >
                 Confirm Delete
             </h2>
-            <h3 style={{ fontWeight: "bold", marginBottom: "10px" }}>
+            <h4 style={{ fontWeight: "normal", marginBottom: "10px" }}>
                 Are you sure you want to remove this message?
-            </h3>
+            </h4>
             <button
                 style={{
                     marginBottom: "10px",
                     marginTop: "5px",
                     width: "100%",
                 }}
-                className="decorated-button"
+                className="decorated-button-delete"
                 onClick={handleDelete}
             >
                 Yes (Delete Message)
             </button>
             <button
                 style={{ width: "100%" }}
-                className="decorated-button alt-color-button-2"
+                className="decorated-button-delete alt-color-button-2"
                 onClick={closeModal}
             >
                 No (Keep Message)

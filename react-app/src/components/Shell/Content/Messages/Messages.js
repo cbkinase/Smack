@@ -15,6 +15,7 @@ import Editor from "../../../ChatTest/Editor";
 import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
 import { UserChannelThunk } from "../../../../store/channel";
+import DeleteMessageModal from "../../../DeleteMessageModal"
 let socket;
 let updatedMessage;
 
@@ -526,9 +527,9 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                                     <i className="far fa-edit"></i>
                                 </span>
                             )}
+
                             {user.id === message.user_id && (
                                 <span
-                                    onClick={(e) => handleDelete(e, message)}
                                     onMouseOver={(e) =>
                                         changeAdjustText(
                                             "Delete Message",
@@ -540,7 +541,17 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                                     }
                                     className="message-adjust-delete"
                                 >
-                                    <i className="far fa-trash-alt"></i>
+                                <OpenModalButton
+                                    modalComponent={
+                                        <DeleteMessageModal
+                                            socket={socket}
+                                            msg={message}
+                                            user={user}
+                                            dispatch={dispatch}
+                                        />
+                                    }
+                                    className="far fa-trash-alt"
+                                />
                                 </span>
                             )}
                         </div>

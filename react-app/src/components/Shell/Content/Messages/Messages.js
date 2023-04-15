@@ -189,6 +189,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     };
 
     const handleEdit = async (e, msg) => {
+        document.getElementById("edit-msg-form").remove();
         e.preventDefault();
         await dispatch(
             editMessage(
@@ -473,7 +474,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                             </div>
                         </div>
                         <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
-                            {message.content}
+                            {message.content} {message.updated_at !== message.created_at && <span style={{color: "grey"}}>(edited)</span>}
                         </div>
                         {storeConverter(message, user)}
                     </div>

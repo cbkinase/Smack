@@ -273,7 +273,7 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                                 )
                             }
                         >
-                            {el[0]} {counts[el[0]].frequency}
+                            <p>{el[0]}</p> <p>{counts[el[0]].frequency}</p>
                         </button>
                     ) : (
                         <button
@@ -282,8 +282,8 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                         >
                             {el[0]}{" "}
                             <span className="message-card-reaction-count">
-                                {" "}
-                                {counts[el[0]].frequency}
+                                <p>{" "}</p>
+                                <p>{counts[el[0]].frequency}</p>
                             </span>
                         </button>
                     )}

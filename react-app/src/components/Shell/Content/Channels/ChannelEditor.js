@@ -6,13 +6,17 @@ import { DeleteChannelThunk } from "../../../../store/channel";
 
 const EditChannel2 = () => {
     const { channelId } = useParams();
-    const [name, setName] = useState(null);
-    const [subject, setSubject] = useState(null);
+    const user = useSelector(state => state.session.user)
+    const currChannel = useSelector(state => state.channels.user_channels[channelId])
+    const [name, setName] = useState(currChannel?.name || "");
+    const [subject, setSubject] = useState(currChannel?.subject || "");
     const [is_private, setIsPrivate] = useState(false);
     const [is_direct, setIsDirect] = useState(false);
     const [errors, setErrors] = useState([]);
     const dispatch = useDispatch();
     const history = useHistory();
+
+
 
     let edited;
 
@@ -37,7 +41,7 @@ const EditChannel2 = () => {
         dispatch(DeleteChannelThunk(channelId));
         return history.push(`/channels/explore`);
     };
-    return (
+    return (currChannel && user.id === currChannel.owner_id ?
         <div
             style={{
                 margin: "20px",
@@ -60,7 +64,6 @@ const EditChannel2 = () => {
             <input
                 type="text"
                 id="name"
-                placeholder="NAME"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             ></input>
@@ -90,7 +93,7 @@ const EditChannel2 = () => {
             <button onClick={handleSubmit}>Edit channel</button>
             <button onClick={handleDelete}>Delete channel</button>
         </div>
-    );
+    : null);
 };
 
 export default EditChannel2;

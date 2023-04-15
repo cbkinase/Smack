@@ -1,18 +1,9 @@
 import { useModal } from "../../context/Modal";
-import { thunkCreateReaction } from "../../store/messages";
-import { useDispatch } from "react-redux";
 
-export default function ReactionModal({ socket, msg, user, dispatch }) {
+export default function ChatEmojiModal({setChatInput, chatInput}) {
     const { closeModal } = useModal();
 
-    function handleAddReaction(e, msg, rxn) {
-        e.preventDefault();
-        dispatch(thunkCreateReaction(msg.id, { reaction: rxn }));
-        socket.emit("addReaction", {
-            user: user.username,
-            reaction: rxn,
-        });
-    }
+
     const emojis = [
         "👍",
         "👎",
@@ -39,7 +30,7 @@ export default function ReactionModal({ socket, msg, user, dispatch }) {
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    maxWidth: "300px",
+                    width: "300px",
                     justifyContent: "center",
                 }}
             >
@@ -48,13 +39,12 @@ export default function ReactionModal({ socket, msg, user, dispatch }) {
                         style={{
                             padding: "2px 2px",
                             margin: "5px 5px",
-                            fontSize: "16px",
                             fontSize: "18px",
-                            borderRadius: "25%",
-                            borderColor: "grey"
+                            borderRadius: "25%"
                         }}
                         onClick={(e) => {
-                            handleAddReaction(e, msg, emoji);
+                            setChatInput(chatInput + emoji)
+                            document.getElementsByClassName("editor-focus")[0].focus()
                             closeModal();
                         }}
                     >

@@ -14,10 +14,12 @@ import { useParams } from "react-router-dom";
 import Editor from "../../../ChatTest/Editor";
 import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
+import { UserChannelThunk } from "../../../../store/channel";
+import DeleteMessageModal from "../../../DeleteMessageModal"
 let socket;
 let updatedMessage;
 
-const Messages = () => {
+const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
     let editCount = 0;
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
@@ -54,6 +56,13 @@ const Messages = () => {
 
     useEffect(() => {
         dispatch(OneChannelThunk(channelId));
+        (async e => {
+            await fetch(`/api/channels/${channelId}/users`, {
+                method: "POST",
+
+            })
+            dispatch(UserChannelThunk())
+        })()
     }, []);
 
     useEffect(() => {
@@ -253,9 +262,10 @@ const Messages = () => {
 
         return countEntries.map((el) => (
             <>
-                <div className="message-card-footer">
+                <div style={{}} className="message-card-footer">
                     {hasUserReacted(msg, user, el[0]) ? (
                         <button
+                            style={{padding: "3px 6px", backgroundColor: "#dde9f9", border: "1px solid #bad3f2"}}
                             className="message-card-reaction"
                             onClick={(e) =>
                                 handleDeleteReaction(
@@ -265,17 +275,18 @@ const Messages = () => {
                                 )
                             }
                         >
-                            {el[0]} {counts[el[0]].frequency}
+                            <p style={{paddingRight: "5px"}}>{el[0]}</p> <p style={{fontWeight: "bold"}}>{counts[el[0]].frequency}</p>
                         </button>
                     ) : (
                         <button
+                            style={{padding: "3px 6px"}}
                             className="message-card-reaction"
                             onClick={(e) => handleAddReaction(e, msg, el[0])}
                         >
                             {el[0]}{" "}
                             <span className="message-card-reaction-count">
-                                {" "}
-                                {counts[el[0]].frequency}
+                                <p>{" "}</p>
+                                <p>{counts[el[0]].frequency}</p>
                             </span>
                         </button>
                     )}
@@ -437,7 +448,10 @@ const Messages = () => {
                         <div className="message-card-header">
                             <span
                                 className="message-card-name"
-                                onClick={(e) => toggleRightPane()}
+                                onClick={(e) => {
+                                    setSelectedUserRightBar(message.User)
+                                    toggleRightPane();
+                                }}
                             >
                                 {message.User
                                     ? message.User.first_name
@@ -513,9 +527,9 @@ const Messages = () => {
                                     <i className="far fa-edit"></i>
                                 </span>
                             )}
+
                             {user.id === message.user_id && (
                                 <span
-                                    onClick={(e) => handleDelete(e, message)}
                                     onMouseOver={(e) =>
                                         changeAdjustText(
                                             "Delete Message",
@@ -527,18 +541,28 @@ const Messages = () => {
                                     }
                                     className="message-adjust-delete"
                                 >
-                                    <i className="far fa-trash-alt"></i>
+                                <OpenModalButton
+                                    modalComponent={
+                                        <DeleteMessageModal
+                                            socket={socket}
+                                            msg={message}
+                                            user={user}
+                                            dispatch={dispatch}
+                                        />
+                                    }
+                                    className="far fa-trash-alt"
+                                />
                                 </span>
                             )}
                         </div>
                     </div>
-                    <div id={`msg-content-${message.id}`}>
+                    <div style={{overflowWrap:"anywhere"}} id={`msg-content-${message.id}`}>
                         {message.content}
                     </div>
                     {storeConverter(message, user)}
                 </div>
             ))}
-            <Editor functions={messageFunctions} creating={true} />
+            <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} />
         </>
     ) : null;
 };

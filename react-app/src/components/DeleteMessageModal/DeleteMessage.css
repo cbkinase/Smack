@@ -1,0 +1,27 @@
+.decorated-button-delete:not(:disabled) {
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    padding: 8px 16px;
+    background-color: #631965;
+    border-color: #631965;
+}
+
+.decorated-button-delete:not(:disabled):hover {
+    background-color: #350d36;
+    border-color: #350d36;
+}
+
+
+.alt-color-button-2:not(:disabled) {
+    background-color: lightgrey;
+    border-color: lightgrey;
+    color: black;
+    font-weight: bold;
+}
+.alt-color-button-2:not(:disabled):hover {
+    background-color: rgb(163, 163, 163);
+    border-color: rgb(163, 163, 163);
+    color: black;
+    font-weight: bold;
+}

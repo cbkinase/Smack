@@ -17,7 +17,13 @@ function AllChannels() {
         <>
             <h2>ALL CHANNELS:</h2>
             {allChannelsArr.map((channel) => (
-                <NavLink to={`/channels/${channel.id}`}>
+                <NavLink onClick={async e => {
+                    await fetch(`/api/channels/${channel.id}/users`, {
+                        method: "POST",
+
+                    })
+                    dispatch(ChlActions.UserChannelThunk())
+                }} to={`/channels/${channel.id}`}>
                     <div>{`${channel.id} ${channel.name}`}</div>
                     <div>{channel.subject}</div>
                 </NavLink>

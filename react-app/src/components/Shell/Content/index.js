@@ -16,7 +16,7 @@ function Content() {
                 <ChannelHeader />
             </div>
 
-            < EditChannel2 />
+            <EditChannel2 />
             <div id="grid-content" className="grid-content-threecolumn">
                 <Messages />
             </div>

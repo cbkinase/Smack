@@ -12,9 +12,8 @@ import { useState, useEffect } from "react";
 
 function Shell({ isLoaded }) {
 
-    useEffect(() => {
-        window.toggleLeftPane();
-    }, []);
+
+
 
     const [selectedUserRightBar, setSelectedUserRightBar] = useState();
     return (

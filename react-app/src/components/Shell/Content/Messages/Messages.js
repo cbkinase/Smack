@@ -541,7 +541,7 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                     {storeConverter(message, user)}
                 </div>
             ))}
-            <Editor functions={messageFunctions} creating={true} />
+            <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} />
         </>
     ) : null;
 };

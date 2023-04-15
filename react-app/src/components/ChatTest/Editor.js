@@ -1,6 +1,12 @@
-export default function Editor({ functions, creating }) {
+import ChatEmojiModal from "../ChatEmojiModal";
+import OpenModalButton from "../OpenModalButton";
+
+export default function Editor({ functions, creating, setChatInput }) {
     const { sendChat, chatInput, updateChatInput, currentChannel, channelId } =
         functions;
+        function changeAdjustText(text, id) {
+            document.getElementById(`message-adjust-text-${id}`).textContent = text;
+        }
     return (
         <>
             <div id="grid-editor" className="grid-editor-threecolumn">
@@ -16,7 +22,19 @@ export default function Editor({ functions, creating }) {
                             borderTopRightRadius: "12px",
                         }}
                     >
-                        <span>Bold | Italic | Strikethrough | etc.</span>
+                        <span>Enter your message below</span><span
+                                className="message-adjust-reaction"
+                            >
+                                <OpenModalButton
+                                    modalComponent={
+                                        <ChatEmojiModal
+                                        setChatInput={setChatInput}
+                                        chatInput={chatInput}
+                                        />
+                                    }
+                                    className="far fa-smile"
+                                />
+                            </span>
                     </div>
                     <div>
                         <form
@@ -48,7 +66,7 @@ export default function Editor({ functions, creating }) {
                                         : " "
                                 }
                             />
-                            <button hidden type="submit">
+                            <button hidden disabled={ chatInput.length === 0} type="submit">
                                 Send
                             </button>
                         </form>

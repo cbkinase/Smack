@@ -19,7 +19,7 @@ import DeleteMessageModal from "../../../DeleteMessageModal"
 let socket;
 let updatedMessage;
 
-const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
+const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     let editCount = 0;
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
@@ -265,7 +265,7 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                 <div style={{}} className="message-card-footer">
                     {hasUserReacted(msg, user, el[0]) ? (
                         <button
-                            style={{padding: "3px 6px", backgroundColor: "#dde9f9", border: "1px solid #bad3f2"}}
+                            style={{ padding: "3px 6px", backgroundColor: "#dde9f9", border: "1px solid #bad3f2" }}
                             className="message-card-reaction"
                             onClick={(e) =>
                                 handleDeleteReaction(
@@ -275,11 +275,11 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                                 )
                             }
                         >
-                            <p style={{paddingRight: "5px"}}>{el[0]}</p> <p style={{fontWeight: "bold"}}>{counts[el[0]].frequency}</p>
+                            <p style={{ paddingRight: "5px" }}>{el[0]}</p> <p style={{ fontWeight: "bold" }}>{counts[el[0]].frequency}</p>
                         </button>
                     ) : (
                         <button
-                            style={{padding: "3px 6px"}}
+                            style={{ padding: "3px 6px" }}
                             className="message-card-reaction"
                             onClick={(e) => handleAddReaction(e, msg, el[0])}
                         >
@@ -315,96 +315,12 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
             document.getElementById("grid-rightside").className =
                 "grid-rightside";
         }
-        toggleLeftPane();
+        window.toggleLeftPane();
     }
 
-    function toggleLeftPane() {
-        if (
-            document.documentElement.clientWidth > 1027 ||
-            (document.documentElement.clientWidth >= 717 &&
-                document.getElementById("grid-container").className ===
-                    "grid-container-hiderightside")
-        ) {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading-threecolumn";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside-threecolumn";
-            document.getElementById("grid-content-heading").className =
-                "grid-content-heading-threecolumn";
-            document.getElementById("grid-content").className =
-                "grid-content-threecolumn";
-            document.getElementById("grid-editor").className =
-                "grid-editor-threecolumn";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "none";
-            document.getElementById("hideshow-leftpane-arrow").style.display =
-                "none";
-        } else {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading-closed";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside-closed";
-            document.getElementById("grid-content-heading").className =
-                "grid-content-heading";
-            document.getElementById("grid-content").className = "grid-content";
-            document.getElementById("grid-editor").className = "grid-editor";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "block";
-            if (
-                document.getElementById("grid-leftside-heading").className ===
-                "grid-leftside-heading-closed"
-            ) {
-                document.getElementById(
-                    "hideshow-leftpane-hamburger"
-                ).style.display = "block";
-                document.getElementById(
-                    "hideshow-leftpane-arrow"
-                ).style.display = "none";
-            } else {
-                document.getElementById(
-                    "hideshow-leftpane-hamburger"
-                ).style.display = "none";
-                document.getElementById(
-                    "hideshow-leftpane-arrow"
-                ).style.display = "block";
-            }
-        }
-    }
 
-    function hideShowLeftPane() {
-        if (
-            document.getElementById("grid-leftside-heading").className ===
-            "grid-leftside-heading-closed"
-        ) {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "none";
-            document.getElementById("hideshow-leftpane-arrow").style.display =
-                "block";
-        } else {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading-closed";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside-closed";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "block";
-            document.getElementById("hideshow-leftpane-arrow").style.display =
-                "none";
-        }
-    }
 
-    window.addEventListener("resize", toggleLeftPane);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        toggleLeftPane();
-    });
 
     const messageFunctions = {
         sendChat,
@@ -416,86 +332,86 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
     };
     return user && currentChannel && allMessages ? (
         <>
-            {Object.values(allMessages).map((message, ind) => (
-                <div
-                    key={message.id}
-                    id={`message-${message.id}`}
-                    className="message-card"
-                >
-                    <div></div>
-                    <div>
-                        <img
-                            src={
-                                message.User ? message.User.avatar : user.avatar
-                            }
-                            alt={`${
-                                message.User
+
+            <div style={{ marginBottom: '10px' }}>
+                {Object.values(allMessages).map((message, ind) => (
+                    <div
+                        key={message.id}
+                        id={`message-${message.id}`}
+                        className="message-card"
+                    >
+                        <div></div>
+                        <div>
+                            <img
+                                src={
+                                    message.User ? message.User.avatar : user.avatar
+                                }
+                                alt={`${message.User
                                     ? message.User.first_name
                                     : user.first_name
-                            } ${
-                                message.User
-                                    ? message.User.last_name
-                                    : user.last_name
-                            }`}
-                            style={{
-                                borderRadius: "5px",
-                                width: "36px",
-                                height: "36px",
-                            }}
-                        ></img>
-                    </div>
-                    <div className="message-card-content">
-                        <div className="message-card-header">
-                            <span
-                                className="message-card-name"
-                                onClick={(e) => {
-                                    setSelectedUserRightBar(message.User)
-                                    toggleRightPane();
+                                    } ${message.User
+                                        ? message.User.last_name
+                                        : user.last_name
+                                    }`}
+                                style={{
+                                    borderRadius: "5px",
+                                    width: "36px",
+                                    height: "36px",
                                 }}
-                            >
-                                {message.User
-                                    ? message.User.first_name
-                                    : user.first_name}{" "}
-                                {message.User
-                                    ? message.User.last_name
-                                    : user.last_name}
-                            </span>
-                            <span className="message-card-time">
-                                {new Date(
-                                    message.updated_at
-                                ).toLocaleTimeString([], {
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                })}
-                            </span>
+                            ></img>
                         </div>
-                        <div className="message-card-makechangebox">
-                            <span
-                                id={`message-adjust-text-${message.id}`}
-                                className="message-adjust-text"
-                            ></span>
-                            <span
-                                onMouseOver={(e) =>
-                                    changeAdjustText("Add Reaction", message.id)
-                                }
-                                onMouseOut={(e) =>
-                                    changeAdjustText("", message.id)
-                                }
-                                className="message-adjust-reaction"
-                            >
-                                <OpenModalButton
-                                    modalComponent={
-                                        <ReactionModal
-                                            socket={socket}
-                                            msg={message}
-                                            user={user}
-                                            dispatch={dispatch}
-                                        />
+                        <div className="message-card-content">
+                            <div className="message-card-header">
+                                <span
+                                    className="message-card-name"
+                                    onClick={(e) => {
+                                        setSelectedUserRightBar(message.User)
+                                        toggleRightPane();
+                                    }}
+                                >
+                                    {message.User
+                                        ? message.User.first_name
+                                        : user.first_name}{" "}
+                                    {message.User
+                                        ? message.User.last_name
+                                        : user.last_name}
+                                </span>
+                                <span className="message-card-time">
+                                    {new Date(
+                                        message.updated_at
+                                    ).toLocaleTimeString([], {
+                                        hour: "numeric",
+                                        minute: "2-digit",
+                                    })}
+                                </span>
+                            </div>
+                            <div className="message-card-makechangebox">
+                                <span
+                                    id={`message-adjust-text-${message.id}`}
+                                    className="message-adjust-text"
+                                ></span>
+                                <span
+                                    onMouseOver={(e) =>
+                                        changeAdjustText("Add Reaction", message.id)
                                     }
-                                    className="far fa-smile"
-                                />
-                            </span>
-                            {/* <span
+                                    onMouseOut={(e) =>
+                                        changeAdjustText("", message.id)
+                                    }
+                                    className="message-adjust-reaction"
+                                >
+                                    <OpenModalButton
+                                        modalComponent={
+                                            <ReactionModal
+                                                socket={socket}
+                                                msg={message}
+                                                user={user}
+                                                dispatch={dispatch}
+                                            />
+                                        }
+                                        className="far fa-smile"
+                                    />
+                                </span>
+                                {/* <span
                                 onMouseOver={(e) =>
                                     changeAdjustText("Pin Message", message.id)
                                 }
@@ -507,62 +423,70 @@ const Messages = ({selectedUserRightBar, setSelectedUserRightBar}) => {
                             >
                                 <i className="far fa-dot-circle"></i>
                             </span> */}
-                            {user.id === message.user_id && (
-                                <span
-                                    onClick={(e) => {
-                                        editMode(e, message);
-                                        editCount++;
-                                    }}
-                                    onMouseOver={(e) =>
-                                        changeAdjustText(
-                                            "Edit Message",
-                                            message.id
-                                        )
-                                    }
-                                    onMouseOut={(e) =>
-                                        changeAdjustText("", message.id)
-                                    }
-                                    className="message-adjust-edit"
-                                >
-                                    <i className="far fa-edit"></i>
-                                </span>
-                            )}
+                                {user.id === message.user_id && (
+                                    <span
+                                        onClick={(e) => {
+                                            editMode(e, message);
+                                            editCount++;
+                                        }}
+                                        onMouseOver={(e) =>
+                                            changeAdjustText(
+                                                "Edit Message",
+                                                message.id
+                                            )
+                                        }
+                                        onMouseOut={(e) =>
+                                            changeAdjustText("", message.id)
+                                        }
+                                        className="message-adjust-edit"
+                                    >
+                                        <i className="far fa-edit"></i>
+                                    </span>
+                                )}
 
-                            {user.id === message.user_id && (
-                                <span
-                                    onMouseOver={(e) =>
-                                        changeAdjustText(
-                                            "Delete Message",
-                                            message.id
-                                        )
-                                    }
-                                    onMouseOut={(e) =>
-                                        changeAdjustText("", message.id)
-                                    }
-                                    className="message-adjust-delete"
-                                >
-                                <OpenModalButton
-                                    modalComponent={
-                                        <DeleteMessageModal
-                                            socket={socket}
-                                            msg={message}
-                                            user={user}
-                                            dispatch={dispatch}
+                                {user.id === message.user_id && (
+                                    <span
+                                        onMouseOver={(e) =>
+                                            changeAdjustText(
+                                                "Delete Message",
+                                                message.id
+                                            )
+                                        }
+                                        onMouseOut={(e) =>
+                                            changeAdjustText("", message.id)
+                                        }
+                                        className="message-adjust-delete"
+                                    >
+                                        <OpenModalButton
+                                            modalComponent={
+                                                <DeleteMessageModal
+                                                    socket={socket}
+                                                    msg={message}
+                                                    user={user}
+                                                    dispatch={dispatch}
+                                                />
+                                            }
+                                            className="far fa-trash-alt"
                                         />
-                                    }
-                                    className="far fa-trash-alt"
-                                />
-                                </span>
-                            )}
+                                    </span>
+                                )}
+                            </div>
                         </div>
+                        <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
+                            {message.content}
+                        </div>
+                        {storeConverter(message, user)}
                     </div>
-                    <div style={{overflowWrap:"anywhere"}} id={`msg-content-${message.id}`}>
-                        {message.content}
-                    </div>
-                    {storeConverter(message, user)}
-                </div>
-            ))}
-            <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} />
+                ))}
+            </div>
+
+
+            <div id="editor-holder" style={{ position: 'sticky', bottom: 0, backgroundColor: '#FFFFFF', width: '100%', overflow: 'hidden' }}>
+                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} />
+            </div>
+
+
+
         </>
     ) : null;
 };

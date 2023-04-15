@@ -61,6 +61,13 @@ const Messages = () => {
     }, [dispatch, messages, reactions, channelId]);
 
     useEffect(() => {
+        dispatch(getChannelMessages(channelId)).then(() => {
+            const element = document.getElementById("grid-content");
+            element.scrollTop = element.scrollHeight;
+        });
+    }, [dispatch, messages, channelId]);
+
+    useEffect(() => {
         // open socket connection
         // create websocket
         socket = io();

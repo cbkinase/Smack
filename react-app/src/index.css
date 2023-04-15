@@ -801,11 +801,11 @@ button:hover {
 .message-card-makechangebox span {
     padding: 1px 3px;
     border-radius: 4px;
-    color: #a8a8a8;
+    color: #1c1c1c;
 }
 
 .message-card-makechangebox span:hover {
-    color: #555555;
+    color: #1c1c1c;
     cursor: pointer;
 }
 

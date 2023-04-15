@@ -189,6 +189,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     };
 
     const handleEdit = async (e, msg) => {
+        document.getElementById("edit-msg-form").remove();
         e.preventDefault();
         await dispatch(
             editMessage(
@@ -262,35 +263,36 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
         return countEntries.map((el) => (
             <>
-                <div style={{}} className="message-card-footer">
-                    {hasUserReacted(msg, user, el[0]) ? (
-                        <button
-                            style={{ padding: "3px 6px", backgroundColor: "#dde9f9", border: "1px solid #bad3f2" }}
-                            className="message-card-reaction"
-                            onClick={(e) =>
-                                handleDeleteReaction(
-                                    e,
-                                    hasUserReacted(msg, user, el[0]),
-                                    msg.id
-                                )
-                            }
-                        >
-                            <p style={{ paddingRight: "5px" }}>{el[0]}</p> <p style={{ fontWeight: "bold" }}>{counts[el[0]].frequency}</p>
-                        </button>
-                    ) : (
-                        <button
-                            style={{ padding: "3px 6px" }}
-                            className="message-card-reaction"
-                            onClick={(e) => handleAddReaction(e, msg, el[0])}
-                        >
-                            {el[0]}{" "}
-                            <span className="message-card-reaction-count">
-                                <p>{" "}</p>
-                                <p>{counts[el[0]].frequency}</p>
-                            </span>
-                        </button>
-                    )}
-                </div>
+
+                {hasUserReacted(msg, user, el[0]) ? (
+                    <button
+                        style={{ padding: "0px 6px", backgroundColor: "#e7f3f9", border: "1px solid #bad3f2" }}
+                        className="message-card-reaction"
+                        onClick={(e) =>
+                            handleDeleteReaction(
+                                e,
+                                hasUserReacted(msg, user, el[0]),
+                                msg.id
+                            )
+                        }
+                    >
+                        <p style={{ paddingRight: "5px" }}>{el[0]}</p> <p style={{ fontSize: '12px', color: "#333333" }}>{counts[el[0]].frequency}</p>
+                    </button >
+                ) : (
+                    <button
+                        style={{ padding: "0px 6px" }}
+                        className="message-card-reaction"
+                        onClick={(e) => handleAddReaction(e, msg, el[0])}
+                    >
+                        {el[0]}{" "}
+                        <span className="message-card-reaction-count">
+
+                            <p style={{ paddingRight: "5px" }}>{counts[el[0]].frequency}</p>
+                        </span>
+                    </button>
+                )
+                }
+
             </>
         ));
     }
@@ -334,13 +336,20 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         <>
 
             <div style={{ marginBottom: '10px' }}>
+
+
+
                 {Object.values(allMessages).map((message, ind) => (
-                    <div
+
+
+
+                    <div className="message-card"
                         key={message.id}
                         id={`message-${message.id}`}
-                        className="message-card"
                     >
-                        <div></div>
+
+
+
                         <div>
                             <img
                                 src={
@@ -360,58 +369,63 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                 }}
                             ></img>
                         </div>
+
+
                         <div className="message-card-content">
+
                             <div className="message-card-header">
-                                <span
-                                    className="message-card-name"
-                                    onClick={(e) => {
-                                        setSelectedUserRightBar(message.User)
-                                        toggleRightPane();
-                                    }}
-                                >
-                                    {message.User
-                                        ? message.User.first_name
-                                        : user.first_name}{" "}
-                                    {message.User
-                                        ? message.User.last_name
-                                        : user.last_name}
-                                </span>
-                                <span className="message-card-time">
-                                    {new Date(
-                                        message.updated_at
-                                    ).toLocaleTimeString([], {
-                                        hour: "numeric",
-                                        minute: "2-digit",
-                                    })}
-                                </span>
-                            </div>
-                            <div className="message-card-makechangebox">
-                                <span
-                                    id={`message-adjust-text-${message.id}`}
-                                    className="message-adjust-text"
-                                ></span>
-                                <span
-                                    onMouseOver={(e) =>
-                                        changeAdjustText("Add Reaction", message.id)
-                                    }
-                                    onMouseOut={(e) =>
-                                        changeAdjustText("", message.id)
-                                    }
-                                    className="message-adjust-reaction"
-                                >
-                                    <OpenModalButton
-                                        modalComponent={
-                                            <ReactionModal
-                                                socket={socket}
-                                                msg={message}
-                                                user={user}
-                                                dispatch={dispatch}
-                                            />
+                                <div>
+                                    <span
+                                        className="message-card-name"
+                                        onClick={(e) => {
+                                            setSelectedUserRightBar(message.User)
+                                            toggleRightPane();
+                                        }}
+                                    >
+                                        {message.User
+                                            ? message.User.first_name
+                                            : user.first_name}{" "}
+                                        {message.User
+                                            ? message.User.last_name
+                                            : user.last_name}
+                                    </span>
+                                    <span className="message-card-time">
+                                        {new Date(
+                                            message.updated_at
+                                        ).toLocaleTimeString([], {
+                                            hour: "numeric",
+                                            minute: "2-digit",
+                                        })}
+                                    </span>
+                                </div>
+
+                                <div className="message-card-makechangebox">
+                                    <span
+                                        id={`message-adjust-text-${message.id}`}
+                                        className="message-adjust-text"
+                                    ></span>
+                                    <span
+                                        onMouseOver={(e) =>
+                                            changeAdjustText("Add Reaction", message.id)
                                         }
-                                        className="far fa-smile"
-                                    />
-                                </span>
-                                {/* <span
+                                        onMouseOut={(e) =>
+                                            changeAdjustText("", message.id)
+                                        }
+                                        className="message-adjust-reaction"
+                                    >
+                                        <OpenModalButton
+                                            modalComponent={
+                                                <ReactionModal
+                                                    socket={socket}
+                                                    msg={message}
+                                                    user={user}
+                                                    dispatch={dispatch}
+                                                />
+                                            }
+                                            className="far fa-smile"
+                                        />
+                                    </span>
+                                    {/* <span
                                 onMouseOver={(e) =>
                                     changeAdjustText("Pin Message", message.id)
                                 }
@@ -423,61 +437,73 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                             >
                                 <i className="far fa-dot-circle"></i>
                             </span> */}
-                                {user.id === message.user_id && (
-                                    <span
-                                        onClick={(e) => {
-                                            editMode(e, message);
-                                            editCount++;
-                                        }}
-                                        onMouseOver={(e) =>
-                                            changeAdjustText(
-                                                "Edit Message",
-                                                message.id
-                                            )
-                                        }
-                                        onMouseOut={(e) =>
-                                            changeAdjustText("", message.id)
-                                        }
-                                        className="message-adjust-edit"
-                                    >
-                                        <i className="far fa-edit"></i>
-                                    </span>
-                                )}
-
-                                {user.id === message.user_id && (
-                                    <span
-                                        onMouseOver={(e) =>
-                                            changeAdjustText(
-                                                "Delete Message",
-                                                message.id
-                                            )
-                                        }
-                                        onMouseOut={(e) =>
-                                            changeAdjustText("", message.id)
-                                        }
-                                        className="message-adjust-delete"
-                                    >
-                                        <OpenModalButton
-                                            modalComponent={
-                                                <DeleteMessageModal
-                                                    socket={socket}
-                                                    msg={message}
-                                                    user={user}
-                                                    dispatch={dispatch}
-                                                />
+                                    {user.id === message.user_id && (
+                                        <span
+                                            onClick={(e) => {
+                                                editMode(e, message);
+                                                editCount++;
+                                            }}
+                                            onMouseOver={(e) =>
+                                                changeAdjustText(
+                                                    "Edit Message",
+                                                    message.id
+                                                )
                                             }
-                                            className="far fa-trash-alt"
-                                        />
-                                    </span>
-                                )}
+                                            onMouseOut={(e) =>
+                                                changeAdjustText("", message.id)
+                                            }
+                                            className="message-adjust-edit"
+                                        >
+                                            <i className="far fa-edit"></i>
+                                        </span>
+                                    )}
+
+                                    {user.id === message.user_id && (
+                                        <span
+                                            onMouseOver={(e) =>
+                                                changeAdjustText(
+                                                    "Delete Message",
+                                                    message.id
+                                                )
+                                            }
+                                            onMouseOut={(e) =>
+                                                changeAdjustText("", message.id)
+                                            }
+                                            className="message-adjust-delete"
+                                        >
+                                            <OpenModalButton
+                                                modalComponent={
+                                                    <DeleteMessageModal
+                                                        socket={socket}
+                                                        msg={message}
+                                                        user={user}
+                                                        dispatch={dispatch}
+                                                    />
+                                                }
+                                                className="far fa-trash-alt"
+                                            />
+                                        </span>
+                                    )}
+                                </div>
+
                             </div>
+
+
+                            <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
+                                {message.content} {message.updated_at !== message.created_at && <span style={{ color: "#888888", paddingLeft: '2px', fontSize: '13px' }}>(edited)</span>}
+                            </div>
+
+                            <div style={{}} className="message-card-footer">
+                                {storeConverter(message, user)}
+                            </div>
+
                         </div>
-                        <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
-                            {message.content}
-                        </div>
-                        {storeConverter(message, user)}
+
+
                     </div>
                 ))}
+
+
             </div>
 
 

@@ -65,6 +65,11 @@ export const OneChannelThunk = (id) => async dispatch => {
     if (response.ok) {
         const data = await response.json();
         dispatch(OneChannel(data));
+        return data
+    }
+    else {
+        const data = await response.json();
+        return data;
     }
 }
 

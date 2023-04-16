@@ -22,7 +22,6 @@ function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
 
             <div id="grid-content" className="grid-content-threecolumn">
 
-                <EditChannel2 />
                 <Messages selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
 
             </div>

@@ -118,6 +118,10 @@ export const AddChannelThunk = (value) => async dispatch => {
         dispatch(AddChannel(data))
         return data
     }
+    else {
+        const failData = await response.json();
+        return failData;
+    }
 }
 
 const channelReducer = (state = initialState, action) => {

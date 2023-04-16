@@ -6,6 +6,8 @@ import { NavLink } from 'react-router-dom';
 
 import * as ChlActions from "../../../store/channel"
 
+import OpenModalButton from '../../OpenModalButton';
+import CreateChannelModal from '../../CreateFormModal/CreateChannelModal';
 function LeftSideLinks() {
 
     const dispatch = useDispatch()
@@ -52,14 +54,20 @@ function LeftSideLinks() {
                         </div>
                     </NavLink>
 
-                    <NavLink exact to={`/channels/new`}>
                         <div>
-                            <button>
+                            {/* <button>
                                 <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>
                                 <span className="ellipsis-if-long">Create New Channel</span>
-                            </button>
+                            </button> */}
+                            <OpenModalButton
+                                modalComponent={
+                                    <CreateChannelModal
+                                        user={sessionUser}
+                                    />}
+                                buttonText={`Create a New Channel`}
+                                className="ellipsis-if-long"
+                            />
                         </div>
-                    </NavLink>
 
                 </div>
 

@@ -82,6 +82,7 @@ function ProfileButton({ user }) {
   }, [showType])
 
   const handleEditUser = async (e) => {
+
     e.preventDefault();
     const data = await dispatch(editUser(first_name, last_name, avatar, bio, id));
     if (data) {
@@ -146,15 +147,25 @@ function ProfileButton({ user }) {
                       <img style={{ borderRadius: '4px', width: '48px', height: '48px' }} src="https://ca.slack-edge.com/T0266FRGM-UQ46QH94Z-gc24d346e359-512" alt="" />
                     }
                   </div>
+
                 </div>
 
               </div>
               <form onSubmit={handleEditUser}>
 
 
-                {errors.length > 0 &&
+                {/* {errors.length > 0 &&
                   <div style={{ padding: '10px 0px 8px 20px', color: 'red', display: 'block' }}>
                     <li>URL is not valid</li>
+                  </div >
+                } */}
+
+
+                {errors.length > 0 &&
+                  <div style={{ paddingTop: '20px', paddingLeft: '10px', color: 'red', display: 'block' }}>
+
+                    {errors.map((error, idx) => <li key={idx}>{error}</li>)}
+
                   </div >
                 }
 
@@ -165,7 +176,7 @@ function ProfileButton({ user }) {
                 <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
 
                 <div>
-                  <input className="edituser-input-field" type="text" value={first_name} onChange={(e) => setFirstName(e.target.value)} placeholder={user.first_name}
+                  <input className="edituser-input-field" type="text" value={first_name} onChange={(e) => setFirstName(e.target.value)}
                     required />
                 </div>
 

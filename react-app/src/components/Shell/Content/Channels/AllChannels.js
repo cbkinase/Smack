@@ -15,19 +15,21 @@ function AllChannels() {
 
     return (
         <>
-            <h2>ALL CHANNELS:</h2>
+            <h2 style={{paddingLeft: "20px", margin: "20px 20px"}}>Explore Channels on Smack</h2>
+            <div>
             {allChannelsArr.map((channel) => (
-                <NavLink onClick={async e => {
+                <NavLink style={{display: "flex", marginBottom: "10px"}} onClick={async e => {
                     await fetch(`/api/channels/${channel.id}/users`, {
                         method: "POST",
 
                     })
                     dispatch(ChlActions.UserChannelThunk())
                 }} to={`/channels/${channel.id}`}>
-                    <div>{`${channel.id} ${channel.name}`}</div>
-                    <div>{channel.subject}</div>
+                    <div style={{paddingLeft: "40px"}}>{`#${channel.id}`}</div>
+                    <div style={{paddingLeft: "20px"}}>{channel.name}</div>
                 </NavLink>
             ))}
+            </div>
         </>
     );
 }

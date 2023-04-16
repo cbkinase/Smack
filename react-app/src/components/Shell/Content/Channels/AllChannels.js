@@ -33,8 +33,8 @@ function AllChannels() {
           </div>
           <input id="channel-search" type="text" placeholder="Search by channel name" value={searchTerm} onChange={handleSearchChange} />
           <div className="channels-list">
-            {filteredChannels.map((channel, index) => {
-              return <NavLink className="channels-list-item" onClick={async e => {
+            {(allChannelsArr.length>0) && filteredChannels.map((channel, index) => {
+              return <NavLink key={index} className="channels-list-item" onClick={async e => {
                 await fetch(`/api/channels/${channel.id}/users`, {
                     method: "POST",
                 })

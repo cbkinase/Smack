@@ -66,6 +66,7 @@ function LeftSideLinks() {
                                     />}
                                 buttonText={`Create a New Channel`}
                                 className="ellipsis-if-long"
+                                renderChatIcon={true}
                             />
                         </div>
 

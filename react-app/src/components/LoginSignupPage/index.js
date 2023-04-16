@@ -192,19 +192,21 @@ function LoginSignupPage() {
 
             {/* FOOTER  */}
             < div className="footer-holder" >
+
                 <div className="footer">
-                    <div className="footer-link">Privacy Policy</div>
-                    <div className="footer-link">Contact Us</div>
-                    <div>
-                        <a href="https://github.com/brianhitchin/wack" target="_blank" rel="noreferrer">
-                            <button className="footer-button"><i className="fa fa-github"
-                                style={{ fontSize: '18px' }}></i></button>
-                        </a>
-                        <a href="https://www.linkedin.com/in/brian-hitchin-940b57268/" target="_blank" rel="noreferrer">
-                            <button className="footer-button"><i className="fa fa-linkedin-square"
-                                style={{ fontSize: '19px' }}></i></button>
-                        </a>
+
+                    <div className="footer-link">Contributors:&nbsp;&nbsp;Cameron Beck,&nbsp;&nbsp;Brian Hitchin,&nbsp;&nbsp;Cynthia Liang,&nbsp;&nbsp;Dave Titus</div>
+
+                    <div className="footer-link">
+                        <span>
+                            <a className="footer-button" href="https://github.com/brianhitchin/wack" target="_blank" rel="noreferrer">
+                                <span>GitHub Repo</span>
+                                <button className="footer-button"><i className="fa fa-github"
+                                    style={{ fontSize: '14px' }}></i></button>
+                            </a>
+                        </span>
                     </div>
+
                 </div >
             </div >
 

@@ -21,7 +21,6 @@ export default function DeleteMessageModal({ user, msg, socket }) {
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "10px 15px 10px 15px",
-                border: "5px solid black",
             }}
         >
             <h2

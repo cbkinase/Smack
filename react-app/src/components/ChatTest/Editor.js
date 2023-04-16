@@ -14,7 +14,7 @@ export default function Editor({ functions, creating, setChatInput }) {
                     <div
                         style={{
                             backgroundColor: "#f2f2f2",
-                            padding: "15px",
+                            padding: "8px 15px",
                             borderTop: "2px solid #dddddd",
                             borderLeft: "2px solid #dddddd",
                             borderRight: "2px solid #dddddd",

@@ -14,11 +14,13 @@ import { useParams } from "react-router-dom";
 import Editor from "../../../ChatTest/Editor";
 import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
+import { UserChannelThunk } from "../../../../store/channel";
+import DeleteMessageModal from "../../../DeleteMessageModal"
 let socket;
 let updatedMessage;
 
-const Messages = () => {
-    let editCount = 0;
+const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
+    let editing = false;
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);
@@ -54,6 +56,13 @@ const Messages = () => {
 
     useEffect(() => {
         dispatch(OneChannelThunk(channelId));
+        (async e => {
+            await fetch(`/api/channels/${channelId}/users`, {
+                method: "POST",
+
+            })
+            dispatch(UserChannelThunk())
+        })()
     }, []);
 
     useEffect(() => {
@@ -63,7 +72,8 @@ const Messages = () => {
     useEffect(() => {
         dispatch(getChannelMessages(channelId)).then(() => {
             const element = document.getElementById("grid-content");
-            element.scrollTop = element.scrollHeight;
+            if (element)
+                element.scrollTop = element.scrollHeight;
         });
     }, [dispatch, messages, channelId]);
 
@@ -147,39 +157,45 @@ const Messages = () => {
 
         let editForm = document.createElement("form");
         editForm.id = "edit-msg-form";
+
         editForm.onsubmit = (e) => handleEdit(e, msg);
 
-        let editInputBox = document.createElement("input");
+        let editInputBox = document.createElement("textarea");
         editInputBox.onchange = updateEditMessageInput;
 
         editInputBox.value = msg.content;
-        editInputBox.style.backgroundColor = "#f2f2f2";
-        editInputBox.style.padding = "15px";
-        editInputBox.style.borderTop = "2px solid #dddddd";
-        editInputBox.style.borderLeft = "2px solid #dddddd";
-        editInputBox.style.borderRight = "2px solid #dddddd";
-        editInputBox.style.borderTopLeftRadius = "12px";
-        editInputBox.style.borderTopRightRadius = "12px";
-        editInputBox.style.height = "60px";
+        editInputBox.style.backgroundColor = "#FFFFFF";
+        editInputBox.style.padding = "5px 10px";
+        editInputBox.style.marginTop = "5px";
+        editInputBox.style.resize = "none";
+        editInputBox.style.border = "1px solid #dddddd";
+        editInputBox.style.borderRadius = "8px";
+        editInputBox.style.width = "100%";
 
         let editInputSubmit = document.createElement("button");
         editInputSubmit.type = "submit";
-        editInputSubmit.textContent = "Edit Message";
+        editInputSubmit.textContent = "Save";
+        editInputSubmit.style.padding = "1px 4px";
+        editInputSubmit.style.marginRight = "5px";
+        editInputSubmit.style.marginTop = "4px";
 
         let cancelEditInput = document.createElement("button");
         cancelEditInput.textContent = "Cancel";
+        cancelEditInput.style.padding = "1px 4px";
+        cancelEditInput.style.marginTop = "4px";
         cancelEditInput.onclick = (e) => {
             document.getElementById("edit-msg-form").remove();
-            editCount--;
+            editing = false;
         };
 
         editForm.appendChild(editInputBox);
         editForm.appendChild(editInputSubmit);
         editForm.appendChild(cancelEditInput);
-        if (!editCount) content.appendChild(editForm);
+        if (!editing) content.appendChild(editForm);
     };
 
     const handleEdit = async (e, msg) => {
+        document.getElementById("edit-msg-form").remove();
         e.preventDefault();
         await dispatch(
             editMessage(
@@ -253,33 +269,36 @@ const Messages = () => {
 
         return countEntries.map((el) => (
             <>
-                <div className="message-card-footer">
-                    {hasUserReacted(msg, user, el[0]) ? (
-                        <button
-                            className="message-card-reaction"
-                            onClick={(e) =>
-                                handleDeleteReaction(
-                                    e,
-                                    hasUserReacted(msg, user, el[0]),
-                                    msg.id
-                                )
-                            }
-                        >
-                            {el[0]} {counts[el[0]].frequency}
-                        </button>
-                    ) : (
-                        <button
-                            className="message-card-reaction"
-                            onClick={(e) => handleAddReaction(e, msg, el[0])}
-                        >
-                            {el[0]}{" "}
-                            <span className="message-card-reaction-count">
-                                {" "}
-                                {counts[el[0]].frequency}
-                            </span>
-                        </button>
-                    )}
-                </div>
+
+                {hasUserReacted(msg, user, el[0]) ? (
+                    <button
+                        style={{ padding: "0px 6px", backgroundColor: "#e7f3f9", border: "1px solid #bad3f2" }}
+                        className="message-card-reaction"
+                        onClick={(e) =>
+                            handleDeleteReaction(
+                                e,
+                                hasUserReacted(msg, user, el[0]),
+                                msg.id
+                            )
+                        }
+                    >
+                        <p style={{ paddingRight: "5px" }}>{el[0]}</p> <p style={{ fontSize: '12px', color: "#333333" }}>{counts[el[0]].frequency}</p>
+                    </button >
+                ) : (
+                    <button
+                        style={{ padding: "0px 6px" }}
+                        className="message-card-reaction"
+                        onClick={(e) => handleAddReaction(e, msg, el[0])}
+                    >
+                        {el[0]}{" "}
+                        <span className="message-card-reaction-count">
+
+                            <p style={{ paddingRight: "5px" }}>{counts[el[0]].frequency}</p>
+                        </span>
+                    </button>
+                )
+                }
+
             </>
         ));
     }
@@ -304,96 +323,12 @@ const Messages = () => {
             document.getElementById("grid-rightside").className =
                 "grid-rightside";
         }
-        toggleLeftPane();
+        window.toggleLeftPane();
     }
 
-    function toggleLeftPane() {
-        if (
-            document.documentElement.clientWidth > 1027 ||
-            (document.documentElement.clientWidth >= 717 &&
-                document.getElementById("grid-container").className ===
-                    "grid-container-hiderightside")
-        ) {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading-threecolumn";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside-threecolumn";
-            document.getElementById("grid-content-heading").className =
-                "grid-content-heading-threecolumn";
-            document.getElementById("grid-content").className =
-                "grid-content-threecolumn";
-            document.getElementById("grid-editor").className =
-                "grid-editor-threecolumn";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "none";
-            document.getElementById("hideshow-leftpane-arrow").style.display =
-                "none";
-        } else {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading-closed";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside-closed";
-            document.getElementById("grid-content-heading").className =
-                "grid-content-heading";
-            document.getElementById("grid-content").className = "grid-content";
-            document.getElementById("grid-editor").className = "grid-editor";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "block";
-            if (
-                document.getElementById("grid-leftside-heading").className ===
-                "grid-leftside-heading-closed"
-            ) {
-                document.getElementById(
-                    "hideshow-leftpane-hamburger"
-                ).style.display = "block";
-                document.getElementById(
-                    "hideshow-leftpane-arrow"
-                ).style.display = "none";
-            } else {
-                document.getElementById(
-                    "hideshow-leftpane-hamburger"
-                ).style.display = "none";
-                document.getElementById(
-                    "hideshow-leftpane-arrow"
-                ).style.display = "block";
-            }
-        }
-    }
 
-    function hideShowLeftPane() {
-        if (
-            document.getElementById("grid-leftside-heading").className ===
-            "grid-leftside-heading-closed"
-        ) {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "none";
-            document.getElementById("hideshow-leftpane-arrow").style.display =
-                "block";
-        } else {
-            document.getElementById("grid-leftside-heading").className =
-                "grid-leftside-heading-closed";
-            document.getElementById("grid-leftside").className =
-                "grid-leftside-closed";
-            document.getElementById(
-                "hideshow-leftpane-hamburger"
-            ).style.display = "block";
-            document.getElementById("hideshow-leftpane-arrow").style.display =
-                "none";
-        }
-    }
 
-    window.addEventListener("resize", toggleLeftPane);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        toggleLeftPane();
-    });
 
     const messageFunctions = {
         sendChat,
@@ -405,83 +340,98 @@ const Messages = () => {
     };
     return user && currentChannel && allMessages ? (
         <>
-            {Object.values(allMessages).map((message, ind) => (
-                <div
-                    key={message.id}
-                    id={`message-${message.id}`}
-                    className="message-card"
-                >
-                    <div></div>
-                    <div>
-                        <img
-                            src={
-                                message.User ? message.User.avatar : user.avatar
-                            }
-                            alt={`${
-                                message.User
+
+            <div style={{ marginBottom: '10px' }}>
+
+
+
+                {Object.values(allMessages).map((message, ind) => (
+
+
+
+                    <div className="message-card"
+                        key={message.id}
+                        id={`message-${message.id}`}
+                    >
+
+
+
+                        <div>
+                            <img
+                                src={
+                                    message.User ? message.User.avatar : user.avatar
+                                }
+                                alt={`${message.User
                                     ? message.User.first_name
                                     : user.first_name
-                            } ${
-                                message.User
-                                    ? message.User.last_name
-                                    : user.last_name
-                            }`}
-                            style={{
-                                borderRadius: "5px",
-                                width: "36px",
-                                height: "36px",
-                            }}
-                        ></img>
-                    </div>
-                    <div className="message-card-content">
-                        <div className="message-card-header">
-                            <span
-                                className="message-card-name"
-                                onClick={(e) => toggleRightPane()}
-                            >
-                                {message.User
-                                    ? message.User.first_name
-                                    : user.first_name}{" "}
-                                {message.User
-                                    ? message.User.last_name
-                                    : user.last_name}
-                            </span>
-                            <span className="message-card-time">
-                                {new Date(
-                                    message.updated_at
-                                ).toLocaleTimeString([], {
-                                    hour: "numeric",
-                                    minute: "2-digit",
-                                })}
-                            </span>
+                                    } ${message.User
+                                        ? message.User.last_name
+                                        : user.last_name
+                                    }`}
+                                style={{
+                                    borderRadius: "5px",
+                                    width: "36px",
+                                    height: "36px",
+                                }}
+                            ></img>
                         </div>
-                        <div className="message-card-makechangebox">
-                            <span
-                                id={`message-adjust-text-${message.id}`}
-                                className="message-adjust-text"
-                            ></span>
-                            <span
-                                onMouseOver={(e) =>
-                                    changeAdjustText("Add Reaction", message.id)
-                                }
-                                onMouseOut={(e) =>
-                                    changeAdjustText("", message.id)
-                                }
-                                className="message-adjust-reaction"
-                            >
-                                <OpenModalButton
-                                    modalComponent={
-                                        <ReactionModal
-                                            socket={socket}
-                                            msg={message}
-                                            user={user}
-                                            dispatch={dispatch}
+
+
+                        <div className="message-card-content">
+
+                            <div className="message-card-header">
+                                <div>
+                                    <span
+                                        className="message-card-name"
+                                        onClick={(e) => {
+                                            setSelectedUserRightBar(message.User)
+                                            toggleRightPane();
+                                        }}
+                                    >
+                                        {message.User
+                                            ? message.User.first_name
+                                            : user.first_name}{" "}
+                                        {message.User
+                                            ? message.User.last_name
+                                            : user.last_name}
+                                    </span>
+                                    <span className="message-card-time">
+                                        {new Date(
+                                            message.updated_at
+                                        ).toLocaleTimeString([], {
+                                            hour: "numeric",
+                                            minute: "2-digit",
+                                        })}
+                                    </span>
+                                </div>
+
+                                <div className="message-card-makechangebox">
+                                    <span
+                                        id={`message-adjust-text-${message.id}`}
+                                        className="message-adjust-text"
+                                    ></span>
+                                    <span
+                                        onMouseOver={(e) =>
+                                            changeAdjustText("Add Reaction", message.id)
+                                        }
+                                        onMouseOut={(e) =>
+                                            changeAdjustText("", message.id)
+                                        }
+                                        className="message-adjust-reaction"
+                                    >
+                                        <OpenModalButton
+                                            modalComponent={
+                                                <ReactionModal
+                                                    socket={socket}
+                                                    msg={message}
+                                                    user={user}
+                                                    dispatch={dispatch}
+                                                />
+                                            }
+                                            className="far fa-smile"
                                         />
-                                    }
-                                    className="far fa-smile"
-                                />
-                            </span>
-                            {/* <span
+                                    </span>
+                                    {/* <span
                                 onMouseOver={(e) =>
                                     changeAdjustText("Pin Message", message.id)
                                 }
@@ -493,52 +443,82 @@ const Messages = () => {
                             >
                                 <i className="far fa-dot-circle"></i>
                             </span> */}
-                            {user.id === message.user_id && (
-                                <span
-                                    onClick={(e) => {
-                                        editMode(e, message);
-                                        editCount++;
-                                    }}
-                                    onMouseOver={(e) =>
-                                        changeAdjustText(
-                                            "Edit Message",
-                                            message.id
-                                        )
-                                    }
-                                    onMouseOut={(e) =>
-                                        changeAdjustText("", message.id)
-                                    }
-                                    className="message-adjust-edit"
-                                >
-                                    <i className="far fa-edit"></i>
-                                </span>
-                            )}
-                            {user.id === message.user_id && (
-                                <span
-                                    onClick={(e) => handleDelete(e, message)}
-                                    onMouseOver={(e) =>
-                                        changeAdjustText(
-                                            "Delete Message",
-                                            message.id
-                                        )
-                                    }
-                                    onMouseOut={(e) =>
-                                        changeAdjustText("", message.id)
-                                    }
-                                    className="message-adjust-delete"
-                                >
-                                    <i className="far fa-trash-alt"></i>
-                                </span>
-                            )}
+                                    {user.id === message.user_id && (
+                                        <span
+                                            onClick={(e) => {
+                                                editMode(e, message);
+                                                editing = true;
+                                            }}
+                                            onMouseOver={(e) =>
+                                                changeAdjustText(
+                                                    "Edit Message",
+                                                    message.id
+                                                )
+                                            }
+                                            onMouseOut={(e) =>
+                                                changeAdjustText("", message.id)
+                                            }
+                                            className="message-adjust-edit"
+                                        >
+                                            <i className="far fa-edit"></i>
+                                        </span>
+                                    )}
+
+                                    {user.id === message.user_id && (
+                                        <span
+                                            onMouseOver={(e) =>
+                                                changeAdjustText(
+                                                    "Delete Message",
+                                                    message.id
+                                                )
+                                            }
+                                            onMouseOut={(e) =>
+                                                changeAdjustText("", message.id)
+                                            }
+                                            className="message-adjust-delete"
+                                        >
+                                            <OpenModalButton
+                                                modalComponent={
+                                                    <DeleteMessageModal
+                                                        socket={socket}
+                                                        msg={message}
+                                                        user={user}
+                                                        dispatch={dispatch}
+                                                    />
+                                                }
+                                                className="far fa-trash-alt"
+                                            />
+                                        </span>
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
+                                {message.content} {message.updated_at !== message.created_at && <span style={{ color: "#888888", paddingLeft: '2px', fontSize: '13px' }}>(edited)</span>}
+                            </div>
+
+                            <div style={{}} className="message-card-footer">
+                                {storeConverter(message, user)}
+                            </div>
+
                         </div>
+
+
                     </div>
-                    <div id={`msg-content-${message.id}`}>
-                        {message.content}
-                    </div>
-                    {storeConverter(message, user)}
-                </div>
-            ))}
-            <Editor functions={messageFunctions} creating={true} />
+                ))}
+
+
+            </div>
+
+
+            <div id="editor-holder" style={{ position: 'sticky', bottom: 0, backgroundColor: '#FFFFFF', width: '100%', overflow: 'hidden' }}>
+                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} />
+            </div>
+
+
+
         </>
     ) : null;
 };

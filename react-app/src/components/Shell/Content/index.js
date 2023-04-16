@@ -6,7 +6,7 @@ import OneChannel from "../../OneChannel";
 import CreateChannel from "../Content/Channels/ChannelCreator";
 import EditChannel2 from "../Content/Channels/ChannelEditor";
 
-function Content() {
+function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
     return (
         <>
             <div
@@ -14,15 +14,20 @@ function Content() {
                 className="grid-content-heading-threecolumn"
             >
                 <ChannelHeader />
+
             </div>
 
-            <EditChannel2 />
+
+
+
             <div id="grid-content" className="grid-content-threecolumn">
-                <Messages />
+
+                <Messages selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+
             </div>
-            <div id="grid-editor" className="grid-editor-threecolumn">
-                {/* <Editor /> */}
-            </div>
+            {/* <div id="grid-editor" className="grid-editor-threecolumn"> */}
+            {/* <Editor /> */}
+            {/* </div> */}
         </>
     );
 }

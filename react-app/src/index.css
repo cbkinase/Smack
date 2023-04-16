@@ -1,5 +1,13 @@
 /* TODO Add site wide styles */
 
+.far.fa-trash-alt {
+    border: none;
+}
+
+.far.fa-smile {
+    border: none;
+}
+
 * {
     box-sizing: border-box;
     padding: 0;
@@ -202,36 +210,33 @@ button:hover {
 
 .footer {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 5px;
     width: 100%;
 }
 
 .footer-link {
-    font-size: 15px;
+    font-size: 13px;
     color: #969696;
-    cursor: pointer;
 }
 
-.footer-link:hover {
-    text-decoration: underline;
-}
 
 .footer-button {
     background-color: inherit;
-    margin: 0px 5px;
+    padding: 0px 4px;
     border: none;
     border-radius: 4px;
     font-size: 15px;
     color: #969696;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .footer-button:hover {
     /* background-color: #f3f3f3; */
-    filter: invert(100%);
+    color: #6b6b6b;
 }
 
 /* %%%%%%%%%%%% MAIN GRID LAYOUT %%%%%%%%%%% */
@@ -241,7 +246,7 @@ button:hover {
     height: 100vh;
     display: grid;
     grid-template-columns: 294px 1fr 345px;
-    grid-template-rows: 44px 55px 1fr 150px;
+    grid-template-rows: 44px 55px 1fr 0px;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
@@ -256,7 +261,7 @@ button:hover {
     height: 100vh;
     display: grid;
     grid-template-columns: 294px 1fr;
-    grid-template-rows: 44px 55px 1fr 150px;
+    grid-template-rows: 44px 55px 1fr 0px;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
@@ -515,6 +520,14 @@ button:hover {
     background-color: inherit;
     padding: 2px 8px;
     border-radius: 5px;
+}
+
+#hideshow-leftpane-hamburger {
+    display: none;
+}
+
+#hideshow-leftpane-arrow {
+    display: none;
 }
 
 .content-header-channelname:hover {
@@ -793,11 +806,11 @@ button:hover {
 .message-card-makechangebox span {
     padding: 1px 3px;
     border-radius: 4px;
-    color: #a8a8a8;
+    color: #1c1c1c;
 }
 
 .message-card-makechangebox span:hover {
-    color: #555555;
+    color: #1c1c1c;
     cursor: pointer;
 }
 

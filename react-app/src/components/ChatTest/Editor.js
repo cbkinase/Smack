@@ -1,6 +1,12 @@
-export default function Editor({ functions, creating }) {
+import ChatEmojiModal from "../ChatEmojiModal";
+import OpenModalButton from "../OpenModalButton";
+
+export default function Editor({ functions, creating, setChatInput }) {
     const { sendChat, chatInput, updateChatInput, currentChannel, channelId } =
         functions;
+    function changeAdjustText(text, id) {
+        document.getElementById(`message-adjust-text-${id}`).textContent = text;
+    }
     return (
         <>
             <div id="grid-editor" className="grid-editor-threecolumn">
@@ -8,7 +14,7 @@ export default function Editor({ functions, creating }) {
                     <div
                         style={{
                             backgroundColor: "#f2f2f2",
-                            padding: "15px",
+                            padding: "8px 15px",
                             borderTop: "2px solid #dddddd",
                             borderLeft: "2px solid #dddddd",
                             borderRight: "2px solid #dddddd",
@@ -16,7 +22,23 @@ export default function Editor({ functions, creating }) {
                             borderTopRightRadius: "12px",
                         }}
                     >
-                        <span>Bold | Italic | Strikethrough | etc.</span>
+                        <span
+
+                            className="message-adjust-reaction"
+                        >
+                            <OpenModalButton
+                                modalComponent={
+                                    <ChatEmojiModal
+                                        setChatInput={setChatInput}
+                                        chatInput={chatInput}
+                                    />
+                                }
+                                className="far fa-smile"
+                            />
+                        </span>
+                        {chatInput.length > 300 && <div style={{ color: "red" }}>
+                            {2000 - chatInput.length} Characters Remaining
+                        </div>}
                     </div>
                     <div>
                         <form
@@ -27,6 +49,7 @@ export default function Editor({ functions, creating }) {
                             }
                         >
                             <input
+                                className="editor-focus"
                                 style={{
                                     backgroundColor: "#FFFFFF",
                                     color: "#00000",
@@ -48,10 +71,11 @@ export default function Editor({ functions, creating }) {
                                         : " "
                                 }
                             />
-                            <button hidden type="submit">
+                            <button hidden disabled={chatInput.length === 0 || chatInput.length > 2000} type="submit">
                                 Send
                             </button>
                         </form>
+                        <div style={{ height: '20px' }}></div>
                     </div>
                 </div>
             </div>

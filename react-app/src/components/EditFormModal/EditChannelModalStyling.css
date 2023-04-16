@@ -1,0 +1,191 @@
+/* ===== MODAL / MODAL FORMS ===== */
+.edit-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    /* background-color: rgba(0, 0, 0, 0.5); */
+    opacity: 0;
+    transition: all 0.1s ease-in-out;
+    pointer-events: none;
+    padding-bottom: 200px;
+    color: #1d1c1d;
+
+}
+.edit-modal-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 80vw;
+    max-width: 580px;
+    background-color: #F8F7F9;
+    
+}
+.edit-modal-header {
+    align-self: center;
+    padding: 12px 10px 20px 10px;
+    width: 100%;
+    background-color: white;
+
+}
+
+.edit-modal-title {
+    font-weight: 1000;
+    font-size: 20px;
+    color: #1d1c1d;
+    margin-left: 4%;
+}
+
+.edit-modal-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    
+}
+
+.edit-modal-form-box {
+    align-self: center;
+    width: 90%;
+    border-radius: 12px;
+    border: 1px solid #E2E3E2;
+    padding: 5px 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+    
+}
+
+.edit-modal-form label{
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.edit-modal-form input{
+    width: 100%;
+    margin: 15px 0px 16px 0px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1px solid #7b7b7b50;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.edit-modal-created-div {
+    border-top: 1px solid #E2E3E2;
+}
+
+.edit-modal-created-div > label {
+    margin-top: 10px;
+}
+
+.edit-modal-submit-button {
+    background-color: #993399;
+    margin-top: 10px;
+    border: 0px;
+    border-radius: 7px;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 7px 0px;
+}
+
+.edit-modal-border {
+    border-top: 1px solid #E2E3E2;
+    margin-bottom: 10px;
+}
+
+
+#edit-owner-name {
+    width: 100%;
+    margin: 10px 0px 16px 0px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1px solid #7b7b7b50;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.edit-modal-close-btn {
+    position: absolute;
+    top: 7%;
+    right: 5%;
+    background-color: inherit;
+    border: none;
+    transform: scale(1.1, 1);
+    color: #797979;
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.edit-modal-close-btn:hover {
+    background-color: #efefef;
+    color: #494949;
+}
+
+.edit-modal-form > button {
+    align-self: flex-end;
+}
+
+.decorated-button-delete-channel {
+    width: 100%;
+}
+
+.decorated-button-delete-channel[disabled=disabled],
+.decorated-button-delete-channel:disabled {
+    border-radius: 8px;
+    cursor: not-allowed;
+    color: #1d1c1d;
+    padding: 8px 16px;
+    background-color: #E2E3E2;
+    border-color: #E2E3E2;
+}
+
+.decorated-button-delete-channel:not(:disabled) {
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    padding: 8px 16px;
+    background-color: #631965;
+    border-color: #631965;
+}
+
+.decorated-button-delete-channel:not(:disabled):hover {
+    background-color: #350d36;
+    border-color: #350d36;
+}
+
+.decorated-button-edit-channel {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.decorated-button-edit-channel[disabled=disabled], .decorated-button-edit-channel:disabled {
+    border-radius: 8px;
+    cursor: not-allowed;
+    color: #1d1c1d;
+    padding: 8px 16px;
+    background-color: #E2E3E2;
+    border-color: #E2E3E2;
+}
+
+.decorated-button-edit-channel:not(:disabled) {
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    padding: 8px 16px;
+    background-color: #631965;
+    border-color: #631965;
+}
+
+
+
+
+/* Error handling */
+.edit-errors {
+    color: red;
+}

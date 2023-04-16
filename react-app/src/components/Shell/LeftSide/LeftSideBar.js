@@ -6,6 +6,8 @@ import { NavLink } from 'react-router-dom';
 
 import * as ChlActions from "../../../store/channel"
 
+import OpenModalButton from '../../OpenModalButton';
+import CreateChannelModal from '../../CreateFormModal/CreateChannelModal';
 function LeftSideLinks() {
 
     const dispatch = useDispatch()
@@ -33,12 +35,17 @@ function LeftSideLinks() {
                         <div>
                             <button>
                                 <span style={{ width: "20px" }}><i className="fa fa-newspaper-o"></i></span>
-                                <span className="ellipsis-if-long">All Channels</span>
+                                <span className="ellipsis-if-long">Explore Channels</span>
                             </button>
                         </div>
                     </NavLink>
-                    
-                    <NavLink exact to={`/channels/direct`}>
+
+                    <NavLink onClick={
+                        e => {
+                            e.preventDefault();
+                            alert("Direct Message Feature Coming Soon")
+                        }
+                    } exact to={`/channels/direct`}>
                         <div>
                             <button>
                                 <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
@@ -47,14 +54,20 @@ function LeftSideLinks() {
                         </div>
                     </NavLink>
 
-                    <NavLink exact to={`/channels/new`}>
                         <div>
-                            <button>
+                            {/* <button>
                                 <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>
                                 <span className="ellipsis-if-long">Create New Channel</span>
-                            </button>
+                            </button> */}
+                            <OpenModalButton
+                                modalComponent={
+                                    <CreateChannelModal
+                                        user={sessionUser}
+                                    />}
+                                buttonText={`Create a New Channel`}
+                                className="ellipsis-if-long"
+                            />
                         </div>
-                    </NavLink>
 
                 </div>
 
@@ -78,7 +91,7 @@ function LeftSideLinks() {
                                 </button>
                             </div>
                         </NavLink>
-                        
+
                     )
                 })}
 

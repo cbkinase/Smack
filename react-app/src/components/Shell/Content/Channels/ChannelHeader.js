@@ -3,13 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import * as ChlActions from "../../../../store/channel";
+import OpenModalButton from '../../../OpenModalButton';
+import EditChannelModal from '../../../EditFormModal/EditChannelModal';
 
 function ChannelHeader(props) {
+    const user = useSelector(state => state.session.user)
 
     const { setPane } = props;
 
     const handlePane = (pane) => {
-        setPane(pane);
+        // setPane(pane);
     }
 
     const { channelId } = useParams();
@@ -36,10 +39,21 @@ function ChannelHeader(props) {
     return (
         <div className="content-heading-holder">
             <div className="content-header-left">
-                <button className="content-header-channelname" style={{ whiteSpace: 'nowrap' }} onClick={() => handlePane('editChannel')}>
+                {/* <button className="content-header-channelname" style={{ whiteSpace: 'nowrap' }} onClick={() => handlePane('editChannel')}>
                     # {currentChannel.length && currentChannel[0].name}
                     <i style={{ fontSize: "12px", marginLeft: "3px" }} className="fas fa-angle-down"></i>
-                </button>
+                </button> */}
+                <OpenModalButton
+                    modalComponent={
+                        <EditChannelModal 
+                            channelId={channelId}
+                            user={user}
+                            currChannel={currentChannel}
+                            
+                        />}
+                    buttonText={currentChannel.length && currentChannel[0].name}
+                    className="content-header-channelname"
+                 />
                 <div className="content-header-channeltopic">
                     {currentChannel.length && currentChannel[0].subject}
                 </div>

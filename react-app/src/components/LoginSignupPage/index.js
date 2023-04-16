@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { login, signUp } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
+import signinupLogo from './smack-logo-black.svg'
 
 function LoginSignupPage() {
     const dispatch = useDispatch();
+    const history = useHistory();
     const sessionUser = useSelector((state) => state.session.user);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -60,6 +62,7 @@ function LoginSignupPage() {
         if (data) {
             setErrors(data);
         }
+        history.push("/channels/explore")
     };
 
     const handleSubmitSignup = async (e) => {
@@ -82,7 +85,7 @@ function LoginSignupPage() {
             <div className="login-signup" style={{ height: '100%' }}>
 
                 <div style={{ textAlign: 'center' }}>
-                    <img src="smack-logo-black.svg" alt="Smack" style={{ width: '145px ' }} />
+                    <img src={`${signinupLogo}`} alt="Smack" style={{ width: '145px ' }} />
                 </div>
 
                 <div ref={formTitle}
@@ -191,19 +194,21 @@ function LoginSignupPage() {
 
             {/* FOOTER  */}
             < div className="footer-holder" >
+
                 <div className="footer">
-                    <div className="footer-link">Privacy Policy</div>
-                    <div className="footer-link">Contact Us</div>
-                    <div>
-                        <a href="https://github.com/brianhitchin/wack" target="_blank" rel="noreferrer">
-                            <button className="footer-button"><i className="fa fa-github"
-                                style={{ fontSize: '18px' }}></i></button>
-                        </a>
-                        <a href="https://www.linkedin.com/in/brian-hitchin-940b57268/" target="_blank" rel="noreferrer">
-                            <button className="footer-button"><i className="fa fa-linkedin-square"
-                                style={{ fontSize: '19px' }}></i></button>
-                        </a>
+
+                    <div className="footer-link">Contributors:&nbsp;&nbsp;Cameron Beck,&nbsp;&nbsp;Brian Hitchin,&nbsp;&nbsp;Cynthia Liang,&nbsp;&nbsp;Dave Titus</div>
+
+                    <div className="footer-link">
+                        <span>
+                            <a className="footer-button" href="https://github.com/brianhitchin/wack" target="_blank" rel="noreferrer">
+                                <span>GitHub Repo</span>
+                                <button className="footer-button"><i className="fa fa-github"
+                                    style={{ fontSize: '14px' }}></i></button>
+                            </a>
+                        </span>
                     </div>
+
                 </div >
             </div >
 

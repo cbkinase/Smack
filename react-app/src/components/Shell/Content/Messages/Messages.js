@@ -317,7 +317,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             document.getElementById("grid-rightside").className =
                 "grid-rightside";
         }
-        // window.toggleLeftPane();
+        window.toggleLeftPane();
     }
 
 

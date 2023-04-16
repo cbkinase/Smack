@@ -31,7 +31,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (Object.values(errors).length) return alert(`Oops, something went wrong with renaming the channel. Please try again.`);
 
         dispatch(
@@ -62,18 +62,18 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
         currChannel.length && user.id === currChannel[0].owner_id ?
             (
                 <div className="edit-modal-container">
-                    <div className='edit-modal-header'>
+                    <div style={{paddingLeft: "17px"}}className='edit-modal-header'>
                         <div>&nbsp;</div>
                         <div className='edit-modal-title'>{`# ${currChannel[0].name}`}</div>
-                
+
                         <button className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
                         </button>
                     </div>
                     <div className='edit-modal-tabs-menu'></div>
-                    
+
                     <form onSubmit={handleSubmit} className="edit-modal-form">
-                        
+
                         <div className="edit-modal-form-box">
                             <ul style={{ padding: '0px', margin: '2px 0px 20px 8px', color: 'red' }}>
                                 {Object.values(errors).map((error, idx) => (
@@ -82,7 +82,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                                     </li>
                                 ))}
                             </ul>
-                            <label htmlFor="name"> Channel name </label>
+                            <label style={{paddingLeft: "7px"}} htmlFor="name"> Channel name </label>
                             <input
                                 type="text"
                                 id="name"
@@ -91,7 +91,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                                 onChange={(e) => setName(e.target.value)}
                             ></input>
                             <div className="edit-modal-border"></div>
-                            <label htmlFor="subject"> Topic </label>
+                            <label style={{paddingLeft: "7px"}} htmlFor="subject"> Topic </label>
                             <input
                                 type="text"
                                 id="subject"
@@ -109,18 +109,18 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                                 Edit channel
                             </button>
                         </div>
-                        
+
                         <div className="edit-modal-form-box">
-                            <div>Created by</div>
+                            <div style={{paddingLeft: "7px", fontWeight: "bold"}}>Created by</div>
                             <div id="edit-owner-name">{`${owner[0].username}`}</div>
                             <button className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
                         </div>
-                        
-                        
+
+
                     </form>
                 </div>
             )
-        : 
+        :
             (
                 <div className="edit-modal-container">
                     <div className='edit-modal-header'>

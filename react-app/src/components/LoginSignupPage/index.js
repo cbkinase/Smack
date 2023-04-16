@@ -61,8 +61,9 @@ function LoginSignupPage() {
         const data = await dispatch(login(email, password));
         if (data) {
             setErrors(data);
+            return
         }
-        history.push("/channels/explore")
+        history.push("/channels/explore");
     };
 
     const handleSubmitSignup = async (e) => {
@@ -71,10 +72,13 @@ function LoginSignupPage() {
             const data = await dispatch(signUp(username, email, password, first_name, last_name));
             if (data) {
                 setErrors(data)
+                return
             }
         } else {
             setErrors(['Password does not match confirmation password.']);
+            return
         }
+        history.push("/channels/explore");
     };
 
 

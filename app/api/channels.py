@@ -19,7 +19,7 @@ def all_channels():
 def user_channels():
     user = User.query.get(current_user.id)
     user_channels = user.channel
-    print(user_channels)
+    # print(user_channels)
 
     return {"user_channels":[channel.to_dict() for channel in user_channels]}, 200
 
@@ -146,7 +146,7 @@ def get_all_channel_members(channel_id):
 @login_required
 def delete_channel_member(channel_id, user_id):
     # Need to check to make sure the deleter is the channel owner
-    print("hi")
+    # print("hi")
     channel = Channel.query.get(channel_id)
     user_to_delete = User.query.get(user_id)
 

@@ -117,7 +117,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
         socket.on("addReaction", (reaction) => {
             setReactions((reactions) => [...reactions, reaction]);
-            console.log(reactions);
+            // console.log(reactions);
         });
         // when component unmounts, disconnect
         return () => {

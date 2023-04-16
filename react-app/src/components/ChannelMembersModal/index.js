@@ -2,7 +2,7 @@ import { useModal } from "../../context/Modal";
 import { useState } from "react";
 
 export default function ChannelMembersModal({currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar}) {
-    console.log(selectedUserRightBar);
+    // console.log(selectedUserRightBar);
     function toggleRightPane(state) {
         if (state === "close") {
             document.getElementById("grid-container").className =

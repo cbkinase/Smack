@@ -7,6 +7,7 @@ function OpenModalButton({
     onButtonClick, // optional: callback function that will be called once the button that opens the modal is clicked
     onModalClose, // optional: callback function that will be called once the modal is closed
     className,
+    renderChatIcon
 }) {
     const { setModalContent, setOnModalClose } = useModal();
 
@@ -18,7 +19,8 @@ function OpenModalButton({
 
     return (
         <button  style={{ whiteSpace: 'nowrap' }} className={className} onClick={onClick}>
-            {buttonText}
+        {renderChatIcon && <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>}
+        {buttonText}
         </button>
     );
 }

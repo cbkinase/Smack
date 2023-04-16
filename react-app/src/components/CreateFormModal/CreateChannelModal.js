@@ -60,14 +60,15 @@ const CreateChannelModal = ({user}) => {
                     <div className='edit-modal-tabs-menu'></div>
 
                     <form onSubmit={handleSubmit} className="edit-modal-form">
-                        <ul style={{ padding: '0px', margin: '2px 0px 20px 8px', color: 'red' }}>
-                            {Object.values(errors).map((error, idx) => (
-                                <li key={idx} className="edit-errors">
-                                    {error}
-                                </li>
-                            ))}
-                        </ul>
+                        
                         <div className="edit-modal-form-box">
+                            <ul style={{ padding: '0px', margin: '2px 0px 20px 8px', color: 'red' }}>
+                                {Object.values(errors).map((error, idx) => (
+                                    <li key={idx} className="edit-errors">
+                                        {error}
+                                    </li>
+                                ))}
+                            </ul>
                             <label htmlFor="name"> Channel name </label>
                             <input
                                 type="text"

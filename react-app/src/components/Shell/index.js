@@ -22,6 +22,9 @@ function Shell({ isLoaded }) {
             <LeftSide />
             <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
             <Switch>
+            <Route exact path="/">
+                    <AllChannels />
+                </Route>
                 <Route exact path="/channels/explore">
                     <AllChannels />
                 </Route>

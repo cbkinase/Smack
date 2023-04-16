@@ -20,6 +20,7 @@ function Shell({ isLoaded }) {
         <div id="grid-container" className="grid-container-hiderightside">
             <Header isLoaded={isLoaded} />
             <LeftSide />
+            <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
             <Switch>
                 <Route exact path="/channels/explore">
                     <AllChannels />
@@ -40,7 +41,6 @@ function Shell({ isLoaded }) {
                 </Route> */}
             </Switch>
 
-            <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
         </div>
     );
 }

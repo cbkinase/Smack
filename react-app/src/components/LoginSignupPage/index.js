@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { login, signUp } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import signinupLogo from './smack-logo-black.svg'
 
 function LoginSignupPage() {
     const dispatch = useDispatch();
+    const history = useHistory();
     const sessionUser = useSelector((state) => state.session.user);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -61,6 +62,7 @@ function LoginSignupPage() {
         if (data) {
             setErrors(data);
         }
+        history.push("/channels/explore")
     };
 
     const handleSubmitSignup = async (e) => {

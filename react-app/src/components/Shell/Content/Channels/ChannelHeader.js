@@ -9,7 +9,7 @@ function ChannelHeader(props) {
     const { setPane } = props;
 
     const handlePane = (pane) => {
-        setPane(pane);
+        // setPane(pane);
     }
 
     const { channelId } = useParams();

@@ -20,7 +20,7 @@ let socket;
 let updatedMessage;
 
 const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
-    let editCount = 0;
+    let editing = false;
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);
@@ -184,13 +184,13 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         cancelEditInput.style.marginTop = "4px";
         cancelEditInput.onclick = (e) => {
             document.getElementById("edit-msg-form").remove();
-            editCount--;
+            editing = false;
         };
 
         editForm.appendChild(editInputBox);
         editForm.appendChild(editInputSubmit);
         editForm.appendChild(cancelEditInput);
-        if (!editCount) content.appendChild(editForm);
+        if (!editing) content.appendChild(editForm);
     };
 
     const handleEdit = async (e, msg) => {
@@ -446,7 +446,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                         <span
                                             onClick={(e) => {
                                                 editMode(e, message);
-                                                editCount++;
+                                                editing = true;
                                             }}
                                             onMouseOver={(e) =>
                                                 changeAdjustText(

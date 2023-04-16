@@ -33,7 +33,7 @@ function LeftSideLinks() {
                         <div>
                             <button>
                                 <span style={{ width: "20px" }}><i className="fa fa-newspaper-o"></i></span>
-                                <span className="ellipsis-if-long">All Channels</span>
+                                <span className="ellipsis-if-long">Explore Channels</span>
                             </button>
                         </div>
                     </NavLink>

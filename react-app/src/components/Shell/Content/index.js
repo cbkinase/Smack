@@ -13,7 +13,7 @@ function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
                 id="grid-content-heading"
                 className="grid-content-heading-threecolumn"
             >
-                <ChannelHeader />
+                <ChannelHeader selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
 
             </div>
 

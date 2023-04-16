@@ -5,11 +5,14 @@ import { useEffect, useState } from 'react';
 import * as ChlActions from "../../../../store/channel";
 import OpenModalButton from '../../../OpenModalButton';
 import EditChannelModal from '../../../EditFormModal/EditChannelModal';
+import ChannelMembersModal from '../../../ChannelMembersModal';
 
-function ChannelHeader(props) {
+function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     const user = useSelector(state => state.session.user)
 
-    const { setPane } = props;
+    // const { setPane, selectedUserRightBar, setSelectedUserRightBar } = props;
+    // console.log(selectedUserRightBar);
+    // console.log(selectedUserRightBar);
 
     const handlePane = (pane) => {
         // setPane(pane);
@@ -45,11 +48,11 @@ function ChannelHeader(props) {
                 </button> */}
                 <OpenModalButton
                     modalComponent={
-                        <EditChannelModal 
+                        <EditChannelModal
                             channelId={channelId}
                             user={user}
                             currChannel={currentChannel}
-                            
+
                         />}
                     buttonText={currentChannel.length && currentChannel[0].name}
                     className="content-header-channelname"
@@ -58,10 +61,11 @@ function ChannelHeader(props) {
                     {currentChannel.length && currentChannel[0].subject}
                 </div>
             </div>
+            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
 
-            {numMemb >= 4 &&
-                <div className="content-header-right">
-                    <div className="content-header-membercount">
+            {/* {numMemb >= 4 &&
+                <OpenModalButton modalComponent={<SignupFormModal></SignupFormModal>} className="content-header-right" userList={userList} numMemb={numMemb}> */}
+                    {/* <div  className="content-header-membercount">
                         <img style={{ zIndex: 5 }} className="membercount-image"
                             src={userList && userList[0].avatar}
                             alt="Member"></img>
@@ -72,12 +76,12 @@ function ChannelHeader(props) {
                             src={userList && userList[2].avatar}
                             alt="Member"></img>
                         <span style={{ zIndex: 4, position: "relative", left: "-8px" }}>{numMemb}</span>
-                    </div>
-                </div>
-            }
+                    </div > */}
+                {/* </OpenModalButton> */}
+            {/* } */}
 
-            {numMemb === 3 &&
-                <div className="content-header-right">
+            {/* {numMemb === 3 &&
+                <OpenModalButton className="content-header-right">
                     <div className="content-header-membercount">
                         <img style={{ zIndex: 5 }} className="membercount-image"
                             src={userList && userList[0].avatar} alt=''></img>
@@ -85,7 +89,7 @@ function ChannelHeader(props) {
                             src={userList && userList[1].avatar} alt=''></img>
                         <span style={{ zIndex: 3, position: "relative", left: "-3px" }}>{numMemb}</span>
                     </div>
-                </div>
+                </OpenModalButton>
             }
 
             {numMemb < 3 &&
@@ -96,7 +100,7 @@ function ChannelHeader(props) {
                         <span style={{ padding: "0px 5px" }}>{numMemb}</span>
                     </div>
                 </div>
-            }
+            } */}
 
 
         </div>

@@ -20,8 +20,8 @@ function CynChannel() {
 
     const allChannelsArr = Object.values(allChannels);
     const userChannelsArr = Object.values(userChannels);
-    console.log(singleChannel)
-    console.log(Object.values(singleChannel))
+    // console.log(singleChannel)
+    // console.log(Object.values(singleChannel))
 
 
     return (

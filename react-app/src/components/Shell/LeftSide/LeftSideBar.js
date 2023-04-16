@@ -82,10 +82,10 @@ function LeftSideLinks() {
                 {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
                 <div style={{ padding: "4px" }}></div>
 
-                {(userChannelList.length > 0) && userChannelList.map((channel, idx) => {
+                {(userChannelList.length > 0) && userChannelList.map((channel) => {
                     return (
                         <NavLink exact to={`/channels/${channel.id}`}>
-                            <div key={idx}>
+                            <div key={channel.id}>
                                 <button>
                                     <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
                                     <span className="ellipsis-if-long" >{channel.name}</span>

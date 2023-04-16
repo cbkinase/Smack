@@ -5,7 +5,6 @@ import LeftSide from "./LeftSide";
 import Content from "./Content";
 import RightSide from "./RightSide/RightSide";
 import { Route, Switch } from "react-router-dom";
-import CynChannel from "./ChannelTestCyn/ChannelTest";
 import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import { useState, useEffect } from "react";
@@ -39,9 +38,6 @@ function Shell({ isLoaded }) {
                     <Content selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                 </Route>
 
-                {/* <Route path = "/chl-test">
-                    <CynChannel />
-                </Route> */}
             </Switch>
 
         </div>

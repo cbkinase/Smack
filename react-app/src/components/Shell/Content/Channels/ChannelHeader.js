@@ -14,18 +14,18 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     // console.log(selectedUserRightBar);
     // console.log(selectedUserRightBar);
 
-    const handlePane = (pane) => {
-        // setPane(pane);
-    }
+
 
     const { channelId } = useParams();
+    const history = useHistory();
     const dispatch = useDispatch()
     const singleChannel = useSelector((state) => state.channels.single_channel)
     let numMemb = 0;
     let userList;
 
     useEffect(() => {
-        dispatch(ChlActions.OneChannelThunk(channelId));
+        const thisChannel = dispatch(ChlActions.OneChannelThunk(channelId))
+            .then(res => {if (res.errors) history.push('/channels/explore')})
     }, [dispatch, channelId])
 
     const currentChannel = Object.values(singleChannel);
@@ -38,8 +38,8 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
         numMemb = userList.length
     }
 
-
     return (
+        
         <div className="content-heading-holder">
             <div className="content-header-left">
                 {/* <button className="content-header-channelname" style={{ whiteSpace: 'nowrap' }} onClick={() => handlePane('editChannel')}>
@@ -62,6 +62,8 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                 </div>
             </div>
             <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
+        
+        
 
             {/* {numMemb >= 4 &&
                 <OpenModalButton modalComponent={<SignupFormModal></SignupFormModal>} className="content-header-right" userList={userList} numMemb={numMemb}> */}
@@ -104,6 +106,7 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
 
 
         </div>
+
     )
 }
 

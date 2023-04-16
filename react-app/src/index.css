@@ -1,5 +1,13 @@
 /* TODO Add site wide styles */
 
+.far.fa-trash-alt {
+    border: none;
+}
+
+.far.fa-smile {
+    border: none;
+}
+
 * {
     box-sizing: border-box;
     padding: 0;

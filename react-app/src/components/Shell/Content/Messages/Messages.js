@@ -357,7 +357,9 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
 
                         <div>
-                            <img
+                            <img onClick={(e) => {
+                                            setSelectedUserRightBar(message.User)
+                                            toggleRightPane();}}
                                 src={
                                     message.User ? message.User.avatar : user.avatar
                                 }

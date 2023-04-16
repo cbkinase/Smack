@@ -7,10 +7,12 @@ import OpenModalButton from '../../../OpenModalButton';
 import EditChannelModal from '../../../EditFormModal/EditChannelModal';
 import ChannelMembersModal from '../../../ChannelMembersModal';
 
-function ChannelHeader(props) {
+function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     const user = useSelector(state => state.session.user)
 
-    const { setPane } = props;
+    // const { setPane, selectedUserRightBar, setSelectedUserRightBar } = props;
+    // console.log(selectedUserRightBar);
+    // console.log(selectedUserRightBar);
 
     const handlePane = (pane) => {
         // setPane(pane);
@@ -59,7 +61,7 @@ function ChannelHeader(props) {
                     {currentChannel.length && currentChannel[0].subject}
                 </div>
             </div>
-            <OpenModalButton modalComponent={<ChannelMembersModal currentChannel={currentChannel} numMemb={numMemb} userList={userList}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
+            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
 
             {/* {numMemb >= 4 &&
                 <OpenModalButton modalComponent={<SignupFormModal></SignupFormModal>} className="content-header-right" userList={userList} numMemb={numMemb}> */}

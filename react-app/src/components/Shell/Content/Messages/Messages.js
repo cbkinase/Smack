@@ -156,27 +156,32 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
         let editForm = document.createElement("form");
         editForm.id = "edit-msg-form";
+
         editForm.onsubmit = (e) => handleEdit(e, msg);
 
-        let editInputBox = document.createElement("input");
+        let editInputBox = document.createElement("textarea");
         editInputBox.onchange = updateEditMessageInput;
 
         editInputBox.value = msg.content;
-        editInputBox.style.backgroundColor = "#f2f2f2";
-        editInputBox.style.padding = "15px";
-        editInputBox.style.borderTop = "2px solid #dddddd";
-        editInputBox.style.borderLeft = "2px solid #dddddd";
-        editInputBox.style.borderRight = "2px solid #dddddd";
-        editInputBox.style.borderTopLeftRadius = "12px";
-        editInputBox.style.borderTopRightRadius = "12px";
-        editInputBox.style.height = "60px";
+        editInputBox.style.backgroundColor = "#FFFFFF";
+        editInputBox.style.padding = "5px 10px";
+        editInputBox.style.marginTop = "5px";
+        editInputBox.style.resize = "none";
+        editInputBox.style.border = "1px solid #dddddd";
+        editInputBox.style.borderRadius = "8px";
+        editInputBox.style.width = "100%";
 
         let editInputSubmit = document.createElement("button");
         editInputSubmit.type = "submit";
-        editInputSubmit.textContent = "Edit Message";
+        editInputSubmit.textContent = "Save";
+        editInputSubmit.style.padding = "1px 4px";
+        editInputSubmit.style.marginRight = "5px";
+        editInputSubmit.style.marginTop = "4px";
 
         let cancelEditInput = document.createElement("button");
         cancelEditInput.textContent = "Cancel";
+        cancelEditInput.style.padding = "1px 4px";
+        cancelEditInput.style.marginTop = "4px";
         cancelEditInput.onclick = (e) => {
             document.getElementById("edit-msg-form").remove();
             editCount--;

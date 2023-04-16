@@ -72,7 +72,8 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     useEffect(() => {
         dispatch(getChannelMessages(channelId)).then(() => {
             const element = document.getElementById("grid-content");
-            element.scrollTop = element.scrollHeight;
+            if (element)
+                element.scrollTop = element.scrollHeight;
         });
     }, [dispatch, messages, channelId]);
 

@@ -160,20 +160,11 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                                 onChange={(e) => setSubject(e.target.value)}
                             ></input>
 
-                            <button
-                                className="decorated-button-edit-channel"
-                                disabled={(name === currChannel[0].name && subject === currChannel[0].subject) ||
-                                    Object.values(errors).length}
-                                onClick={handleSubmit}
-                            >
-                                Edit channel
-                            </button>
                         </div>
 
                         <div className="edit-modal-form-box">
                             <div>Created by</div>
                             <div id="edit-owner-name">{`${owner[0].username}`}</div>
-                            <button className="decorated-button-delete-channel" disabled={true}>Delete channel</button>
                         </div>
 
 

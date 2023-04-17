@@ -39,7 +39,7 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     }
 
     return (
-        
+
         <div className="content-heading-holder">
             <div className="content-header-left">
                 {/* <button className="content-header-channelname" style={{ whiteSpace: 'nowrap' }} onClick={() => handlePane('editChannel')}>
@@ -47,6 +47,7 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                     <i style={{ fontSize: "12px", marginLeft: "3px" }} className="fas fa-angle-down"></i>
                 </button> */}
                 <OpenModalButton
+                renderDownArrow={true}
                     modalComponent={
                         <EditChannelModal
                             channelId={channelId}
@@ -62,8 +63,8 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                 </div>
             </div>
             <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
-        
-        
+
+
 
             {/* {numMemb >= 4 &&
                 <OpenModalButton modalComponent={<SignupFormModal></SignupFormModal>} className="content-header-right" userList={userList} numMemb={numMemb}> */}

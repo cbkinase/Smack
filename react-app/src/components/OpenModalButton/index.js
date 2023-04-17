@@ -10,6 +10,7 @@ function OpenModalButton({
     renderChatIcon,
     userList,
     numMemb,
+    renderDownArrow,
 }) {
     const { setModalContent, setOnModalClose } = useModal();
 
@@ -52,6 +53,8 @@ function OpenModalButton({
             </div>}
 
             {buttonText}
+
+            {renderDownArrow && <span style={{fontSize: "10px", paddingLeft: "5px"}}><i class="fa-sharp fa-solid fa-chevron-down"></i></span>}
         </button>
     );
 }

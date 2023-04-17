@@ -12,5 +12,5 @@ class EditUserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired(), Length(
         max=20, message="1 to 20 characters.")])
 
-    bio = StringField('Bio', validators=[DataRequired(), Length(
+    bio = StringField('Bio', validators=[Length(
         max=800, message="Maximum 800 characters.")])

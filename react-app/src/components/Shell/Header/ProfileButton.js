@@ -113,7 +113,7 @@ function ProfileButton({ user }) {
                 <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', padding: '0px', margin: '0px' }}>
 
                   <div style={{ padding: '0px', margin: '0px' }}><img style={{ borderRadius: '4px', width: '38px', height: '38px' }} src={user.avatar} alt="" /></div>
-                  <div style={{ padding: '0px', margin: '0px 0px 0px 10px', fontWeight: 700 }}>{user.first_name} {user.last_name}</div>
+                  <div style={{ padding: '0px', margin: '0px 0px 0px 10px', fontWeight: 700, maxWidth: '137px', overflow: 'hidden' }}>{user.first_name} {user.last_name}</div>
 
                 </div>
 

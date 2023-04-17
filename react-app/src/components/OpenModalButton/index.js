@@ -10,6 +10,7 @@ function OpenModalButton({
     renderChatIcon,
     userList,
     numMemb,
+    renderDownArrow,
 }) {
     const { setModalContent, setOnModalClose } = useModal();
 
@@ -20,38 +21,40 @@ function OpenModalButton({
     };
 
     return (
-        <button  style={{ whiteSpace: 'nowrap' }} className={className} onClick={onClick}>
+        <button style={{ whiteSpace: 'nowrap', border: 'none' }} className={className} onClick={onClick}>
 
-        {renderChatIcon && <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>}
+            {renderChatIcon && <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>}
 
-        {numMemb && numMemb >= 4 && <div  className="content-header-membercount">
-                        <img style={{ zIndex: 5 }} className="membercount-image"
-                            src={userList && userList[0].avatar}
-                            alt="Member"></img>
-                        <img style={{ zIndex: 4, position: "relative", left: "-8px" }} className="membercount-image"
-                            src={userList && userList[1].avatar}
-                            alt="Member"></img>
-                        <img style={{ zIndex: 3, position: "relative", left: "-16px" }} className="membercount-image"
-                            src={userList && userList[2].avatar}
-                            alt="Member"></img>
-                        <span style={{ zIndex: 4, position: "relative", left: "-8px" }}>{numMemb}</span>
-                    </div >}
+            {numMemb && numMemb >= 4 && <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
+                <img style={{ zIndex: 5 }} className="membercount-image"
+                    src={userList && userList[0].avatar}
+                    alt="Member"></img>
+                <img style={{ zIndex: 4, position: "relative", left: "-8px" }} className="membercount-image"
+                    src={userList && userList[1].avatar}
+                    alt="Member"></img>
+                <img style={{ zIndex: 3, position: "relative", left: "-16px" }} className="membercount-image"
+                    src={userList && userList[2].avatar}
+                    alt="Member"></img>
+                <span style={{ zIndex: 4, position: "relative", left: "-8px" }}>{numMemb}</span>
+            </div >}
 
-        {numMemb && numMemb === 3 && <div className="content-header-membercount">
-                        <img style={{ zIndex: 5 }} className="membercount-image"
-                            src={userList && userList[0].avatar} alt=''></img>
-                        <img style={{ zIndex: 4, position: "relative", left: "-8px" }} className="membercount-image"
-                            src={userList && userList[1].avatar} alt=''></img>
-                        <span style={{ zIndex: 3, position: "relative", left: "-3px" }}>{numMemb}</span>
-                    </div>}
+            {numMemb && numMemb === 3 && <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
+                <img style={{ zIndex: 5 }} className="membercount-image"
+                    src={userList && userList[0].avatar} alt=''></img>
+                <img style={{ zIndex: 4, position: "relative", left: "-8px" }} className="membercount-image"
+                    src={userList && userList[1].avatar} alt=''></img>
+                <span style={{ zIndex: 3, position: "relative", left: "-3px" }}>{numMemb}</span>
+            </div>}
 
-        {numMemb && numMemb < 3 &&                     <div className="content-header-membercount">
-                        <img className="membercount-image"
-                            src={userList && userList[0].avatar} alt=''></img>
-                        <span style={{ padding: "0px 5px" }}>{numMemb}</span>
-                    </div>}
+            {numMemb && numMemb < 3 && <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
+                <img className="membercount-image"
+                    src={userList && userList[0].avatar} alt=''></img>
+                <span style={{ padding: "0px 5px" }}>{numMemb}</span>
+            </div>}
 
-        {buttonText}
+            {buttonText}
+
+            {renderDownArrow && <span style={{fontSize: "10px", paddingLeft: "5px"}}><i class="fa-sharp fa-solid fa-chevron-down"></i></span>}
         </button>
     );
 }

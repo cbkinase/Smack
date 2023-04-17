@@ -69,9 +69,15 @@ export const thunkCreateReaction =
             body: JSON.stringify(new_reaction),
         });
 
+        if(response.ok) {
         const data = await response.json();
+            if(data.errors) return data;
         dispatch(createReaction(data));
         return response;
+        }
+        else {
+            return response;
+        }
     };
 
 export const destroyMessage = (id) => async (dispatch) => {

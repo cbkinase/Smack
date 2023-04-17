@@ -55,7 +55,7 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                             currChannel={currentChannel}
 
                         />}
-                    buttonText={currentChannel.length && currentChannel[0].name}
+                    buttonText={currentChannel.length && `# ${currentChannel[0].name}`}
                     className="content-header-channelname"
                  />
                 <div className="content-header-channeltopic">

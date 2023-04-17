@@ -271,6 +271,8 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             <>
 
                 {hasUserReacted(msg, user, el[0]) ? (
+
+
                     <button
                         style={{ padding: "0px 6px", backgroundColor: "#e7f3f9", border: "1px solid #bad3f2" }}
                         className="message-card-reaction"
@@ -298,6 +300,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                     </button>
                 )
                 }
+
 
             </>
         ));
@@ -358,8 +361,9 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
                         <div>
                             <img onClick={(e) => {
-                                            setSelectedUserRightBar(message.User)
-                                            toggleRightPane();}}
+                                setSelectedUserRightBar(message.User)
+                                toggleRightPane();
+                            }}
                                 src={
                                     message.User ? message.User.avatar : user.avatar
                                 }

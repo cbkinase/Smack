@@ -18,23 +18,32 @@ function Shell({ isLoaded }) {
     return (
         <div id="grid-container" className="grid-container-hiderightside">
             <Header isLoaded={isLoaded} />
-            <LeftSide />
-            <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+
             <Switch>
-            <Route exact path="/">
+                <Route exact path="/">
+                    <LeftSide />
+                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                     <AllChannels />
                 </Route>
                 <Route exact path="/channels/explore">
+                    <LeftSide />
+                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                     <AllChannels />
                 </Route>
                 <Route exact path="/channels/new">
+                    <LeftSide />
+                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                     <CreateChannel />
                 </Route>
                 <Route exact path="/channels/direct">
+                    <LeftSide />
+                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                     <h1>Feature Coming Soon...</h1>
                 </Route>
 
                 <Route path="/channels/:channelId">
+                    <LeftSide />
+                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                     <Content selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
                 </Route>
 

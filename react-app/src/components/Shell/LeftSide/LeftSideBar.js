@@ -10,6 +10,8 @@ import OpenModalButton from '../../OpenModalButton';
 import CreateChannelModal from '../../CreateFormModal/CreateChannelModal';
 function LeftSideLinks() {
 
+    const { channelId } = useParams();
+
     const dispatch = useDispatch()
     const history = useHistory()
     const sessionUser = useSelector(state => state.session.user);
@@ -21,7 +23,7 @@ function LeftSideLinks() {
 
     const userChannelList = Object.values(userChannels);
 
- 
+
     return (
 
         <div id="grid-leftside" className="grid-leftside-threecolumn">
@@ -33,10 +35,20 @@ function LeftSideLinks() {
 
                     <NavLink exact to={`/channels/explore`}>
                         <div>
-                            <button>
-                                <span style={{ width: "20px" }}><i className="fa fa-newspaper-o"></i></span>
-                                <span className="ellipsis-if-long">Explore Channels</span>
-                            </button>
+
+                            {/explore/.test(window.location.href) ? (
+                                <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8' }}>
+                                    <span style={{ width: "20px" }}><i className="fa fa-newspaper-o"></i></span>
+                                    <span className="ellipsis-if-long">Explore Channels</span>
+                                </button>
+                            ) : (
+                                <button style={{ textDecoration: 'none' }}>
+                                    <span style={{ width: "20px" }}><i className="fa fa-newspaper-o"></i></span>
+                                    <span className="ellipsis-if-long">Explore Channels</span>
+                                </button>
+                            )}
+
+
                         </div>
                     </NavLink>
 
@@ -48,28 +60,28 @@ function LeftSideLinks() {
                     } exact to={`/channels/direct`}
                     >
                         <div>
-                            <button>
+                            <button style={{ textDecoration: 'none' }}>
                                 <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
                                 <span className="ellipsis-if-long">Direct Messages</span>
                             </button>
                         </div>
                     </NavLink>
 
-                        <div>
-                            {/* <button>
+                    <div>
+                        {/* <button>
                                 <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>
                                 <span className="ellipsis-if-long">Create New Channel</span>
                             </button> */}
-                            <OpenModalButton
-                                modalComponent={
-                                    <CreateChannelModal
-                                        user={sessionUser}
-                                    />}
-                                buttonText={`Create a New Channel`}
-                                className="ellipsis-if-long"
-                                renderChatIcon={true}
-                            />
-                        </div>
+                        <OpenModalButton
+                            modalComponent={
+                                <CreateChannelModal
+                                    user={sessionUser}
+                                />}
+                            buttonText={`Create a New Channel`}
+                            className="ellipsis-if-long"
+                            renderChatIcon={true}
+                        />
+                    </div>
 
                 </div>
 
@@ -85,11 +97,22 @@ function LeftSideLinks() {
                 {(userChannelList.length > 0) && userChannelList.map((channel) => {
                     return (
                         <NavLink exact to={`/channels/${channel.id}`}>
+
                             <div key={channel.id}>
-                                <button>
-                                    <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
-                                    <span className="ellipsis-if-long" >{channel.name}</span>
-                                </button>
+
+                                {Number(channel.id) === Number(channelId) ? (
+                                    <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8' }} >
+                                        <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
+                                        <span className="ellipsis-if-long" >{channel.name}</span>
+                                    </button>
+                                ) : (
+                                    <button style={{ textDecoration: 'none' }} >
+                                        <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
+                                        <span className="ellipsis-if-long" >{channel.name}</span>
+                                    </button>
+                                )}
+
+
                             </div>
                         </NavLink>
 
@@ -101,7 +124,7 @@ function LeftSideLinks() {
 
                 {/* <div>
                     {/* <!-- ### (leftside-button-selected OPTION) IF THIS MATCHES CURRENT CHANNEL ADD STYLE THIS STYLE TO BUTTON --> */}
-                    {/* <button >
+                {/* <button >
                         <span><img src="https://ca.slack-edge.com/T03GU501J-U0476TK99LH-61c6e53dbd3d-512"
                             alt="Brian Hitchin"
                             style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>

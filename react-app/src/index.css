@@ -34,6 +34,25 @@ button:hover {
     cursor: pointer;
 }
 
+a:link {
+    text-decoration: none;
+}
+
+
+a:visited {
+    text-decoration: none;
+}
+
+
+a:hover {
+    text-decoration: none;
+}
+
+
+a:active {
+    text-decoration: none;
+}
+
 #root {
     height: 100%;
 }
@@ -722,6 +741,21 @@ button:hover {
 .cancel-edit-user:hover {
     background-color: #ededed;
     cursor: pointer;
+}
+
+/* %%%%%%%%%%%%% REACTION ICON %%%%%%%%%%%%%% */
+
+.reaction-icon {
+    border: none;
+    background-color: #FFFFFF;
+    font-size: 20px;
+    padding: 3px;
+    border: none;
+    border-radius: 8px;
+}
+
+.reaction-icon:hover {
+    background-color: #ededed;
 }
 
 /* %%%%%%%%%%%%% MESSAGE CARD %%%%%%%%%%%%%% */

@@ -20,7 +20,7 @@ function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
 
 
 
-            <div id="grid-content" className="grid-content-threecolumn">
+            <div id="grid-content" className="grid-content-threecolumn" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
                 <Messages selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
 

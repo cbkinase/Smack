@@ -30,8 +30,8 @@ export default function ReactionModal({ socket, msg, user, dispatch }) {
         "💔",
         "💯",
         "👋",
-        "😨","😧","😦","😱","😫","😩",
-        "😮","😯","😲","😺","😸","🐱","😳","😞","😖","😈","😬","🤨","😉","😜","😣","😖","🤒","😷","🤢","😎","😪","🙂","😊","😁","🦀","💵","😔"
+        "😨", "😧", "😦", "😱", "😫", "😩", "👀",
+        "😮", "😯", "😲", "😺", "😸", "🐱", "😳", "😞", "😖", "😈", "😬", "🤨", "😉", "😜", "😣", "😖", "🤒", "😷", "🤢", "😎", "😪", "🙂", "😊", "😁", "🦀", "💵", "😔"
     ];
     return (
         <>
@@ -39,20 +39,13 @@ export default function ReactionModal({ socket, msg, user, dispatch }) {
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    maxWidth: "300px",
+                    maxWidth: "320px",
                     justifyContent: "center",
+                    gap: '2px'
                 }}
             >
                 {emojis.map((emoji) => (
-                    <button
-                        style={{
-                            padding: "2px 2px",
-                            margin: "5px 5px",
-                            fontSize: "16px",
-                            fontSize: "18px",
-                            borderRadius: "25%",
-                            borderColor: "grey"
-                        }}
+                    <button className="reaction-icon"
                         onClick={(e) => {
                             handleAddReaction(e, msg, emoji);
                             closeModal();

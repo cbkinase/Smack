@@ -743,6 +743,21 @@ a:active {
     cursor: pointer;
 }
 
+/* %%%%%%%%%%%%% REACTION ICON %%%%%%%%%%%%%% */
+
+.reaction-icon {
+    border: none;
+    background-color: #FFFFFF;
+    font-size: 20px;
+    padding: 3px;
+    border: none;
+    border-radius: 8px;
+}
+
+.reaction-icon:hover {
+    background-color: #ededed;
+}
+
 /* %%%%%%%%%%%%% MESSAGE CARD %%%%%%%%%%%%%% */
 
 .message-card {

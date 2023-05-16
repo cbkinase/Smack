@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import userObjectToNameList from "../../../utils/userObjectToNameList";
+import userObjectToAvatar from "../../../utils/userObjectToAvatar";
 export default function LeftSideBarDMSection({channels, user}) {
     const { channelId } = useParams();
     return (
@@ -14,13 +15,13 @@ export default function LeftSideBarDMSection({channels, user}) {
                     <span className="ellipsis-if-long">{channel.name}</span> */}
                      {Number(channel.id) === Number(channelId) ? (
                                     <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8' }} >
-                                        <span style={{ width: "20px" }}><i className="fas fa-lock"></i></span>
-                                        <span className="ellipsis-if-long" >{userObjectToNameList(channel.Members, user.id)}</span>
+                                        {userObjectToAvatar(channel.Members, user)}
+                                        <span className="ellipsis-if-long" >{userObjectToNameList(channel.Members, user)}</span>
                                     </button>
                                 ) : (
                                     <button style={{ textDecoration: 'none' }} >
-                                        <span style={{ width: "20px" }}><i className="fas fa-lock"></i></span>
-                                        <span className="ellipsis-if-long" >{userObjectToNameList(channel.Members, user.id)}</span>
+                                        {userObjectToAvatar(channel.Members, user)}
+                                        <span className="ellipsis-if-long" >{userObjectToNameList(channel.Members, user)}</span>
                                     </button>
                                 )}
                     </div>

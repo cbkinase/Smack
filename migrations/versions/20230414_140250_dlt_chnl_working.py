@@ -94,6 +94,20 @@ def upgrade():
     
     if environment == "production":
         op.execute(f"ALTER TABLE reactions SET SCHEMA {SCHEMA};")
+
+    op.create_table('attachments',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('message_id', sa.Integer(), nullable=True),
+    sa.Column('content', sa.Text(), nullable=False),
+    sa.ForeignKeyConstraint(['message_id'], ['messages.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+
+    if environment == "production":
+        op.execute(f"ALTER TABLE attachments SET SCHEMA {SCHEMA};")
+
     # ### end Alembic commands ###
 
 

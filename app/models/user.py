@@ -27,6 +27,7 @@ class User(db.Model, UserMixin):
     owns_channel = db.relationship("Channel", back_populates="owner")
     reactions = db.relationship("Reaction", back_populates="user")
     messages = db.relationship("Message", back_populates="users")
+    attachments = db.relationship("Attachment", back_populates="user")
 
     @property
     def password(self):

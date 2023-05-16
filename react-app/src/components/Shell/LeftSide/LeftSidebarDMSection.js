@@ -5,7 +5,7 @@ import userObjectToAvatar from "../../../utils/userObjectToAvatar";
 export default function LeftSideBarDMSection({channels, user}) {
     const { channelId } = useParams();
     return (
-        <div>
+        <>
         {/* <!-- ### (leftside-button-selected OPTION) IF THIS MATCHES CURRENT CHANNEL ADD STYLE THIS STYLE TO BUTTON --> */ }
         {channels.map((channel) => {
             return (
@@ -35,6 +35,6 @@ export default function LeftSideBarDMSection({channels, user}) {
                 style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
             <span className="ellipsis-if-long">Dave Titus</span>
         </button> */}
-    </div>
+    </>
     )
 }

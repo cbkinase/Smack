@@ -127,7 +127,7 @@ def get_reactions_for_message(message_id):
 def create_attachment_for_messages(message_id):
     try:
         if "attachment" not in request.files:
-            return {"errors": ["video file required"]}, 400
+            return {"errors": ["file required"]}, 400
         
         attachment = request.files["attachment"]
         attachment.filename = get_unique_filename(attachment.filename)

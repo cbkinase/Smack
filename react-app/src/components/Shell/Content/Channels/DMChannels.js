@@ -55,10 +55,10 @@ function DMChannels() {
           <div className="channels-list">
             {(allChannelsArr.length>0) && filteredChannels.map((channel, index) => {
               return <NavLink key={index} className="channels-list-item" onClick={async e => {
-                await fetch(`/api/channels/${channel.id}/users`, {
-                    method: "POST",
-                })
-                dispatch(ChlActions.UserChannelThunk())
+                // await fetch(`/api/channels/${channel.id}/users`, {
+                //     method: "POST",
+                // })
+                // dispatch(ChlActions.UserChannelThunk())
             }} to={`/channels/${channel.id}`}>
                 <div style={{paddingLeft: "10px"}}>{determineName(channel, user)}</div>
                 {/* <p style={{paddingLeft: "10px", color: "grey", fontSize: "12px"}}>{channel.subject}</p> */}

@@ -21,14 +21,14 @@ export default function userObjectToAvatar(obj, currUser) {
 
     if (obj_arr.length === 1) {
         return (
-            <span><img src={obj_arr[0].avatar} alt="DM image" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
+            <span><img src={obj_arr[0].avatar} alt="DM" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
         )
     }
 
     if (obj_arr.length === 0) {
         // In this case, this is a "self" DM.
         return (
-        <span><img src={currUser.avatar} alt="DM image" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
+        <span><img src={currUser.avatar} alt="DM" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
         )
 
     }
@@ -38,7 +38,7 @@ export default function userObjectToAvatar(obj, currUser) {
     // Render the first avatar
 
     return (
-        <span><img src={obj_arr[0].avatar} alt="DM image" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
+        <span><img src={obj_arr[0].avatar} alt="DM" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
     )
 
 }

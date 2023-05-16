@@ -7,6 +7,7 @@ import RightSide from "./RightSide/RightSide";
 import { Route, Switch } from "react-router-dom";
 import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
+import DMChannels from "./Content/Channels/DMChannels";
 import { useState, useEffect } from "react";
 
 function Shell({ isLoaded }) {
@@ -38,7 +39,7 @@ function Shell({ isLoaded }) {
                 <Route exact path="/channels/direct">
                     <LeftSide />
                     <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
-                    <h1>Feature Coming Soon...</h1>
+                    <DMChannels />
                 </Route>
 
                 <Route path="/channels/:channelId">

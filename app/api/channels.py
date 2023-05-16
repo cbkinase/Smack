@@ -130,6 +130,28 @@ def add_channel_member(channel_id):
     except:
         return {"message": "Something went wrong..."}, 404
 
+@channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["POST"])
+@login_required
+def add_nonself_channel_member(channel_id, user_id):
+    curr_user = User.query.get(current_user.id)
+    channel = Channel.query.get(channel_id)
+    other_user = User.query.get(user_id)
+
+    if not channel or not curr_user or not other_user:
+        return {"message": "Resource not found"}, 404
+
+    if curr_user not in channel.users:
+        return {"message": "Forbidden: must own Channel"}, 403
+
+
+    try:
+        other_user.channel.append(channel)
+        db.session.commit()
+        return {"message": "Successfully added user to the channel"}
+    except:
+        return {"message": "Something went wrong..."}, 404
+
+
 # get all members of channel
 @channel_routes.route("/<int:channel_id>/members")
 @login_required
@@ -175,6 +197,7 @@ def get_all_messages_for_channel(channel_id):
     for msg in channel_messages:
         msg_data = msg.to_dict()
         msg_data['User'] = {
+            'id': msg.users.id,
             'username': msg.users.username,
             'avatar': msg.users.avatar,
             'first_name': msg.users.first_name,

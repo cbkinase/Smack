@@ -19,7 +19,14 @@ function AllChannels() {
 
 
 
-    const allChannelsArr = Object.values(allChannels);
+    const allChannelsArr = Object.values(allChannels).filter((channel) => !channel.is_direct /*
+      In the event that we end up implementing private channels,
+      We would also want to exclude is_private things from here as well.
+      Perhaps with the exception of private channels the user is in?
+
+      For now, it's not relevant.
+
+      && !channel.is_private */);
 
     const filteredChannels = allChannelsArr.filter((channel) => {
         return channel.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -29,7 +36,7 @@ function AllChannels() {
         <>
         <div className="view-all-channels">
           <div className="channels-header">
-            <h2>All Channels on Smack</h2>
+            <h2>All Public Channels on Smack</h2>
           </div>
           <input id="channel-search" type="text" placeholder="Search by channel name" value={searchTerm} onChange={handleSearchChange} />
           <div className="channels-list">

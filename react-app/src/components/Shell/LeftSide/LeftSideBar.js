@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import LeftSideBarDMSection from './LeftSidebarDMSection'
 
 import * as ChlActions from "../../../store/channel"
 
@@ -52,19 +53,33 @@ function LeftSideLinks() {
                         </div>
                     </NavLink>
 
-                    <NavLink onClick={
-                        e => {
-                            e.preventDefault();
-                            alert("Direct Message Feature Coming Soon")
-                        }
-                    } exact to={`/channels/direct`}
+                    <NavLink
+                    // onClick={e => {
+                    //         e.preventDefault();
+                    //         alert("Direct Message Feature Coming Soon")
+                    //     }
+                    // }
+                    exact to={`/channels/direct`}
                     >
-                        <div>
+                      <div>
+                      {/\/channels\/direct/.test(window.location.href) ? (
+                                <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8' }}>
+                                    <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
+                                    <span className="ellipsis-if-long">Direct Messages</span>
+                                </button>
+                            ) : (
+                                <button style={{ textDecoration: 'none' }}>
+                                    <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
+                                    <span className="ellipsis-if-long">Direct Messages</span>
+                                </button>
+                            )}
+                      </div>
+                        {/* <div>
                             <button style={{ textDecoration: 'none' }}>
                                 <span style={{ width: "20px" }}><i className="far fa-comments"></i></span>
                                 <span className="ellipsis-if-long">Direct Messages</span>
                             </button>
-                        </div>
+                        </div> */}
                     </NavLink>
 
                     <div>
@@ -94,7 +109,9 @@ function LeftSideLinks() {
                 {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
                 <div style={{ padding: "4px" }}></div>
 
-                {(userChannelList.length > 0) && userChannelList.map((channel) => {
+                {(userChannelList.length > 0) && userChannelList
+                .filter((channel) => !channel.is_direct)
+                .map((channel) => {
                     return (
                         <NavLink exact to={`/channels/${channel.id}`}>
 
@@ -122,15 +139,8 @@ function LeftSideLinks() {
                 {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
                 <div style={{ padding: "8px" }}></div>
 
-                {/* <div>
-                    {/* <!-- ### (leftside-button-selected OPTION) IF THIS MATCHES CURRENT CHANNEL ADD STYLE THIS STYLE TO BUTTON --> */}
-                {/* <button >
-                        <span><img src="https://ca.slack-edge.com/T03GU501J-U0476TK99LH-61c6e53dbd3d-512"
-                            alt="Brian Hitchin"
-                            style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
-                        <span className="ellipsis-if-long">Dave Titus</span>
-                    </button>
-                </div>  */}
+                <LeftSideBarDMSection user={sessionUser} channels={userChannelList.filter((channel) => channel.is_direct)} />
+
 
             </div>
 

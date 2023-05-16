@@ -1,10 +1,11 @@
 import { useModal } from "../../context/Modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import userObjectToNameList from "../../utils/userObjectToNameList";
-import OpenModalButton from "../OpenModalButton";
-import ChannelMembersAll from "./ChannelMembersAll";
+import { useDispatch } from "react-redux";
+import { UserChannelThunk } from "../../store/channel";
 
-export default function ChannelMembersModal({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
+export default function ChannelMembersAll({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
+    const dispatch = useDispatch();
   // console.log(selectedUserRightBar);
   function toggleRightPane(state) {
     if (state === "close") {
@@ -25,13 +26,34 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
     window.toggleLeftPane();
   }
   const [searchTerm, setSearchTerm] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
   const { closeModal } = useModal();
+
+  function normalizeData(data, keyName = "id") {
+    const res = {};
+    data.forEach((entry) => {
+        res[entry[keyName]] = { ...entry };
+    });
+    return res;
+}
+  useEffect(() => {
+    (async function(){
+        // Get and display all users except those already in channel
+        let res = await fetch(`/api/users/`)
+        let data = await res.json();
+        let final = normalizeData(data.users);
+        for (const usr of userList) {
+            delete final[usr.id]
+        }
+        setAllUsers(Object.values(final))
+    })()
+  }, [])
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredMembers = userList.filter((member) => {
+  const filteredMembers = allUsers.filter((member) => {
     let fullName = member.first_name.toLowerCase() + " " + member.last_name.toLowerCase()
     return fullName.includes(searchTerm.toLowerCase());
   });
@@ -56,16 +78,25 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
       <input id="channel-search" type="text" placeholder="Find members" value={searchTerm} onChange={handleSearchChange} />
       <div className="channels-list" style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
         {filteredMembers.map((member, index) => {
-          return <div onClick={(e) => {
-            setSelectedUserRightBar(member)
-            toggleRightPane();
+          return <div
+          onClick={async (e) => {
+            await fetch(`/api/channels/${currentChannel[0].id}/users/${member.id}`, {
+                method: "POST",
+            });
+            /*
+            There's probably a better way to do this, but for now this is how I'm getting the components that depend on the above fetch to re-render, since it doesn't go through Redux at all.
+             */
+            await dispatch(UserChannelThunk());
+            // setSelectedUserRightBar(member);
+            // toggleRightPane();
+
             closeModal();
-          }} key={member.id} className="channels-list-item" style={{ display: "flex", alignItems: "center", border: "none" }}>
+          }}
+          key={member.id} className="channels-list-item" style={{ display: "flex", alignItems: "center", border: "none" }}>
             <img style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }} src={member.avatar} alt=''></img>
             <p>{member.first_name} {member.last_name}</p>
           </div>
         })}
-        {<OpenModalButton modalComponent={<ChannelMembersAll  currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user}  />} buttonText="Add members" />}
       </div>
     </div>
   </>

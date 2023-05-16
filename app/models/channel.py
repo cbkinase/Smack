@@ -25,11 +25,21 @@ class Channel(db.Model):
         back_populates="channel")
 
     def to_dict(self):
-        return {
+        base_dict = {
             'id': self.id,
             'owner_id': self.owner_id,
             'name': self.name,
             'subject': self.subject,
             'is_private': self.is_private,
-            'is_direct': self.is_direct
+            'is_direct': self.is_direct,
         }
+        if self.is_direct:
+            base_dict["Members"] = {
+                user.id : {
+                "avatar": user.avatar,
+                "first_name": user.first_name,
+                "last_name": user.last_name
+                }
+                for user in self.users
+            }
+        return base_dict

@@ -32,7 +32,6 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
 
 
     const handleSubmit = (e) => {
-        console.log(currChannel[0].is_direct);
         e.preventDefault();
 
         if (Object.values(errors).length) return alert(`Oops, something went wrong with renaming the channel. Please try again.`);

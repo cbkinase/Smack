@@ -52,3 +52,8 @@ def on_join(data):
     room = data['channel_id']
     join_room(room)
     emit("welcome", f"{username}", room=room)
+
+
+@socketio.on("new_DM_convo")
+def handle_new_dm(data):
+    emit("new_DM_convo", data, broadcast=True)

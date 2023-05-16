@@ -87,12 +87,12 @@ def create_reaction_for_message(message_id):
 
         if not message:
             return message_not_found()
-        
+
         curr_reactions = db.session.query(Reaction).filter(Reaction.message_id == message_id).all()
         for reaction in curr_reactions:
             if reaction.user_id == current_user.id and reaction.reaction == req["reaction"]:
                 return {"errors": "user already has reacted with this reaction"}, 403
-            
+
         new_reaction = Reaction(user=current_user, messages=message, reaction = req['reaction'])
         db.session.add(new_reaction)
         db.session.commit()

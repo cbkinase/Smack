@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Header from "./Header";
 import LeftSide from "./LeftSide";
 import Content from "./Content";
@@ -8,9 +8,25 @@ import { Route, Switch } from "react-router-dom";
 import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
+import { UserChannelThunk } from "../../store/channel";
 import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+let socket;
 
 function Shell({ isLoaded }) {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        socket = io();
+        // Refresh the left sidebar on receive
+        socket.on("new_DM_convo", () => {
+            dispatch(UserChannelThunk());
+        })
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [])
 
 
 

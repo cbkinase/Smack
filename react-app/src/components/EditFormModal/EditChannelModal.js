@@ -11,7 +11,8 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
     const [name, setName] = useState(currChannel[0]?.name || "");
     const [subject, setSubject] = useState(currChannel[0]?.subject || "");
     const [is_private, setIsPrivate] = useState(currChannel[0]?.is_private);
-    const [is_direct, setIsDirect] = useState(currChannel[0].is_direct);
+    const [is_direct, setIsDirect] = useState(currChannel[0]?.is_direct);
+
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
     const history = useHistory();
@@ -31,6 +32,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
 
 
     const handleSubmit = (e) => {
+        console.log(currChannel[0].is_direct);
         e.preventDefault();
 
         if (Object.values(errors).length) return alert(`Oops, something went wrong with renaming the channel. Please try again.`);
@@ -39,8 +41,8 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
             EditChannelThunk(channelId, {
                 name: name,
                 subject: subject,
-                is_private: Boolean(is_private),
-                is_direct: Boolean(is_direct),
+                is_private: currChannel[0].is_private,
+                is_direct: currChannel[0].is_direct,
             })
         );
         if (!Object.values(errors).length) {

@@ -1,11 +1,21 @@
 import ChatEmojiModal from "../ChatEmojiModal";
 import OpenModalButton from "../OpenModalButton";
+import userObjectToNameList from "../../utils/userObjectToNameList";
 
-export default function Editor({ functions, creating, setChatInput }) {
+export default function Editor({ functions, creating, setChatInput, user }) {
     const { sendChat, chatInput, updateChatInput, currentChannel, channelId } =
         functions;
     function changeAdjustText(text, id) {
         document.getElementById(`message-adjust-text-${id}`).textContent = text;
+    }
+    function determineName(channel, user) {
+        // The name displayed must be different depending on whether it's a DM or not.
+        if (!channel.is_direct) return `# ${channel.name}`
+        else if (channel.is_direct && Object.values(channel.Members).length > 1) {
+            return userObjectToNameList(channel.Members, user)
+        }
+        else return `${user.first_name} ${user.last_name}`
+
     }
     return (
         <>
@@ -67,7 +77,7 @@ export default function Editor({ functions, creating, setChatInput }) {
                                 onChange={updateChatInput}
                                 placeholder={
                                     currentChannel[channelId]
-                                        ? `Message # ${currentChannel[channelId].name}`
+                                        ? `Message ${determineName(currentChannel[channelId], user)}`
                                         : " "
                                 }
                             />

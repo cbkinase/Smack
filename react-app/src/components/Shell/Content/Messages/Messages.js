@@ -521,7 +521,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
             {/* <div id="editor-holder" style={{ position: 'sticky', bottom: 0, backgroundColor: '#FFFFFF', width: '100%', overflow: 'hidden' }}> */}
             <div style={{ position: 'sticky', bottom: 0 }} >
-                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} />
+                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} user={user} />
             </div>
 
             {/* </div> */}

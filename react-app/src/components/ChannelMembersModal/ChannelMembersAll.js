@@ -1,10 +1,8 @@
 import { useModal } from "../../context/Modal";
 import { useState } from "react";
 import userObjectToNameList from "../../utils/userObjectToNameList";
-import OpenModalButton from "../OpenModalButton";
-import ChannelMembersAll from "./ChannelMembersAll";
 
-export default function ChannelMembersModal({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
+export default function ChannelMembersAll({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
   // console.log(selectedUserRightBar);
   function toggleRightPane(state) {
     if (state === "close") {
@@ -65,7 +63,6 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
             <p>{member.first_name} {member.last_name}</p>
           </div>
         })}
-        {<OpenModalButton modalComponent={<ChannelMembersAll  currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user}  />} buttonText="Add members" />}
       </div>
     </div>
   </>

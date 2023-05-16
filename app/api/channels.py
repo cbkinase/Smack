@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models import channel_user, Channel, User, db, Message, Reaction
 from flask_login import login_required, current_user
+from ..socket import socketio
 
 channel_routes = Blueprint('channels', __name__)
 
@@ -147,6 +148,11 @@ def add_nonself_channel_member(channel_id, user_id):
     try:
         other_user.channel.append(channel)
         db.session.commit()
+        try:
+            socketio.emit("new_DM_convo", "hello")
+        except Exception as e:
+            print(e)
+            # pass
         return {"message": "Successfully added user to the channel"}
     except:
         return {"message": "Something went wrong..."}, 404

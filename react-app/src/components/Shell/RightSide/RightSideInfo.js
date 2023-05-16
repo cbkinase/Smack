@@ -1,13 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import userChannelDMSearch from '../../../utils/userChannelDMSearch';
 import { useHistory } from 'react-router-dom';
+import { AddChannelThunk, UserChannelThunk } from '../../../store/channel';
 
 
 function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
     const user_channels = useSelector(state => state.channels.user_channels)
     const currUser = useSelector(state => state.session.user)
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const hideRightPane = function toggleRightPane() {
         document.getElementById("grid-container").className = "grid-container-hiderightside";
@@ -15,6 +17,7 @@ function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
         document.getElementById("grid-rightside").className = "grid-rightside-hide";
         window.toggleLeftPane();
     };
+
     // console.log(selectedUserRightBar);
     // const {avatar, first_name, last_name, bio } = selectedUserRightBar.
 
@@ -37,14 +40,28 @@ function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
 
                     <div style={{ marginTop: "20px" }}>
                         <button
-                            onClick={e => {
+                            onClick={async e => {
                                 let possibleChannel = userChannelDMSearch(user_channels, currUser, selectedUserRightBar);
                                 if (possibleChannel) {
                                     history.push(`/channels/${possibleChannel.id}`);
                                     hideRightPane();
                                 }
                                 else {
-                                    alert("I'm making a DM!")
+                                    let newChan = await dispatch(AddChannelThunk({
+                                        name: `DM between ${currUser.first_name} and ${selectedUserRightBar.first_name}`,
+                                        subject: "Direct Message",
+                                        is_private: true,
+                                        is_direct: true
+                                    }))
+                                    await fetch(`/api/channels/${newChan.id}/users/${selectedUserRightBar.id}`, {
+                                        method: "POST",
+                                    });
+                                    /*
+                                    There's probably a better way to do this, but for now this is how I'm getting the components that depend on the above fetch to re-render, since it doesn't go through Redux at all.
+                                     */
+                                    await dispatch(UserChannelThunk())
+                                    history.push(`/channels/${newChan.id}`);
+                                    hideRightPane();
                                 }
                             }}
                             style={{ fontSize: "15px", fontWeight: "500", backgroundColor: "#FFFFFF", padding: "5px 8px", borderRadius: "5px", border: "1px solid grey" }}>

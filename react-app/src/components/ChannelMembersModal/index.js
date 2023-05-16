@@ -1,7 +1,8 @@
 import { useModal } from "../../context/Modal";
 import { useState } from "react";
+import userObjectToNameList from "../../utils/userObjectToNameList";
 
-export default function ChannelMembersModal({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar }) {
+export default function ChannelMembersModal({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
   // console.log(selectedUserRightBar);
   function toggleRightPane(state) {
     if (state === "close") {
@@ -33,10 +34,21 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
     return fullName.includes(searchTerm.toLowerCase());
   });
 
+  function determineName(channel, user) {
+    // The name displayed must be different depending on whether it's a DM or not.
+    if (!channel.is_direct) return `# ${channel.name}`
+    else if (channel.is_direct && Object.values(channel.Members).length > 1) {
+      let res = userObjectToNameList(channel.Members, user)
+      return res.length <= 60 ? res : res.slice(0,60) + "..."
+    }
+    else return `${user.first_name} ${user.last_name}`
+
+}
+
   return <>
     <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="view-all-channels">
       <div className="channels-header">
-        <h2 style={{ marginTop: "-10px" }}># {currentChannel[0].name}</h2>
+        <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
         <i onClick={closeModal} className="fa-sharp fa-regular fa-x" style={{ color: "#696969", marginTop: "-10px", backgroundColor: '#f2f2f2', padding: '8px', borderRadius: '8px', cursor: 'pointer' }}></i>
       </div>
       <input id="channel-search" type="text" placeholder="Find members" value={searchTerm} onChange={handleSearchChange} />

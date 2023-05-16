@@ -6,6 +6,7 @@ import * as ChlActions from "../../../../store/channel";
 import OpenModalButton from '../../../OpenModalButton';
 import EditChannelModal from '../../../EditFormModal/EditChannelModal';
 import ChannelMembersModal from '../../../ChannelMembersModal';
+import userObjectToNameList from '../../../../utils/userObjectToNameList';
 
 function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     const user = useSelector(state => state.session.user)
@@ -38,6 +39,16 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
         numMemb = userList.length
     }
 
+    function determineName(channel, user) {
+        // The name displayed must be different depending on whether it's a DM or not.
+        if (!channel.is_direct) return `# ${channel.name}`
+        else if (channel.is_direct && Object.values(channel.Members).length > 1) {
+            return userObjectToNameList(channel.Members, user)
+        }
+        else return `${user.first_name} ${user.last_name}`
+
+    }
+
     return (
 
         <div className="content-heading-holder">
@@ -55,14 +66,14 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                             currChannel={currentChannel}
 
                         />}
-                    buttonText={currentChannel.length && `# ${currentChannel[0].name}`}
+                    buttonText={currentChannel.length && determineName(currentChannel[0], user)}
                     className="content-header-channelname"
                  />
                 <div className="content-header-channeltopic">
                     {currentChannel.length && currentChannel[0].subject}
                 </div>
             </div>
-            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
+            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
 
 
 

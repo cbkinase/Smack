@@ -48,8 +48,8 @@ function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
                                 }
                                 else {
                                     let newChan = await dispatch(AddChannelThunk({
-                                        name: `DM between ${currUser.first_name} and ${selectedUserRightBar.first_name}`,
-                                        subject: "Direct Message",
+                                        name: "",
+                                        subject: "",
                                         is_private: true,
                                         is_direct: true
                                     }))

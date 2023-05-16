@@ -5,12 +5,13 @@ import { EditChannelThunk } from "../../store/channel"
 import { DeleteChannelThunk } from "../../store/channel"
 import { useModal } from "../../context/Modal";
 import './EditChannelModalStyling.css'
+import userObjectToNameList from "../../utils/userObjectToNameList";
 
 const EditChannelModal = ({channelId, currChannel, user}) => {
     const [name, setName] = useState(currChannel[0]?.name || "");
     const [subject, setSubject] = useState(currChannel[0]?.subject || "");
-    const [is_private, setIsPrivate] = useState(false);
-    const [is_direct, setIsDirect] = useState(false);
+    const [is_private, setIsPrivate] = useState(currChannel[0]?.is_private);
+    const [is_direct, setIsDirect] = useState(currChannel[0].is_direct);
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
     const history = useHistory();
@@ -57,6 +58,15 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
     if (currChannel.length) {
         owner = Object.values(currChannel[0].Members).filter((user) => (user.id === currChannel[0].owner_id));
     }
+    function determineName(channel, user) {
+        // The name displayed must be different depending on whether it's a DM or not.
+        if (!channel.is_direct) return `# ${channel.name}`
+        else if (channel.is_direct && Object.values(channel.Members).length > 1) {
+            return userObjectToNameList(channel.Members, user)
+        }
+        else return `${user.first_name} ${user.last_name}`
+
+    }
 
     return (
         currChannel.length && user.id === currChannel[0].owner_id ?
@@ -64,7 +74,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                 <div className="edit-modal-container">
                     <div style={{paddingLeft: "17px"}}className='edit-modal-header'>
                         <div>&nbsp;</div>
-                        <div className='edit-modal-title'>{`# ${currChannel[0].name}`}</div>
+                        <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
 
                         <button className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
@@ -123,9 +133,10 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
         :
             (
                 <div className="edit-modal-container">
+
                     <div className='edit-modal-header'>
                         <div>&nbsp;</div>
-                        <div className='edit-modal-title'>{`# ${currChannel[0].name}`}</div>
+                        <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
 
                         <button className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
@@ -134,7 +145,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                     <div className='edit-modal-tabs-menu'></div>
 
                     <form onSubmit={handleSubmit} className="edit-modal-form">
-                        <ul style={{ padding: '0px', margin: '2px 0px 20px 8px', color: 'red' }}>
+                        <ul style={{ padding: '0px', margin: '10px 0px 10px 60px', color: 'red' }}>
                             {Object.values(errors).map((error, idx) => (
                                 <li key={idx} className="edit-errors">
                                     {error}

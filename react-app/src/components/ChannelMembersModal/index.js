@@ -41,17 +41,19 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
     if (!channel.is_direct) return `# ${channel.name}`
     else if (channel.is_direct && Object.values(channel.Members).length > 1) {
       let res = userObjectToNameList(channel.Members, user)
-      return res.length <= 60 ? res : res.slice(0,60) + "..."
+      return res.length <= 60 ? res : res.slice(0, 60) + "..."
     }
     else return `${user.first_name} ${user.last_name}`
 
-}
+  }
 
   return <>
     <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="view-all-channels">
       <div className="channels-header">
         <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
-        <i onClick={closeModal} className="fa-sharp fa-regular fa-x" style={{ color: "#696969", marginTop: "-10px", backgroundColor: '#f2f2f2', padding: '8px', borderRadius: '8px', cursor: 'pointer' }}></i>
+        <button className="edit-modal-close-btn" onClick={() => closeModal()}>
+          <i className="fa-solid fa-x"></i>
+        </button>
       </div>
       <input id="channel-search" type="text" placeholder="Find members" value={searchTerm} onChange={handleSearchChange} />
       <div className="channels-list" style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
@@ -65,7 +67,9 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
             <p>{member.first_name} {member.last_name}</p>
           </div>
         })}
-        {<OpenModalButton modalComponent={<ChannelMembersAll  currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user}  />} buttonText="Add members" />}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
+          {<OpenModalButton className="login-input-submit-alt" modalComponent={<ChannelMembersAll currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user} />} buttonText="Add members" />}
+        </div>
       </div>
     </div>
   </>

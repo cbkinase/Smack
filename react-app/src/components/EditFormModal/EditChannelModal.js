@@ -7,7 +7,7 @@ import { useModal } from "../../context/Modal";
 import './EditChannelModalStyling.css'
 import userObjectToNameList from "../../utils/userObjectToNameList";
 
-const EditChannelModal = ({channelId, currChannel, user}) => {
+const EditChannelModal = ({ channelId, currChannel, user }) => {
     const [name, setName] = useState(currChannel[0]?.name || "");
     const [subject, setSubject] = useState(currChannel[0]?.subject || "");
     const [is_private, setIsPrivate] = useState(currChannel[0]?.is_private);
@@ -73,7 +73,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
         currChannel.length && user.id === currChannel[0].owner_id ?
             (
                 <div className="edit-modal-container">
-                    <div style={{paddingLeft: "17px"}}className='edit-modal-header'>
+                    <div style={{ paddingLeft: "17px" }} className='edit-modal-header'>
                         <div>&nbsp;</div>
                         <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
 
@@ -86,14 +86,14 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                     <form onSubmit={handleSubmit} className="edit-modal-form">
 
                         <div className="edit-modal-form-box">
-                            <ul style={{ padding: '0px', margin: '2px 0px 20px 8px', color: 'red' }}>
+                            <ul style={{ padding: '0px', margin: '8px 0px 20px 28px', color: 'red' }}>
                                 {Object.values(errors).map((error, idx) => (
                                     <li key={idx} className="edit-errors">
                                         {error}
                                     </li>
                                 ))}
                             </ul>
-                            <label style={{paddingLeft: "7px"}} htmlFor="name"> Channel name </label>
+                            <label style={{ paddingLeft: "7px" }} htmlFor="name"> Channel name </label>
                             <input
                                 type="text"
                                 id="name"
@@ -102,7 +102,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                                 onChange={(e) => setName(e.target.value)}
                             ></input>
                             <div className="edit-modal-border"></div>
-                            <label style={{paddingLeft: "7px"}} htmlFor="subject"> Topic </label>
+                            <label style={{ paddingLeft: "7px" }} htmlFor="subject"> Topic </label>
                             <input
                                 type="text"
                                 id="subject"
@@ -114,7 +114,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                             <button
                                 className="decorated-button-edit-channel"
                                 disabled={(name === currChannel[0].name && subject === currChannel[0].subject) ||
-                                          Object.values(errors).length}
+                                    Object.values(errors).length}
                                 onClick={handleSubmit}
                             >
                                 Edit channel
@@ -122,7 +122,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                         </div>
 
                         <div className="edit-modal-form-box">
-                            <div style={{paddingLeft: "7px", fontWeight: "bold"}}>Created by</div>
+                            <div style={{ paddingLeft: "7px", fontWeight: "bold" }}>Created by</div>
                             <div id="edit-owner-name">{`${owner[0].username}`}</div>
                             <button className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
                         </div>
@@ -131,7 +131,7 @@ const EditChannelModal = ({channelId, currChannel, user}) => {
                     </form>
                 </div>
             )
-        :
+            :
             (
                 <div className="edit-modal-container">
 

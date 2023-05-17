@@ -54,7 +54,7 @@ function OpenModalButton({
 
             {buttonText}
 
-            {renderDownArrow && <span style={{fontSize: "10px", paddingLeft: "5px"}}><i class="fa-sharp fa-solid fa-chevron-down"></i></span>}
+            {renderDownArrow && <span style={{ fontSize: "10px", paddingLeft: "5px" }}><i className="fa-sharp fa-solid fa-chevron-down"></i></span>}
         </button>
     );
 }

@@ -8,7 +8,7 @@ import { Route, Switch } from "react-router-dom";
 import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
-import { UserChannelThunk } from "../../store/channel";
+import { UserChannelThunk, OneChannelThunk } from "../../store/channel";
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 let socket;
@@ -18,9 +18,20 @@ function Shell({ isLoaded }) {
 
     useEffect(() => {
         socket = io();
-        // Refresh the left sidebar on receive
-        socket.on("new_DM_convo", () => {
+
+        socket.on("new_DM_convo", (convoId) => {
+            // Refresh the left sidebar info on receive
             dispatch(UserChannelThunk());
+            // Refresh channel header info on receive
+            dispatch(OneChannelThunk(convoId))
+
+            /*
+
+            It's worth noting that we only need to do some of this stuff because we don't really (consistently) include channel member info in the store.
+
+            There is almost certainly a better way to do this than performing additional queries, but it's an OK band-aid solution for now.
+
+            */
         })
 
         return () => {

@@ -24,6 +24,14 @@ function Shell({ isLoaded }) {
             dispatch(UserChannelThunk());
             // Refresh channel header info on receive
             dispatch(OneChannelThunk(convoId))
+
+            /*
+
+            It's worth noting that we only need to do some of this stuff because we don't really (consistently) include channel member info in the store.
+
+            There is almost certainly a better way to do this than performing additional queries, but it's an OK band-aid solution for now.
+
+            */
         })
 
         return () => {

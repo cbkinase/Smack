@@ -127,6 +127,10 @@ def add_channel_member(channel_id):
     try:
         user.channel.append(channel)
         db.session.commit()
+        try:
+            socketio.emit("new_DM_convo", channel_id)
+        except Exception as e:
+            print(e)
         return {"message": "Successfully added user to the channel"}
     except:
         return {"message": "Something went wrong..."}, 404

@@ -124,7 +124,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                         <div className="edit-modal-form-box">
                             <div style={{ paddingLeft: "7px", fontWeight: "bold" }}>Created by</div>
                             <div id="edit-owner-name">{`${owner[0].username}`}</div>
-                            <button className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
+                            {!currChannel[0].is_direct ? <button className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button> : null}
                         </div>
 
 

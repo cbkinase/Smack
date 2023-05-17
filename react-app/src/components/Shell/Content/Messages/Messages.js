@@ -16,7 +16,6 @@ import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
 import { UserChannelThunk } from "../../../../store/channel";
 import DeleteMessageModal from "../../../DeleteMessageModal"
-import LoadingSpinner from "../../../LoadingSpinner";
 let socket;
 let updatedMessage;
 
@@ -31,7 +30,6 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     const { channelId } = useParams();
     const [showMenu, setShowMenu] = useState(false);
     const ulRef = useRef();
-    const [isChannelLoaded, setIsChannelLoaded] = useState(false);
 
     const openMenu = () => {
         if (showMenu) return;
@@ -68,12 +66,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     }, []);
 
     useEffect(() => {
-        setIsChannelLoaded(false);
-        async function fetch() {
-            await dispatch(getChannelMessages(channelId));
-            setIsChannelLoaded(true);
-        }
-        fetch();
+        dispatch(getChannelMessages(channelId));
     }, [dispatch, messages, reactions, channelId]);
 
     useEffect(() => {
@@ -348,7 +341,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         currentChannel,
         channelId,
     };
-    return isChannelLoaded ? (
+    return user && currentChannel && allMessages ? (
         <>
 
             <div style={{ marginBottom: '10px' }}>
@@ -536,6 +529,6 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
 
         </>
-    ) : <LoadingSpinner />;
+    ) : null;
 };
 export default Messages;

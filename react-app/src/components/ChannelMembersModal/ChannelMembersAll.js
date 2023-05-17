@@ -80,9 +80,9 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, s
           <i className="fa-solid fa-x"></i>
         </button>
       </div>
-      <input id="channel-search" type="text" placeholder="Find members" value={searchTerm} onChange={handleSearchChange} />
+      {allUsers.length ? <input id="channel-search" type="text" placeholder="Find members" value={searchTerm} onChange={handleSearchChange} /> : null}
       <div className="channels-list" style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
-        {filteredMembers.map((member, index) => {
+        {filteredMembers.length ? filteredMembers.map((member, index) => {
           return <div
             onClick={async (e) => {
               await fetch(`/api/channels/${currentChannel[0].id}/users/${member.id}`, {
@@ -101,7 +101,10 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, s
             <img style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }} src={member.avatar} alt=''></img>
             <p>{member.first_name} {member.last_name}</p>
           </div>
-        })}
+        }) : <p style={{ display: "flex", alignItems: "center", padding: "16px 16px 5px 16px", marginTop: "5px", display: "block",
+        fontWeight: "bold",
+        color: "black",
+        textDecoration: "none" }}>Sorry, no members found. Invite your friends to join Smack!</p>}
       </div>
     </div>
   </> :

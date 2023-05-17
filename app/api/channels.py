@@ -149,7 +149,7 @@ def add_nonself_channel_member(channel_id, user_id):
         other_user.channel.append(channel)
         db.session.commit()
         try:
-            socketio.emit("new_DM_convo", "hello")
+            socketio.emit("new_DM_convo", channel_id)
         except Exception as e:
             print(e)
             # pass

@@ -60,7 +60,7 @@ a:active {
 .tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    /* border-bottom: 1px dotted black; */
 }
 
 .tooltip .tooltiptext {
@@ -189,6 +189,21 @@ a:active {
 }
 
 .login-input-submit:hover {
+    background-color: #5c1f5d;
+}
+
+.login-input-submit-alt {
+    font-size: 16px;
+    padding: 10px 100px;
+    margin-top: 4px;
+    color: #ffffff;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    background-color: #3f0e40;
+}
+
+.login-input-submit-alt:hover {
     background-color: #5c1f5d;
 }
 

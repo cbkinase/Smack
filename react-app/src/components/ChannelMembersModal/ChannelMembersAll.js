@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import userObjectToNameList from "../../utils/userObjectToNameList";
 import { useDispatch } from "react-redux";
 import { UserChannelThunk } from "../../store/channel";
+import LoadingSpinner from "../LoadingSpinner";
 
 export default function ChannelMembersAll({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
+  const [isLoaded, setIsLoaded] = useState(false);
   const dispatch = useDispatch();
   // console.log(selectedUserRightBar);
   function toggleRightPane(state) {
@@ -45,7 +47,8 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, s
       for (const usr of userList) {
         delete final[usr.id]
       }
-      setAllUsers(Object.values(final))
+      setAllUsers(Object.values(final));
+      setIsLoaded(true);
     })()
   }, [])
 
@@ -69,7 +72,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, s
 
   }
 
-  return <>
+  return isLoaded ? <>
     <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="view-all-channels">
       <div className="channels-header">
         <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
@@ -101,5 +104,14 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, s
         })}
       </div>
     </div>
-  </>
+  </> :
+  <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="view-all-channels">
+          <div className="channels-header">
+        <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
+        <button className="edit-modal-close-btn" onClick={() => closeModal()}>
+          <i className="fa-solid fa-x"></i>
+        </button>
+      </div>
+  <LoadingSpinner offset={true} />
+  </div>
 }

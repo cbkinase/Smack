@@ -11,7 +11,14 @@ function OpenModalButton({
     userList,
     numMemb,
     renderDownArrow,
+    currUser
 }) {
+    if (userList && userList.length > 1) {
+        userList = JSON.parse(JSON.stringify(userList));
+        userList = userList.filter(user => user.id !== currUser.id)
+    }
+
+
     const { setModalContent, setOnModalClose } = useModal();
 
     const onClick = () => {

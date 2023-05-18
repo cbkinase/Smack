@@ -6,7 +6,7 @@ import { useState } from "react";
 import pdfImg from '../../misc/pdf-svgrepo-com.svg';
 import csvImg from '../../misc/excel-svgrepo-com (1).svg';
 import zipImg from '../../misc/file-zip-fill-svgrepo-com.svg';
-import fileImg from '../../misc/file-2-svgrepo-com.svg';
+import fileImg from '../../misc/file-ui-svgrepo-com.svg';
 import loadingImg from '../../misc/Rolling-1s-200px (1).svg';
 
 export default function Editor({ functions, creating, setChatInput, user, attachmentBuffer, attachmentIsLoading }) {

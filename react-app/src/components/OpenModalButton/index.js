@@ -25,7 +25,7 @@ function OpenModalButton({
 
             {renderChatIcon && <span style={{ width: "20px" }}><i className="far fa-comment"></i></span>}
 
-            {numMemb && numMemb >= 4 && <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
+            {numMemb && numMemb >= 4 ? <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
                 <img style={{ zIndex: 5 }} className="membercount-image"
                     src={userList && userList[0].avatar}
                     alt="Member"></img>
@@ -36,21 +36,21 @@ function OpenModalButton({
                     src={userList && userList[2].avatar}
                     alt="Member"></img>
                 <span style={{ zIndex: 4, position: "relative", left: "-8px" }}>{numMemb}</span>
-            </div >}
+            </div > : null}
 
-            {numMemb && numMemb === 3 && <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
+            {numMemb && numMemb === 3 ? <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
                 <img style={{ zIndex: 5 }} className="membercount-image"
                     src={userList && userList[0].avatar} alt=''></img>
                 <img style={{ zIndex: 4, position: "relative", left: "-8px" }} className="membercount-image"
                     src={userList && userList[1].avatar} alt=''></img>
                 <span style={{ zIndex: 3, position: "relative", left: "-3px" }}>{numMemb}</span>
-            </div>}
+            </div> : null}
 
-            {numMemb && numMemb < 3 && <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
+            {numMemb && numMemb < 3 ? <div className="content-header-membercount" style={{ backgroundColor: '#FFFFFF' }}>
                 <img className="membercount-image"
                     src={userList && userList[0].avatar} alt=''></img>
                 <span style={{ padding: "0px 5px" }}>{numMemb}</span>
-            </div>}
+            </div> : null}
 
             {buttonText}
 

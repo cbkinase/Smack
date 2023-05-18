@@ -3,6 +3,7 @@ import { useState } from "react";
 import userObjectToNameList from "../../utils/userObjectToNameList";
 import OpenModalButton from "../OpenModalButton";
 import ChannelMembersAll from "./ChannelMembersAll";
+import isSelfDM from "../../utils/isSelfDM";
 
 export default function ChannelMembersModal({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
   // console.log(selectedUserRightBar);
@@ -67,9 +68,9 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
             <p>{member.first_name} {member.last_name}</p>
           </div>
         })}
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
+        {!isSelfDM(currentChannel[0], user)  ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
           {<OpenModalButton className="login-input-submit-alt" modalComponent={<ChannelMembersAll currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user} />} buttonText="Add members" />}
-        </div>
+        </div> : null}
       </div>
     </div>
   </>

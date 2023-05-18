@@ -121,11 +121,11 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                             </button>
                         </div>
 
-                        <div className="edit-modal-form-box">
+                        {!currChannel[0].is_direct ? <div className="edit-modal-form-box">
                             <div style={{ paddingLeft: "7px", fontWeight: "bold" }}>Created by</div>
                             <div id="edit-owner-name">{`${owner[0].username}`}</div>
                             <button className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
-                        </div>
+                        </div> : null}
 
 
                     </form>
@@ -175,10 +175,10 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 
                         </div>
 
-                        <div className="edit-modal-form-box">
+                        {!currChannel[0].is_direct ? <div className="edit-modal-form-box">
                             <div>Created by</div>
                             <div id="edit-owner-name">{`${owner[0].username}`}</div>
-                        </div>
+                        </div> : null}
 
 
                     </form>

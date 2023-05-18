@@ -68,9 +68,9 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
             <p>{member.first_name} {member.last_name}</p>
           </div>
         })}
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
-          {!isSelfDM(currentChannel[0], user)  ? <OpenModalButton className="login-input-submit-alt" modalComponent={<ChannelMembersAll currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user} />} buttonText="Add members" /> : null}
-        </div>
+        {!isSelfDM(currentChannel[0], user)  ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
+          {<OpenModalButton className="login-input-submit-alt" modalComponent={<ChannelMembersAll currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user} />} buttonText="Add members" />}
+        </div> : null}
       </div>
     </div>
   </>

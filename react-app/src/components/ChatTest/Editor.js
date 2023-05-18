@@ -2,11 +2,8 @@ import ChatEmojiModal from "../ChatEmojiModal";
 import OpenModalButton from "../OpenModalButton";
 import userObjectToNameList from "../../utils/userObjectToNameList";
 import { useState } from "react";
+import { isImage, previewFilter } from "../Shell/Content/Messages/AttachmentFncs";
 
-import pdfImg from '../../misc/pdf-svgrepo-com.svg';
-import csvImg from '../../misc/excel-svgrepo-com (1).svg';
-import zipImg from '../../misc/file-zip-fill-svgrepo-com.svg';
-import fileImg from '../../misc/file-ui-svgrepo-com.svg';
 import loadingImg from '../../misc/Rolling-1s-200px (1).svg';
 
 export default function Editor({ functions, creating, setChatInput, user, attachmentBuffer, attachmentIsLoading }) {
@@ -23,27 +20,6 @@ export default function Editor({ functions, creating, setChatInput, user, attach
         }
         else return `${user.first_name} ${user.last_name}`
 
-    }
-
-    function isImage(filename) {
-        const imageTypes = 'jpegjpgpngsvg';
-        return imageTypes.includes(filename.split(".").pop());
-    }
-    function previewFilter(filename) {
-        const fileExt = filename.split(".").pop();
-        switch (fileExt) {
-            case 'pdf':
-                return pdfImg;
-            case 'csv':
-                return csvImg;
-            case 'xlsx':
-                return csvImg;
-            case 'zip':
-                return zipImg;
-            default:
-                return fileImg;
-
-        }
     }
 
 

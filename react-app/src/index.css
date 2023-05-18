@@ -857,6 +857,7 @@ a:active {
     font-size: 11px;
 }
 
+/* POST MESSAGE ADD ATTACHMENTS STYLING */
 .attachment-btn {
     border: none;
     margin-right: 10px;
@@ -931,6 +932,106 @@ input[type="file"] {
     max-height: 30px;
 }
 
+/* ATTACHMENTs FOR MESSAGES */
+.msg-attachments {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+/* images */
+
+/* .msg-attachment-preview-img-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 260px;
+    height: 62px;
+    max-height: 62px;
+}
+
+.msg-attachment-preview-img-wrapper > img {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.msg-attachment-preview-img-wrapper:hover img {
+    filter: brightness(50%);
+    cursor: pointer;
+} */
+
+
+/* files  */
+.msg-attachment-preview-file-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 260px;
+    height: 62px;
+    max-height: 62px;
+    border-radius: 10px;
+    border: 1px solid #dddddd;
+}
+
+.msg-attachment-preview-file {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.msg-attachment-preview-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.attachment-details>div:first-child {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.attachment-details>div:last-child {
+    font-size: 13px;
+}
+
+/* hover menu */
+.attachment-hover-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    right: 10px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    background-color: white;
+    height: 70%;
+    width: 25%;
+
+}
+
+.attachment-hover-menu button {
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 0px 5px;
+    height: 80%;
+    width: 45%;
+}
+
+.attachment-hover-menu button:hover {
+    background-color: #dddddd;
+}
 
 
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */

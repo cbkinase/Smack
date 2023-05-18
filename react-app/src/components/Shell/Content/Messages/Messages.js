@@ -16,6 +16,7 @@ import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
 import { UserChannelThunk } from "../../../../store/channel";
 import DeleteMessageModal from "../../../DeleteMessageModal"
+import { isImage, previewFilter, getFileExt } from "./AttachmentFncs";
 let socket;
 let updatedMessage;
 
@@ -34,6 +35,9 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     // buffer for actual attachments to be uploaded
     const [attachmentBuffer, setAttachmentBuffer] = useState({});
     const [attachmentIsLoading, setAttachmentIsLoading] = useState(false);
+
+    // hover functionality for attachments
+    const [hoverId, setHoverId] = useState(0);
 
     const openMenu = () => {
         if (showMenu) return;
@@ -553,6 +557,63 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
                             <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
                                 {message.content} {message.updated_at !== message.created_at && <span style={{ color: "#888888", paddingLeft: '2px', fontSize: '13px' }}>(edited)</span>}
+                            </div>
+
+                            <div className="msg-attachments" id={`msg-attachments-${message.id}`}>
+                                {Object.values(message.Attachments).length?
+                                    Object.values(message.Attachments).map((attch) => (
+                                            
+                                        
+                                            <span className="msg-attachment-preview-file-wrapper"
+                                                  key={attch.id}
+                                                onMouseEnter={() => { setHoverId(attch.id) }}
+                                                onMouseLeave={() => { setHoverId(0) }}
+                                            >
+                                            {isImage(attch.content) ? 
+                                                <img
+                                                    className="msg-attachment-preview-img"
+                                                    src={attch.content}
+                                                    alt="msg-attachment-preview">
+                                                </img>
+                                                :
+                                                <>
+                                                    <img
+                                                        className="msg-attachment-preview-file"
+                                                        src={previewFilter(attch.content)}
+                                                        alt="msg-attachment-preview">
+                                                    </img>
+                                                
+                                                    <div className="attachment-details">
+                                                        <div>
+                                                            {attch.content.split('/')[3].length > 20 ? 
+                                                                `${attch.content.split('/')[3].substring(0, 20)}...`
+                                                            :
+                                                                `${attch.content.split('/')[3]}`
+                                                            }
+                                                        </div>
+                                                        <div>
+                                                            {getFileExt(attch.content)}
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            }
+                                            {hoverId === attch.id ? 
+                                                <div className="attachment-hover-menu">
+                                                    <button>
+                                                        <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
+                                                    </button>
+                                                    <button>
+                                                        <i class="fa-solid fa-trash-can" style={{color: "#000000"}}></i>
+                                                    </button>
+                                                </div>
+                                                : null
+                                            }
+                                            </span>
+                                        
+                                    ))
+                                    :
+                                    null
+                                }
                             </div>
 
                             <div style={{}} className="message-card-footer">

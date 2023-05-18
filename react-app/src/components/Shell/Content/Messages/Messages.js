@@ -348,22 +348,25 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     // Attachments
     // add each attachment to buffer, buffer will be used when uploading
     const addAttachBuffer = (e) => {
-        const curBuffer = { ...attachmentBuffer };
-        let currId = 0;
+        if (e.target.files[0]) {
+            const curBuffer = { ...attachmentBuffer };
+            let currId = 0;
 
-        if (!Object.values(curBuffer).length) {
-            currId = 1;
+            if (!Object.values(curBuffer).length) {
+                currId = 1;
+            }
+            else {
+                currId = Object.values(curBuffer).pop().id + 1;
+            }
+ 
+            const file = e.target.files[0];
+            file["id"] = currId;
+            
+            curBuffer[currId] = file;
+            setAttachmentBuffer(curBuffer);
         }
-        else {
-            currId = Object.values(curBuffer).pop().id + 1;
-        }
-        const file = e.target.files[0];
-        file["id"] = currId;
+
         
-        curBuffer[currId] = file;
-        setAttachmentBuffer(curBuffer);
-        
-        console.log(attachmentBuffer);
     }
 
     // remove attachment from buffer 
@@ -374,7 +377,6 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         delete curBuffer[id];
         setAttachmentBuffer(curBuffer);
 
-        console.log(attachmentBuffer);
     }
 
 

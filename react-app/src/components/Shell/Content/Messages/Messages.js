@@ -31,6 +31,10 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     const [showMenu, setShowMenu] = useState(false);
     const ulRef = useRef();
 
+    // buffer for actual attachments to be uploaded
+    const [attachmentBuffer, setAttachmentBuffer] = useState({});
+    const [attachmentIsLoading, setAttachmentIsLoading] = useState(false);
+
     const openMenu = () => {
         if (showMenu) return;
         setShowMenu(true);
@@ -135,15 +139,27 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
     const sendChat = async (e) => {
         e.preventDefault();
-
-        const newMessage = {
-            user_id: user.id,
-            channel_id: channelId,
-            content: chatInput,
-        };
-        await dispatch(createChannelMessage(newMessage));
+        console.log("SENDING ATTACHMENTS: ", attachmentBuffer)
+        const attachmentsArr = Object.values(attachmentBuffer)
+        const formData = new FormData();
+        formData.append("content", chatInput);
+        for(let i = 0; i < attachmentsArr.length; i++) {
+            formData.append("attachmentsBuffer"+i, attachmentsArr[i])
+        }
+        // console.log("FORM SENDING: ", formData.get("attachmentsBuffer0"));
+        // console.log("FORM SENDING: ", formData.get("attachmentsBuffer1"));
+        // const newMessage = {
+        //     user_id: user.id,
+        //     channel_id: channelId,
+        //     content: chatInput,
+        // };
+        setAttachmentIsLoading(true)
+        await dispatch(createChannelMessage(formData, channelId));
+        setAttachmentIsLoading(false)
         if (socket)
             socket.emit("chat", { user: user.username, msg: chatInput });
+
+        setAttachmentBuffer({});
         setChatInput("");
     };
 
@@ -329,7 +345,37 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         window.toggleLeftPane();
     }
 
+    // Attachments
+    // add each attachment to buffer, buffer will be used when uploading
+    const addAttachBuffer = (e) => {
+        const curBuffer = { ...attachmentBuffer };
+        let currId = 0;
 
+        if (!Object.values(curBuffer).length) {
+            currId = 1;
+        }
+        else {
+            currId = Object.values(curBuffer).pop().id + 1;
+        }
+        const file = e.target.files[0];
+        file["id"] = currId;
+        
+        curBuffer[currId] = file;
+        setAttachmentBuffer(curBuffer);
+        
+        console.log(attachmentBuffer);
+    }
+
+    // remove attachment from buffer 
+    const removeAttachBuffer = (e, id) => {
+        e.preventDefault();
+
+        const curBuffer = { ...attachmentBuffer };
+        delete curBuffer[id];
+        setAttachmentBuffer(curBuffer);
+
+        console.log(attachmentBuffer);
+    }
 
 
 
@@ -340,6 +386,8 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         updateChatInput,
         currentChannel,
         channelId,
+        addAttachBuffer,
+        removeAttachBuffer
     };
     return user && currentChannel && allMessages ? (
         <>
@@ -521,7 +569,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
             {/* <div id="editor-holder" style={{ position: 'sticky', bottom: 0, backgroundColor: '#FFFFFF', width: '100%', overflow: 'hidden' }}> */}
             <div style={{ position: 'sticky', bottom: 0 }} >
-                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} user={user} />
+                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} user={user} attachmentBuffer={attachmentBuffer} attachmentIsLoading={attachmentIsLoading}/>
             </div>
 
             {/* </div> */}

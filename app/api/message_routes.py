@@ -65,9 +65,17 @@ def delete_message(message_id):
     if this_user['id'] != message.user_id:
         return forbidden()
 
+    
+    message_attachments = message.attachments
+    for attachment in message_attachments:
+
+        remove_attachment = remove_file_from_s3(attachment.content)
+        if not remove_attachment:
+            return {'errors': ['Failed to delete files from AWS']}, 400
+        
+    
     db.session.delete(message)
     db.session.commit()
-
     return {
         "message": "Successfully deleted",
         "status_code": 200
@@ -121,53 +129,9 @@ def get_reactions_for_message(message_id):
         return { "message": "Failed to get reactions" }, 400
     
 
-# ATTACHNENTS
-@message_routes.route("/<int:message_id>/attachments", methods=["POST"])
-@login_required
-def create_attachment_for_messages(message_id):
-    try:
-        if "attachment" not in request.files:
-            return {"errors": ["file required"]}, 400
-        
-        attachment = request.files["attachment"]
-        attachment.filename = get_unique_filename(attachment.filename)
-        upload_attachment = upload_file_to_s3(attachment)
+# ATTACHMENTS
 
-        print('UPLOAD_ATTACHMENT')
-        print(upload_attachment)
-
-        if "url" not in upload_attachment:
-            # if the dictionary doesn't have a url key
-            # it means that there was an error when we tried to upload
-            # so we send back that error message
-                print('Failed to upload to AWS')
-                return {'errors': ['Failed to upload to AWS']}, 400
-        
-        url = upload_attachment["url"]
-
-        this_user = User.query.get(current_user.id)
-        this_message = Message.query.get(message_id)
-
-        # print(request.form.get('title'))
-        # print(request.form.get('description'))
-        new_attachment = Attachment(content=url, user=this_user, message=this_message)
-        db.session.add(new_attachment)
-        db.session.commit()
-        return new_attachment.to_dict()
-
-    except:
-        return {"errors": "Failed to post attachment"}, 400
-
-# @message_routes.route("/<int:message_id>/attachments", methods=["GET"])
-# @login_required
-# def get_attachment_for_messages(message_id):
-#     try:
-#         attachments = db.session.query(Attachment).filter(Attachment.message_id == message_id).all()
-#         return {"Attachments": [atch.to_dict() for atch in attachments]}
-#     except:
-#         return { "errors": "Failed to get attachments" }, 400
-
-@message_routes.route("/<int:message_id>/attachments/<int:attachments_id>", methods=["DELETE"])
+@message_routes.route("/attachments/<int:attachments_id>", methods=["DELETE"])
 @login_required
 def delete_attachment_for_messages(attachments_id):
     try: 

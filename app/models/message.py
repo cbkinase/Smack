@@ -27,5 +27,6 @@ class Message(db.Model):
             "content": self.content,
             "is_pinned": self.is_pinned,
             "created_at": self.created_at,
-            "updated_at": self.updated_at
+            "updated_at": self.updated_at,
+            "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }

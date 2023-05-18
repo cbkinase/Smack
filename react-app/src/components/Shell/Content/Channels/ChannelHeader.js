@@ -73,7 +73,7 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                     {currentChannel.length ? currentChannel[0].subject : ""}
                 </div>
             </div>
-            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
+            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb} currUser={user}></OpenModalButton>
 
 
 

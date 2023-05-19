@@ -34,6 +34,9 @@ def handle_add_reaction(data):
 def handle_delete_reaction(data):
     emit("deleteReaction", data, broadcast=True)
 
+@socketio.on("deleteAttachment")
+def handle_delete_attachment(data):
+    emit("deleteAttachment", data, broadcast=True)
 
 @socketio.on('connect')
 def handle_connect():

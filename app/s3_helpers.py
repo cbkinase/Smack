@@ -51,3 +51,13 @@ def remove_file_from_s3(image_url):
     except Exception as e:
         return { "errors": str(e) }
     return True
+
+def download_file_from_s3(obj_key):
+    try:
+        return s3.generate_presigned_url(
+            ClientMethod='get_object',
+            Params={'Bucket': BUCKET_NAME, 'Key': obj_key},
+            ExpiresIn=3600
+        )
+    except Exception as e:
+        return { "errors": str(e) }

@@ -584,10 +584,9 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                             <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
                                 {message.content} {message.updated_at !== message.created_at && <span style={{ color: "#888888", paddingLeft: '2px', fontSize: '13px' }}>(edited)</span>}
                             </div>
-
+                            {Object.values(message.Attachments).length ?
                             <div className="msg-attachments" id={`msg-attachments-${message.id}`}>
-                                {Object.values(message.Attachments).length?
-                                    Object.values(message.Attachments).map((attch) => (
+                                    {Object.values(message.Attachments).map((attch) => (
                                             
                                         
                                             <span className="msg-attachment-preview-file-wrapper"
@@ -647,10 +646,10 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                             </span>
                                         
                                     ))
-                                    :
-                                    null
-                                }
+                                    }
                             </div>
+                            : null
+                             }
 
                             <div style={{}} className="message-card-footer">
                                 {storeConverter(message, user)}

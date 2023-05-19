@@ -8,6 +8,7 @@ import {
     destroyMessage,
     thunkDeleteReaction,
     thunkCreateReaction,
+    thunkDeleteAttachment
 } from "../../../../store/messages";
 import { OneChannelThunk } from "../../../../store/channel";
 import { useParams } from "react-router-dom";
@@ -40,8 +41,6 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     // hover functionality for attachments
     const [hoverId, setHoverId] = useState(0);
 
-    // downloading
-    const [downloadUrl, setDownloadUrl] = useState("");
 
     const openMenu = () => {
         if (showMenu) return;
@@ -131,6 +130,10 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             setReactions((reactions) => [...reactions, reaction]);
             // console.log(reactions);
         });
+
+        socket.on("deleteAttachment", (chat) => {
+            setMessages([]);
+        });
         // when component unmounts, disconnect
         return () => {
             socket.disconnect();
@@ -147,7 +150,6 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
     const sendChat = async (e) => {
         e.preventDefault();
-        console.log("SENDING ATTACHMENTS: ", attachmentBuffer)
         const attachmentsArr = Object.values(attachmentBuffer)
         const formData = new FormData();
         formData.append("content", chatInput);
@@ -408,6 +410,13 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         
     }
 
+    // delete attachment
+    const handleDeleteAttachment = async (e, msg, attachment) => {
+        e.preventDefault();
+        await dispatch(thunkDeleteAttachment(attachment))
+        socket.emit("deleteAttachment", { user: user.username, msg: msg.content });
+    }
+
 
 
 
@@ -421,6 +430,8 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         addAttachBuffer,
         removeAttachBuffer
     };
+
+    console.log("****MESSAGES: ", messages)
     return user && currentChannel && allMessages ? (
         <>
 
@@ -608,7 +619,9 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                                         alt="msg-attachment-preview">
                                                     </img>}
                                                     className={"msg-attachment-preview-file-wrapper"}
+                                                    
                                                 />
+                                                
                                                 :
                                                 <>
                                                     <img
@@ -631,17 +644,53 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                                     </div>
                                                 </>
                                             }
-                                            {hoverId === attch.id ? 
+                                            { hoverId !== attch.id ? 
+                                                null
+                                                : isImage(attch.content)
+                                                    ? 
+                                                    (<>
+                                                        <div className="img-attachment-details">
+                                                            <div>
+                                                                {attch.content.split('/')[3].length > 20 ?
+                                                                    `${attch.content.split('/')[3].substring(0, 20)}...`
+                                                                    :
+                                                                    `${attch.content.split('/')[3]}`
+                                                                }
+                                                            </div>
+                                                            <div>
+                                                                {getFileExt(attch.content)}
+                                                            </div>
+                                                        </div>
+                                                        <div className="attachment-hover-menu">
+                                                        <button onClick={(e) => downloadFile(e, attch.content.split('/')[3])}>
+                                                            <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
+                                                        </button>
+                                                        
+                                                            {user.id === attch.user_id ?
+                                                                    <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
+                                                                        <i class="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
+                                                                    </button>
+                                                                :
+                                                                    null
+                                                            }
+                                                        </div>
+                                                    </>)
+                                                :
+                                                
                                                 <div className="attachment-hover-menu">
                                                     <button onClick={(e) => downloadFile(e, attch.content.split('/')[3])}>
                                                         <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
                                                     </button>
                                                     
-                                                    <button>
-                                                        <i class="fa-solid fa-trash-can" style={{color: "#000000"}}></i>
-                                                    </button>
+                                                {user.id === attch.user_id ?
+                                                        <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
+                                                            <i class="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
+                                                        </button>
+                                                    :
+                                                        null
+                                                }
+                                                    
                                                 </div>
-                                                : null
                                             }
                                             </span>
                                         

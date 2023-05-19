@@ -17,6 +17,7 @@ import OpenModalButton from "../../../OpenModalButton";
 import { UserChannelThunk } from "../../../../store/channel";
 import DeleteMessageModal from "../../../DeleteMessageModal"
 import { isImage, previewFilter, getFileExt } from "./AttachmentFncs";
+import PreviewImageModal from "../../../PreviewImageModal/PreviewImageModal";
 let socket;
 let updatedMessage;
 
@@ -38,6 +39,9 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
     // hover functionality for attachments
     const [hoverId, setHoverId] = useState(0);
+
+    // downloading
+    const [downloadUrl, setDownloadUrl] = useState("");
 
     const openMenu = () => {
         if (showMenu) return;
@@ -383,6 +387,28 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
     }
 
+    // download
+    const downloadFile = (e, objectKey) => {
+        e.preventDefault();
+        const downloadFetch = fetch(`/api/messages/attachments/${objectKey}`, {
+            method: "GET",
+            headers: {"Content-Type": "application/json"}
+        })
+            .then(response => response.json())
+            .then(res => {
+                const downloadLink = document.createElement("a");
+                downloadLink.href = res.url;
+                downloadLink.download = objectKey;
+                downloadLink.target = "_blank";
+                downloadLink.rel = "noopener noreferrer";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            })
+        
+    }
+
+
 
 
     const messageFunctions = {
@@ -570,11 +596,20 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                                 onMouseLeave={() => { setHoverId(0) }}
                                             >
                                             {isImage(attch.content) ? 
-                                                <img
-                                                    className="msg-attachment-preview-img"
-                                                    src={attch.content}
-                                                    alt="msg-attachment-preview">
-                                                </img>
+                                                
+                                                <OpenModalButton
+                                                    modalComponent={
+                                                        <PreviewImageModal
+                                                            url={attch.content}
+                                                        />
+                                                    }
+                                                    
+                                                    buttonText={<img className="msg-attachment-preview-img"
+                                                        src={attch.content}
+                                                        alt="msg-attachment-preview">
+                                                    </img>}
+                                                    className={"msg-attachment-preview-file-wrapper"}
+                                                />
                                                 :
                                                 <>
                                                     <img
@@ -599,9 +634,10 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                             }
                                             {hoverId === attch.id ? 
                                                 <div className="attachment-hover-menu">
-                                                    <button>
+                                                    <button onClick={(e) => downloadFile(e, attch.content.split('/')[3])}>
                                                         <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
                                                     </button>
+                                                    
                                                     <button>
                                                         <i class="fa-solid fa-trash-can" style={{color: "#000000"}}></i>
                                                     </button>

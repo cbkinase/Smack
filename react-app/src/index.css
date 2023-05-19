@@ -943,29 +943,6 @@ input[type="file"] {
     row-gap: 10px;
 }
 
-/* images */
-
-/* .msg-attachment-preview-img-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 260px;
-    height: 62px;
-    max-height: 62px;
-}
-
-.msg-attachment-preview-img-wrapper > img {
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    object-fit: cover;
-}
-
-.msg-attachment-preview-img-wrapper:hover img {
-    filter: brightness(50%);
-    cursor: pointer;
-} */
-
 
 /* files  */
 .msg-attachment-preview-file-wrapper {

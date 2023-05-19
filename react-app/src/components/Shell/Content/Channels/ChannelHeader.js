@@ -7,6 +7,7 @@ import OpenModalButton from '../../../OpenModalButton';
 import EditChannelModal from '../../../EditFormModal/EditChannelModal';
 import ChannelMembersModal from '../../../ChannelMembersModal';
 import userObjectToNameList from '../../../../utils/userObjectToNameList';
+import determineChannelName from '../../../../utils/determineChannelName';
 
 function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     const user = useSelector(state => state.session.user)
@@ -26,7 +27,18 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
 
     useEffect(() => {
         const thisChannel = dispatch(ChlActions.OneChannelThunk(channelId))
-            .then(res => {if (res.errors) history.push('/channels/explore')})
+            .then(res => {
+                if (res.errors) history.push('/channels/explore');
+                let channel = res.single_channel[0]
+                document.title = `${determineChannelName(res.single_channel[0], user)} - Smack`
+
+                if (!channel.is_direct) {
+                    document.title = document.title.slice(1)
+                }
+            })
+        return () => {
+            document.title = "Smack";
+        };
     }, [dispatch, channelId])
 
     const currentChannel = Object.values(singleChannel);

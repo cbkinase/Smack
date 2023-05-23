@@ -6,6 +6,8 @@ import * as ChlActions from "../../../../store/channel";
 import OpenModalButton from '../../../OpenModalButton';
 import EditChannelModal from '../../../EditFormModal/EditChannelModal';
 import ChannelMembersModal from '../../../ChannelMembersModal';
+import userObjectToNameList from '../../../../utils/userObjectToNameList';
+import determineChannelName from '../../../../utils/determineChannelName';
 
 function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     const user = useSelector(state => state.session.user)
@@ -25,7 +27,18 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
 
     useEffect(() => {
         const thisChannel = dispatch(ChlActions.OneChannelThunk(channelId))
-            .then(res => {if (res.errors) history.push('/channels/explore')})
+            .then(res => {
+                if (res.errors) history.push('/channels/explore');
+                let channel = res.single_channel[0]
+                document.title = `${determineChannelName(res.single_channel[0], user)} - Smack`
+
+                if (!channel.is_direct) {
+                    document.title = document.title.slice(1)
+                }
+            })
+        return () => {
+            document.title = "Smack";
+        };
     }, [dispatch, channelId])
 
     const currentChannel = Object.values(singleChannel);
@@ -36,6 +49,16 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
 
     if (currentChannel.length && userList) {
         numMemb = userList.length
+    }
+
+    function determineName(channel, user) {
+        // The name displayed must be different depending on whether it's a DM or not.
+        if (!channel.is_direct) return `# ${channel.name}`
+        else if (channel.is_direct && Object.values(channel.Members).length > 1) {
+            return userObjectToNameList(channel.Members, user)
+        }
+        else return `${user.first_name} ${user.last_name}`
+
     }
 
     return (
@@ -55,14 +78,14 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                             currChannel={currentChannel}
 
                         />}
-                    buttonText={currentChannel.length && `# ${currentChannel[0].name}`}
+                    buttonText={currentChannel.length ? determineName(currentChannel[0], user) : ""}
                     className="content-header-channelname"
                  />
                 <div className="content-header-channeltopic">
-                    {currentChannel.length && currentChannel[0].subject}
+                    {currentChannel.length ? currentChannel[0].subject : ""}
                 </div>
             </div>
-            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb}></OpenModalButton>
+            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb} currUser={user}></OpenModalButton>
 
 
 

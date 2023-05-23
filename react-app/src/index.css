@@ -34,6 +34,25 @@ button:hover {
     cursor: pointer;
 }
 
+a:link {
+    text-decoration: none;
+}
+
+
+a:visited {
+    text-decoration: none;
+}
+
+
+a:hover {
+    text-decoration: none;
+}
+
+
+a:active {
+    text-decoration: none;
+}
+
 #root {
     height: 100%;
 }
@@ -41,7 +60,7 @@ button:hover {
 .tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    /* border-bottom: 1px dotted black; */
 }
 
 .tooltip .tooltiptext {
@@ -170,6 +189,21 @@ button:hover {
 }
 
 .login-input-submit:hover {
+    background-color: #5c1f5d;
+}
+
+.login-input-submit-alt {
+    font-size: 16px;
+    padding: 10px 100px;
+    margin-top: 4px;
+    color: #ffffff;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    background-color: #3f0e40;
+}
+
+.login-input-submit-alt:hover {
     background-color: #5c1f5d;
 }
 
@@ -724,6 +758,21 @@ button:hover {
     cursor: pointer;
 }
 
+/* %%%%%%%%%%%%% REACTION ICON %%%%%%%%%%%%%% */
+
+.reaction-icon {
+    border: none;
+    background-color: #FFFFFF;
+    font-size: 20px;
+    padding: 3px;
+    border: none;
+    border-radius: 8px;
+}
+
+.reaction-icon:hover {
+    background-color: #ededed;
+}
+
 /* %%%%%%%%%%%%% MESSAGE CARD %%%%%%%%%%%%%% */
 
 .message-card {
@@ -822,6 +871,174 @@ button:hover {
     text-align: center;
     font-size: 11px;
 }
+
+/* POST MESSAGE ADD ATTACHMENTS STYLING */
+.attachment-btn {
+    border: none;
+    margin-right: 10px;
+    background-color: transparent;
+}
+
+.attachment-btn:hover {
+    cursor: pointer;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.attachment-preview {
+    position: relative;
+    display: inline-block;
+    width: 110px;
+    height: 110px;
+    
+}
+.attachment-preview:hover img {
+    filter: brightness(50%);
+    cursor: pointer;
+}
+
+.attachment-preview > img {
+    z-index: 1;
+    margin-top: 10%;
+    width: 90px;
+    height: 90px;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+/* .attachment-preview>img:hover {
+    filter: brightness(50%);
+    cursor: pointer;
+} */
+
+.delete-attachment-btn {
+    position: absolute;
+    padding: 0;
+    border: none;
+    top: 6px;
+    right: 12px;
+    background-color: transparent;
+}
+
+.attachment-name {
+    z-index: 2;
+    width: 60px;
+    overflow-wrap: break-word;
+    position: absolute;
+    top: 30px;
+    left: 15px;
+    padding: 0;
+    margin: 0;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+
+}
+
+.load-attachment {
+    position: absolute;
+    padding: 0;
+    border: none;
+    top: -8px;
+    right: 10px;
+    max-width: 30px;
+    max-height: 30px;
+}
+
+/* ATTACHMENTs FOR MESSAGES */
+.msg-attachments {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 10px;
+    margin-bottom: 10px;
+}
+
+
+/* files  */
+.msg-attachment-preview-file-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 260px;
+    height: 62px;
+    max-height: 62px;
+    border-radius: 10px;
+    border: 1px solid #dddddd;
+}
+
+.msg-attachment-preview-file {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.msg-attachment-preview-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.attachment-details>div:first-child {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.attachment-details>div:last-child {
+    font-size: 13px;
+}
+
+.img-attachment-details {
+    position: absolute;
+    left: 5px;
+    text-shadow: 1px 1px 2px #dddddd;
+}
+.img-attachment-details > div:first-child {
+    font-weight: bold;
+    font-size: 15px;
+}
+.img-attachment-details>div:last-child {
+    font-size: 13px;
+}
+
+/* hover menu */
+.attachment-hover-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    right: 10px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    background-color: white;
+    height: 70%;
+    width: 25%;
+
+}
+
+.attachment-hover-menu button {
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 0px 5px;
+    height: 80%;
+    width: 45%;
+}
+
+.attachment-hover-menu button:hover {
+    background-color: #dddddd;
+}
+
 
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
 

@@ -8,6 +8,7 @@ import {
     destroyMessage,
     thunkDeleteReaction,
     thunkCreateReaction,
+    thunkDeleteAttachment
 } from "../../../../store/messages";
 import { OneChannelThunk } from "../../../../store/channel";
 import { useParams } from "react-router-dom";
@@ -16,6 +17,8 @@ import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
 import { UserChannelThunk } from "../../../../store/channel";
 import DeleteMessageModal from "../../../DeleteMessageModal"
+import { isImage, previewFilter, getFileExt } from "./AttachmentFncs";
+import PreviewImageModal from "../../../PreviewImageModal/PreviewImageModal";
 let socket;
 let updatedMessage;
 
@@ -30,6 +33,14 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     const { channelId } = useParams();
     const [showMenu, setShowMenu] = useState(false);
     const ulRef = useRef();
+
+    // buffer for actual attachments to be uploaded
+    const [attachmentBuffer, setAttachmentBuffer] = useState({});
+    const [attachmentIsLoading, setAttachmentIsLoading] = useState(false);
+
+    // hover functionality for attachments
+    const [hoverId, setHoverId] = useState(0);
+
 
     const openMenu = () => {
         if (showMenu) return;
@@ -119,6 +130,10 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             setReactions((reactions) => [...reactions, reaction]);
             // console.log(reactions);
         });
+
+        socket.on("deleteAttachment", (chat) => {
+            setMessages([]);
+        });
         // when component unmounts, disconnect
         return () => {
             socket.disconnect();
@@ -135,15 +150,26 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
     const sendChat = async (e) => {
         e.preventDefault();
-
-        const newMessage = {
-            user_id: user.id,
-            channel_id: channelId,
-            content: chatInput,
-        };
-        await dispatch(createChannelMessage(newMessage));
+        const attachmentsArr = Object.values(attachmentBuffer)
+        const formData = new FormData();
+        formData.append("content", chatInput);
+        for(let i = 0; i < attachmentsArr.length; i++) {
+            formData.append("attachmentsBuffer"+i, attachmentsArr[i])
+        }
+        // console.log("FORM SENDING: ", formData.get("attachmentsBuffer0"));
+        // console.log("FORM SENDING: ", formData.get("attachmentsBuffer1"));
+        // const newMessage = {
+        //     user_id: user.id,
+        //     channel_id: channelId,
+        //     content: chatInput,
+        // };
+        setAttachmentIsLoading(true)
+        await dispatch(createChannelMessage(formData, channelId));
+        setAttachmentIsLoading(false)
         if (socket)
             socket.emit("chat", { user: user.username, msg: chatInput });
+
+        setAttachmentBuffer({});
         setChatInput("");
     };
 
@@ -329,6 +355,67 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         window.toggleLeftPane();
     }
 
+    // Attachments
+    // add each attachment to buffer, buffer will be used when uploading
+    const addAttachBuffer = (e) => {
+        if (e.target.files[0]) {
+            const curBuffer = { ...attachmentBuffer };
+            let currId = 0;
+
+            if (!Object.values(curBuffer).length) {
+                currId = 1;
+            }
+            else {
+                currId = Object.values(curBuffer).pop().id + 1;
+            }
+ 
+            const file = e.target.files[0];
+            file["id"] = currId;
+            
+            curBuffer[currId] = file;
+            setAttachmentBuffer(curBuffer);
+        }
+
+        
+    }
+
+    // remove attachment from buffer 
+    const removeAttachBuffer = (e, id) => {
+        e.preventDefault();
+
+        const curBuffer = { ...attachmentBuffer };
+        delete curBuffer[id];
+        setAttachmentBuffer(curBuffer);
+
+    }
+
+    // download
+    const downloadFile = (e, objectKey) => {
+        e.preventDefault();
+        const downloadFetch = fetch(`/api/messages/attachments/${objectKey}`, {
+            method: "GET",
+            headers: {"Content-Type": "application/json"}
+        })
+            .then(response => response.json())
+            .then(res => {
+                const downloadLink = document.createElement("a");
+                downloadLink.href = res.url;
+                downloadLink.download = objectKey;
+                downloadLink.target = "_blank";
+                downloadLink.rel = "noopener noreferrer";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            })
+        
+    }
+
+    // delete attachment
+    const handleDeleteAttachment = async (e, msg, attachment) => {
+        e.preventDefault();
+        await dispatch(thunkDeleteAttachment(attachment))
+        socket.emit("deleteAttachment", { user: user.username, msg: msg.content });
+    }
 
 
 
@@ -340,7 +427,11 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         updateChatInput,
         currentChannel,
         channelId,
+        addAttachBuffer,
+        removeAttachBuffer
     };
+
+    console.log("****MESSAGES: ", messages)
     return user && currentChannel && allMessages ? (
         <>
 
@@ -504,6 +595,110 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                             <div style={{ overflowWrap: "anywhere" }} id={`msg-content-${message.id}`}>
                                 {message.content} {message.updated_at !== message.created_at && <span style={{ color: "#888888", paddingLeft: '2px', fontSize: '13px' }}>(edited)</span>}
                             </div>
+                            {Object.values(message.Attachments).length ?
+                            <div className="msg-attachments" id={`msg-attachments-${message.id}`}>
+                                    {Object.values(message.Attachments).map((attch) => (
+                                            
+                                        
+                                            <span className="msg-attachment-preview-file-wrapper"
+                                                  key={attch.id}
+                                                onMouseEnter={() => { setHoverId(attch.id) }}
+                                                onMouseLeave={() => { setHoverId(0) }}
+                                            >
+                                            {isImage(attch.content) ? 
+                                                
+                                                <OpenModalButton
+                                                    modalComponent={
+                                                        <PreviewImageModal
+                                                            url={attch.content}
+                                                        />
+                                                    }
+                                                    
+                                                    buttonText={<img className="msg-attachment-preview-img"
+                                                        src={attch.content}
+                                                        alt="msg-attachment-preview">
+                                                    </img>}
+                                                    className={"msg-attachment-preview-file-wrapper"}
+                                                    
+                                                />
+                                                
+                                                :
+                                                <>
+                                                    <img
+                                                        className="msg-attachment-preview-file"
+                                                        src={previewFilter(attch.content)}
+                                                        alt="msg-attachment-preview">
+                                                    </img>
+                                                
+                                                    <div className="attachment-details">
+                                                        <div>
+                                                            {attch.content.split('/')[3].length > 20 ? 
+                                                                `${attch.content.split('/')[3].substring(0, 20)}...`
+                                                            :
+                                                                `${attch.content.split('/')[3]}`
+                                                            }
+                                                        </div>
+                                                        <div>
+                                                            {getFileExt(attch.content)}
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            }
+                                            { hoverId !== attch.id ? 
+                                                null
+                                                : isImage(attch.content)
+                                                    ? 
+                                                    (<>
+                                                        <div className="img-attachment-details">
+                                                            <div>
+                                                                {attch.content.split('/')[3].length > 20 ?
+                                                                    `${attch.content.split('/')[3].substring(0, 20)}...`
+                                                                    :
+                                                                    `${attch.content.split('/')[3]}`
+                                                                }
+                                                            </div>
+                                                            <div>
+                                                                {getFileExt(attch.content)}
+                                                            </div>
+                                                        </div>
+                                                        <div className="attachment-hover-menu">
+                                                        <button onClick={(e) => downloadFile(e, attch.content.split('/')[3])}>
+                                                            <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
+                                                        </button>
+                                                        
+                                                            {user.id === attch.user_id ?
+                                                                    <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
+                                                                        <i class="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
+                                                                    </button>
+                                                                :
+                                                                    null
+                                                            }
+                                                        </div>
+                                                    </>)
+                                                :
+                                                
+                                                <div className="attachment-hover-menu">
+                                                    <button onClick={(e) => downloadFile(e, attch.content.split('/')[3])}>
+                                                        <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
+                                                    </button>
+                                                    
+                                                {user.id === attch.user_id ?
+                                                        <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
+                                                            <i class="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
+                                                        </button>
+                                                    :
+                                                        null
+                                                }
+                                                    
+                                                </div>
+                                            }
+                                            </span>
+                                        
+                                    ))
+                                    }
+                            </div>
+                            : null
+                             }
 
                             <div style={{}} className="message-card-footer">
                                 {storeConverter(message, user)}
@@ -519,9 +714,12 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             </div>
 
 
-            <div id="editor-holder" style={{ position: 'sticky', bottom: 0, backgroundColor: '#FFFFFF', width: '100%', overflow: 'hidden' }}>
-                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} />
+            {/* <div id="editor-holder" style={{ position: 'sticky', bottom: 0, backgroundColor: '#FFFFFF', width: '100%', overflow: 'hidden' }}> */}
+            <div style={{ position: 'sticky', bottom: 0 }} >
+                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} user={user} attachmentBuffer={attachmentBuffer} attachmentIsLoading={attachmentIsLoading}/>
             </div>
+
+            {/* </div> */}
 
 
 

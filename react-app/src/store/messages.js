@@ -3,6 +3,7 @@ const ADD_MESSAGE = "messages/ADD_MESSAGE";
 const DELETE_MESSAGE = "messages/DELETE_MESSAGE";
 const DELETE_REACTION = "messages/DELETE_REACTION";
 const ADD_REACTION = "messages/ADD_REACTION";
+const DELETE_ATTACHMENT = "messages/DELETE_ATTACHMENT";
 
 const addMessage = (message) => {
     return {
@@ -15,6 +16,7 @@ const createReaction = (reaction) => ({
     type: ADD_REACTION,
     payload: reaction,
 });
+
 
 const loadMessages = (messages) => {
     return {
@@ -35,6 +37,11 @@ const deleteReaction = (reaction) => ({
     payload: reaction,
 });
 
+const deleteAttachment = (attachment) => ({
+    type: DELETE_ATTACHMENT,
+    payload: attachment,
+});
+
 export const getChannelMessages = (id) => async (dispatch) => {
     const res = await fetch(`/api/channels/${id}/messages`, {
         method: "GET",
@@ -47,18 +54,28 @@ export const getChannelMessages = (id) => async (dispatch) => {
     }
 };
 
-export const createChannelMessage = (message) => async (dispatch) => {
-    const resMessage = await fetch(`/api/channels/${message.channel_id}`, {
+export const createChannelMessage = (message, channel_id) => async (dispatch) => {
+    const resMessage = await fetch(`/api/channels/${channel_id}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(message),
+        body: message,
     });
 
     if (resMessage.ok) {
-        const message = await resMessage.json();
-        dispatch(addMessage(message));
-        return message;
+        const data = await resMessage.json();
+
+        if (data.errors) {
+            return data;
+        }
+
+        dispatch(addMessage(data));
+        return data;
     }
+
+    // if (resMessage.ok) {
+    //     const message = await resMessage.json();
+    //     dispatch(addMessage(message));
+    //     return message;
+    // }
 };
 
 export const thunkCreateReaction =
@@ -69,9 +86,15 @@ export const thunkCreateReaction =
             body: JSON.stringify(new_reaction),
         });
 
+        if(response.ok) {
         const data = await response.json();
+            if(data.errors) return data;
         dispatch(createReaction(data));
         return response;
+        }
+        else {
+            return response;
+        }
     };
 
 export const destroyMessage = (id) => async (dispatch) => {
@@ -112,6 +135,20 @@ export const editMessage = (message, messageId) => async (dispatch) => {
     }
 };
 
+export const thunkDeleteAttachment = (attachment) => async (dispatch) => {
+    const response = await fetch(`/api/messages/attachments/${attachment.id}`, {
+        method: "DELETE",
+    });
+
+    if (response.ok) {
+        await response.json();
+
+        dispatch(deleteAttachment(attachment));
+    }
+
+    return response;
+};
+
 const initialState = { allMessages: {} };
 
 const messageReducer = (state = initialState, action) => {
@@ -150,12 +187,6 @@ const messageReducer = (state = initialState, action) => {
             return newState;
         }
         case ADD_REACTION: {
-            // let newState = Object.assign({}, state);
-            // newState.allMessages = { ...state.allMessages };
-            // newState.allMessages.Reactions = { ...state.allMessages.Reactions };
-            // newState.allMessages.Reactions[action.payload.id] = action.payload;
-            // return newState;
-
             let newState = {
                 ...state,
                 allMessages: {
@@ -165,6 +196,18 @@ const messageReducer = (state = initialState, action) => {
             newState.allMessages[action.payload.message_id].Reactions[
                 action.payload.id
             ] = action.payload;
+            return newState;
+        }
+        case DELETE_ATTACHMENT: {
+            let newState = {
+                ...state,
+                allMessages: {
+                    ...state.allMessages,
+                },
+            };
+            delete newState.allMessages[action.payload.message_id].Attachments[
+                action.payload.id
+            ];
             return newState;
         }
         default:

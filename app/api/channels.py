@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
-from app.models import channel_user, Channel, User, db, Message, Reaction
+from app.models import channel_user, Channel, User, db, Message, Reaction, Attachment
 from flask_login import login_required, current_user
+from ..socket import socketio
+from app.s3_helpers import (get_unique_filename, upload_file_to_s3, remove_file_from_s3)
 
 channel_routes = Blueprint('channels', __name__)
 
@@ -126,9 +128,40 @@ def add_channel_member(channel_id):
     try:
         user.channel.append(channel)
         db.session.commit()
+        try:
+            socketio.emit("new_DM_convo", channel_id)
+        except Exception as e:
+            print(e)
         return {"message": "Successfully added user to the channel"}
     except:
         return {"message": "Something went wrong..."}, 404
+
+@channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["POST"])
+@login_required
+def add_nonself_channel_member(channel_id, user_id):
+    curr_user = User.query.get(current_user.id)
+    channel = Channel.query.get(channel_id)
+    other_user = User.query.get(user_id)
+
+    if not channel or not curr_user or not other_user:
+        return {"message": "Resource not found"}, 404
+
+    if curr_user not in channel.users:
+        return {"message": "Forbidden: must own Channel"}, 403
+
+
+    try:
+        other_user.channel.append(channel)
+        db.session.commit()
+        try:
+            socketio.emit("new_DM_convo", channel_id)
+        except Exception as e:
+            print(e)
+            # pass
+        return {"message": "Successfully added user to the channel"}
+    except:
+        return {"message": "Something went wrong..."}, 404
+
 
 # get all members of channel
 @channel_routes.route("/<int:channel_id>/members")
@@ -175,6 +208,7 @@ def get_all_messages_for_channel(channel_id):
     for msg in channel_messages:
         msg_data = msg.to_dict()
         msg_data['User'] = {
+            'id': msg.users.id,
             'username': msg.users.username,
             'avatar': msg.users.avatar,
             'first_name': msg.users.first_name,
@@ -186,23 +220,53 @@ def get_all_messages_for_channel(channel_id):
 
     return jsonify(channel_messages_data)
 
-
 @channel_routes.route("<int:channel_id>", methods=["POST"])
 @login_required
 def make_post_for_channel(channel_id):
-    # We should check to ensure the conversation is accessible to the user making the request
-    # I.e. -- the channel is not private, or the user is a member of that private channel
 
-    # need to get form
+        this_channel = Channel.query.get(channel_id)
+        this_user = User.query.get(current_user.id)
 
-    try:
-        new_message = Message(**request.get_json())
+        new_message = Message(content=request.form.get("content"), users=this_user, channels=this_channel)
         db.session.add(new_message)
         db.session.commit()
+
+        incoming_attachments_arr = request.files
+
+        if incoming_attachments_arr: 
+            for attachment in incoming_attachments_arr.values():
+
+                attachment.filename = get_unique_filename(attachment.filename)
+                upload_attachment = upload_file_to_s3(attachment)
+                if "url" not in upload_attachment:
+                    print('Failed to upload to AWS')
+                    return {'errors': ['Failed to upload to AWS']}, 400
+                new_attach = Attachment(content=upload_attachment["url"], user=this_user, message=new_message)
+                db.session.add(new_attach)
+
+            
+            db.session.commit()
+
         return new_message.to_dict()
-    except:
-        # This message will depend on what we check on the form. Probably message length.
-        return { "message": "Failed to create message" }, 400
+
+
+# ORIGINAL POST MESSAGE
+# @channel_routes.route("<int:channel_id>", methods=["POST"])
+# @login_required
+# def make_post_for_channel(channel_id):
+#     # We should check to ensure the conversation is accessible to the user making the request
+#     # I.e. -- the channel is not private, or the user is a member of that private channel
+
+#     # need to get form
+
+#     try:
+#         new_message = Message(**request.get_json())
+#         db.session.add(new_message)
+#         db.session.commit()
+#         return new_message.to_dict()
+#     except:
+#         # This message will depend on what we check on the form. Probably message length.
+#         return { "message": "Failed to create message" }, 400
 
 # if channel_id not in [channel.id for channel in User.query.get(user_id).channel]:
 #     # return error

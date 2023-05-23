@@ -1,6 +1,6 @@
 import { useModal } from "../../context/Modal";
 
-export default function ChatEmojiModal({setChatInput, chatInput}) {
+export default function ChatEmojiModal({ setChatInput, chatInput }) {
     const { closeModal } = useModal();
 
 
@@ -21,8 +21,8 @@ export default function ChatEmojiModal({setChatInput, chatInput}) {
         "💔",
         "💯",
         "👋",
-        "😨","😧","😦","😱","😫","😩",
-        "😮","😯","😲","😺","😸","🐱","😳","😞","😖","😈","😬","🤨","😉","😜","😣","😖","🤒","😷","🤢","😎","😪","🙂","😊","😁","🦀","💵","😔"
+        "😨", "😧", "😦", "😱", "😫", "😩", "👀",
+        "😮", "😯", "😲", "😺", "😸", "🐱", "😳", "😞", "😖", "😈", "😬", "🤨", "😉", "😜", "😣", "😖", "🤒", "😷", "🤢", "😎", "😪", "🙂", "😊", "😁", "🦀", "💵", "😔"
     ];
     return (
         <>
@@ -30,18 +30,13 @@ export default function ChatEmojiModal({setChatInput, chatInput}) {
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    width: "300px",
+                    maxWidth: "320px",
                     justifyContent: "center",
+                    gap: '2px'
                 }}
             >
                 {emojis.map((emoji) => (
-                    <button
-                        style={{
-                            padding: "2px 2px",
-                            margin: "5px 5px",
-                            fontSize: "18px",
-                            borderRadius: "25%"
-                        }}
+                    <button className="reaction-icon"
                         onClick={(e) => {
                             setChatInput(chatInput + emoji + " ")
                             document.getElementsByClassName("editor-focus")[0].focus()

@@ -5,7 +5,7 @@ import { AddChannelThunk } from "../../store/channel";
 import { useModal } from "../../context/Modal";
 import '../EditFormModal/EditChannelModalStyling.css'
 
-const CreateChannelModal = ({user}) => {
+const CreateChannelModal = ({ user }) => {
     const [name, setName] = useState("");
     const [subject, setSubject] = useState("");
     const [is_private, setIsPrivate] = useState(false);
@@ -48,63 +48,63 @@ const CreateChannelModal = ({user}) => {
 
     return (
 
-                <div className="edit-modal-container">
-                    <div className='edit-modal-header'>
-                        <div>&nbsp;</div>
-                        <div style={{paddingLeft: "7px"}} className='edit-modal-title'>{`Create a new channel`}</div>
+        <div className="edit-modal-container">
+            <div className='edit-modal-header'>
+                <div>&nbsp;</div>
+                <div style={{ paddingLeft: "7px" }} className='edit-modal-title'>{`Create a new channel`}</div>
 
-                        <button className="edit-modal-close-btn" onClick={() => closeModal()}>
-                            <i className="fa-solid fa-x"></i>
-                        </button>
-                    </div>
-                    <div className='edit-modal-tabs-menu'></div>
+                <button className="edit-modal-close-btn" onClick={() => closeModal()}>
+                    <i className="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <div className='edit-modal-tabs-menu'></div>
 
-                    <form onSubmit={handleSubmit} className="edit-modal-form">
+            <form onSubmit={handleSubmit} className="edit-modal-form">
 
-                        <div className="edit-modal-form-box">
-                            <ul style={{ paddingTop: '10px', margin: '2px 0px 15px 25px', color: 'red' }}>
-                                {Object.values(errors).map((error, idx) => (
-                                    <li key={idx} className="edit-errors">
-                                        {error}
-                                    </li>
-                                ))}
-                            </ul>
-                            <label style={{paddingLeft: "7px"}} htmlFor="name"> Channel name </label>
-                            <input
-                                type="text"
-                                id="name"
-                                value={name}
-                                placeholder="Add a channel name"
-                                onChange={(e) => setName(e.target.value)}
-                            ></input>
-                            <div className="edit-modal-border"></div>
-                            <label style={{paddingLeft: "7px"}} htmlFor="subject"> Topic </label>
-                            <input
-                                type="text"
-                                id="subject"
-                                placeholder="Add a Topic"
-                                value={subject}
-                                onChange={(e) => setSubject(e.target.value)}
-                            ></input>
-
-
-                        </div>
-
-                        <div className="edit-modal-form-box">
-                            <div style={{paddingLeft: "7px", fontWeight: "bold"}}>Created by</div>
-                            <div id="edit-owner-name">{`${user.username}`}</div>
-                            <button
-                                className="decorated-button-edit-channel"
-                                disabled={Object.values(errors).length}
-                                onClick={handleSubmit}
-                            >
-                                Create new channel
-                            </button>
-                        </div>
+                <div className="edit-modal-form-box">
+                    <ul style={{ paddingTop: '10px', margin: '2px 0px 15px 25px', color: 'red' }}>
+                        {Object.values(errors).map((error, idx) => (
+                            <li key={idx} className="edit-errors">
+                                {error}
+                            </li>
+                        ))}
+                    </ul>
+                    <label style={{ paddingLeft: "7px" }} htmlFor="name"> Channel name </label>
+                    <input
+                        type="text"
+                        id="name"
+                        value={name}
+                        placeholder="Add a channel name"
+                        onChange={(e) => setName(e.target.value)}
+                    ></input>
+                    <div className="edit-modal-border"></div>
+                    <label style={{ paddingLeft: "7px" }} htmlFor="subject"> Topic </label>
+                    <input
+                        type="text"
+                        id="subject"
+                        placeholder="Add a Topic"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                    ></input>
 
 
-                    </form>
                 </div>
+
+                <div className="edit-modal-form-box">
+                    <div style={{ paddingLeft: "7px", fontWeight: "bold" }}>Created by</div>
+                    <div id="edit-owner-name">{`${user.username}`}</div>
+                    <button
+                        className="decorated-button-edit-channel"
+                        disabled={Object.values(errors).length}
+                        onClick={handleSubmit}
+                    >
+                        Create new channel
+                    </button>
+                </div>
+
+
+            </form>
+        </div>
     )
 
 };

@@ -17,6 +17,7 @@ class Message(db.Model):
     channels = db.relationship("Channel", back_populates="messages")
     users = db.relationship("User", back_populates="messages")
     reactions = db.relationship("Reaction", back_populates="messages", cascade="all, delete, delete-orphan")
+    attachments = db.relationship("Attachment", back_populates="message", cascade="all, delete, delete-orphan")
 
     def to_dict(self):
         return {
@@ -26,5 +27,6 @@ class Message(db.Model):
             "content": self.content,
             "is_pinned": self.is_pinned,
             "created_at": self.created_at,
-            "updated_at": self.updated_at
+            "updated_at": self.updated_at,
+            "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }

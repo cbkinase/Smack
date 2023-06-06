@@ -431,7 +431,6 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         removeAttachBuffer
     };
 
-    console.log("****MESSAGES: ", messages)
     return user && currentChannel && allMessages ? (
         <>
 

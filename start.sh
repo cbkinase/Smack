@@ -23,7 +23,7 @@ if [ ! -d "$be_directory" ]; then
     echo "Installing backend dependencies and creating/seeding database. This may take a few minutes."
     pipenv install -r requirements.txt && pipenv run flask db upgrade && pipenv run flask seed all
 else
-    echo "Starting up Seddit!!!"
+    echo "Starting up Smack!!!"
 fi
 
 

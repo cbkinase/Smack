@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-Smack is a project developed to emulate <a href="https://slack.com">Slack</a>, built with flask backend and react frontend.
-Smack was created from collboration between:
+Smack is a project developed to emulate <a href="https://slack.com">Slack</a>, built with Flask backend and React frontend.
+Smack was created from collaboration between:
 </p>
 
 <p align="center">
@@ -33,42 +33,4 @@ Please reference the <a href="https://github.com/brianhitchin/wack/wiki">Wiki</a
 
 1. Clone this repository.
 
-2. Install dependencies in both app and react-app directories.
-
-   -  In the app directory, run
-      ```
-      pipenv shell
-      pipenv install
-      ```
-
-   - In the react-app directory, run
-      ```
-      npm install
-      ```
-   
-3. Create a **.env** file based on the example with proper settings for your development environment. Basic **.env** file should include:
-
-   - SECRET_KEY
-   - DATABASE_URL (default: sqlite:///dev.db)
-   - SCHEMA (default: flask_schema)
-
-
-4. Get into your pipenv, migrate your database, seed your database, and run your Flask app
-
-   ```bash
-   flask db upgrade
-   ```
-
-   ```bash
-   flask seed all
-   ```
-
-   ```bash
-   flask run
-   ```
-
-5. To run the React App in development, 
-
-   ```bash
-   npm start
-   ```
+2. Run `start.sh` in the root directory of the project.

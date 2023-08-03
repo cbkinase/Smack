@@ -29,8 +29,18 @@ Brian Hitchin <a href="https://github.com/brianhitchin">Github</a>
 Please reference the <a href="https://github.com/brianhitchin/wack/wiki">Wiki</a> for full documentation, schema, store shape, and other information. 
 </p>
 
-## Getting started
+## How to Run Locally
+
+You have two easy options for running Smack locally.
+
+If you already have `Node 16` and `pyenv 3.9.4`:
 
 1. Clone this repository.
-
 2. Run `start.sh` in the root directory of the project.
+3. Your SQLite database will automatically persist in instance/dev.db.
+
+Otherwise, you can use Docker:
+
+1. Clone this repository.
+2. Run `docker compose up` in the root directory of the project.
+3. Your SQLite database will automatically persist on a Docker volume.

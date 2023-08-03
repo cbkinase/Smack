@@ -1,7 +1,7 @@
 # Use an official Node runtime as a parent image
 FROM node:16
 
-# Create a directory to hold the application and permissions for hotswapping
+# Create a directory to hold the application with correct permissions for hot reloading
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
 # Set the working directory in the container

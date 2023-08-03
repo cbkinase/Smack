@@ -44,3 +44,6 @@ Otherwise, you can use Docker:
 1. Clone this repository.
 2. Run `docker compose up` in the root directory of the project.
 3. Your SQLite database will automatically persist on a Docker volume.
+
+
+In either case, your frontend will be available at `localhost:3000` and your backend at `localhost:5000`.

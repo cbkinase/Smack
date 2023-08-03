@@ -1,33 +1,16 @@
-<h1 style="text-align: center;"> Welcome to Smack!</h1>
+# Welcome to Smack!
 
-<p align="center">
-   <img src="https://user-images.githubusercontent.com/63670745/232160890-e8312f62-b8a2-47c3-9be1-c45e0c73f34e.png" alt="Welcome!")
-</p>
 
-<p align="center">
-Smack is a project developed to emulate <a href="https://slack.com">Slack</a>, built with Flask backend and React frontend.
-Smack was created from collaboration between:
-</p>
+Smack is a project developed to emulate <a href="https://slack.com">Slack</a>, built with a Flask backend and React frontend.
+   
+Smack was a collaborative effort, with the following creators:
 
-<p align="center">
-Cameron Beck <a href="https://github.com/cbkinase">Github</a>
-</p>
+- Cameron Beck <a target="_blank" href="https://github.com/cbkinase">(GitHub)</a>
+- Cynthia Liang <a href="https://github.com/cynthialiang00">(GitHub)</a>
+- Dave Titus <a href="https://github.com/dtitus929">(GitHub)</a>
+- Brian Hitchin <a href="https://github.com/brianhitchin">(GitHub)</a>
 
-<p align="center">
-Cynthia Liang <a href="https://github.com/cynthialiang00">Github</a>
-</p>
-
-<p align="center">
-Dave Titus <a href="https://github.com/dtitus929">Github</a>
-</p>
-
-<p align="center">
-Brian Hitchin <a href="https://github.com/brianhitchin">Github</a>
-</p>
-
-<p align="center">
 Please reference the <a href="https://github.com/brianhitchin/wack/wiki">Wiki</a> for full documentation, schema, store shape, and other information. 
-</p>
 
 ## How to Run Locally
 
@@ -36,7 +19,7 @@ You have two easy options for running Smack locally.
 If you already have `Node 16` and `pyenv 3.9.4`:
 
 1. Clone this repository.
-2. Run `start.sh` in the root directory of the project.
+2. Run `bash start.sh` in the root directory of the project.
 3. Your SQLite database will automatically persist in instance/dev.db.
 
 Otherwise, you can use Docker:
@@ -47,3 +30,8 @@ Otherwise, you can use Docker:
 
 
 In either case, your frontend will be available at `localhost:3000` and your backend at `localhost:5000`.
+
+Please note that the attachment feature will not work locally until you provide AWS S3 credentials. To do so, you must specify the following environment variables:
+- `S3_BUCKET` - the name of your S3 bucket
+- `S3_KEY` - your access key ID
+- `S3_SECRET` - your secret access key

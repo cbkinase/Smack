@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   frontend:
     build:
       context: ./react-app
@@ -10,6 +9,9 @@ services:
     depends_on:
       - backend
     restart: always
+    volumes:
+      - /home/node/app/node_modules
+      - ./react-app:/home/node/app
 
   backend:
     build:

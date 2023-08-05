@@ -21,15 +21,14 @@ If you already have `Node 16` and `pyenv 3.9.4`:
 1. Clone this repository.
 2. Run `bash start.sh` in the root directory of the project.
 3. Your SQLite database will automatically persist in instance/dev.db.
+4. Your frontend will be available at `localhost:3000` and your backend at `localhost:5000`.
 
 Otherwise, you can use Docker:
 
 1. Clone this repository.
 2. Run `docker compose up` in the root directory of the project.
 3. Your SQLite database will automatically persist on a Docker volume.
-
-
-In either case, your frontend will be available at `localhost:3000` and your backend at `localhost:5000`.
+4. Your nginx server will be available at `localhost:8080`, acting as a reverse proxy to route requests to the web application's services.
 
 Please note that the attachment feature will not work locally until you provide AWS S3 credentials. To do so, you must specify the following environment variables:
 - `S3_BUCKET` - the name of your S3 bucket

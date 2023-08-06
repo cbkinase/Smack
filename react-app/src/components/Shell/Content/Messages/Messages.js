@@ -462,6 +462,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                     borderRadius: "5px",
                                     width: "36px",
                                     height: "36px",
+                                    cursor: "pointer",
                                 }}
                             ></img>
                         </div>

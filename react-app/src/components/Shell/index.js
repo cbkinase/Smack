@@ -10,14 +10,14 @@ import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
 import { UserChannelThunk, OneChannelThunk } from "../../store/channel";
 import { useState, useEffect } from "react";
-import { io } from "socket.io-client";
-let socket;
 
 function Shell({ isLoaded }) {
     const dispatch = useDispatch();
+    const socket = useSelector(state => state.session.socket);
 
     useEffect(() => {
-        socket = io();
+
+        if (!socket) return;
 
         socket.on("new_DM_convo", (convoId) => {
             // Refresh the left sidebar info on receive
@@ -32,12 +32,8 @@ function Shell({ isLoaded }) {
             There is almost certainly a better way to do this than performing additional queries, but it's an OK band-aid solution for now.
 
             */
-        })
-
-        return () => {
-            socket.disconnect();
-        };
-    }, [])
+        });
+    }, [socket])
 
 
 

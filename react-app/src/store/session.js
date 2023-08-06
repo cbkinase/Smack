@@ -1,7 +1,11 @@
+import { io } from "socket.io-client";
+
 // constants
 const SET_USER = "session/SET_USER";
 const REMOVE_USER = "session/REMOVE_USER";
 const ADJUST_USER = "session/ADJUST_USER";
+const SET_SOCKET = "session/SET_SOCKET";
+const REMOVE_SOCKET = "session/REMOVE_SOCKET";
 
 const setUser = (user) => ({
 	type: SET_USER,
@@ -17,7 +21,22 @@ const adjustUser = (user) => ({
 	payload: user,
 });
 
-const initialState = { user: null };
+const setSocket = () => ({
+	type: SET_SOCKET,
+	payload: io(),
+})
+
+const removeSocket = () => ({
+	type: REMOVE_SOCKET,
+})
+
+const initialState = { user: null, socket: null };
+
+
+export const disconnectWebSocket = () => async (dispatch) => {
+	dispatch(removeSocket());
+}
+
 
 export const authenticate = () => async (dispatch) => {
 	const response = await fetch("/api/auth/", {
@@ -32,6 +51,7 @@ export const authenticate = () => async (dispatch) => {
 		}
 
 		dispatch(setUser(data));
+		return data;
 	}
 };
 
@@ -50,6 +70,7 @@ export const login = (email, password) => async (dispatch) => {
 	if (response.ok) {
 		const data = await response.json();
 		dispatch(setUser(data));
+		dispatch(setSocket());
 		return null;
 	} else if (response.status < 500) {
 		const data = await response.json();
@@ -70,6 +91,7 @@ export const logout = () => async (dispatch) => {
 
 	if (response.ok) {
 		dispatch(removeUser());
+		dispatch(removeSocket());
 	}
 };
 
@@ -136,11 +158,19 @@ export const editUser = (first_name, last_name, avatar, bio, id) => async (dispa
 export default function reducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_USER:
-			return { user: action.payload };
+			if (!state.socket) {
+				return { user: action.payload, socket: io() }
+			}
+			else return { ...state, user: action.payload };
 		case REMOVE_USER:
-			return { user: null };
+			return { ...state, user: null };
 		case ADJUST_USER:
-			return { user: action.payload };
+			return { ...state, user: action.payload };
+		case REMOVE_SOCKET:
+			if (state.socket) {
+				state.socket.disconnect();
+			};
+			return { ...state, socket: null }
 		default:
 			return state;
 	}

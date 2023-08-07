@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import userChannelDMSearch from '../../../utils/userChannelDMSearch';
 import { useHistory } from 'react-router-dom';
 import { AddChannelThunk, UserChannelThunk } from '../../../store/channel';
+import toggleRightPane from './toggleRightPane';
 
 
 function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
@@ -11,15 +12,8 @@ function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const hideRightPane = function toggleRightPane() {
-        document.getElementById("grid-container").className = "grid-container-hiderightside";
-        document.getElementById("grid-rightside-heading").className = "grid-rightside-heading-hide";
-        document.getElementById("grid-rightside").className = "grid-rightside-hide";
-        window.toggleLeftPane();
-    };
 
-    // console.log(selectedUserRightBar);
-    // const {avatar, first_name, last_name, bio } = selectedUserRightBar.
+
 
     return (
         <div id="grid-rightside" className="grid-rightside-hide">
@@ -44,7 +38,7 @@ function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
                                 let possibleChannel = userChannelDMSearch(user_channels, currUser, selectedUserRightBar);
                                 if (possibleChannel) {
                                     history.push(`/channels/${possibleChannel.id}`);
-                                    hideRightPane();
+                                    toggleRightPane();
                                 }
                                 else {
                                     let newChan = await dispatch(AddChannelThunk({
@@ -61,7 +55,7 @@ function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
                                      */
                                     await dispatch(UserChannelThunk());
                                     history.push(`/channels/${newChan.id}`);
-                                    hideRightPane();
+                                    toggleRightPane();
                                 }
                             }}
                             style={{ fontSize: "15px", fontWeight: "500", backgroundColor: "#FFFFFF", padding: "5px 8px", borderRadius: "5px", border: "1px solid grey" }}>

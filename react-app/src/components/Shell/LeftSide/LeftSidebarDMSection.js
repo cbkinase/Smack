@@ -35,10 +35,10 @@ export default function LeftSideBarDMSection({ channels, user }) {
                 <span className="ellipsis-if-long" style={{ marginLeft: "-3px" }} >Direct Messages</span>
             </button>
 
-            {isHidden ? null : channels.map((channel) => {
+            {channels.map((channel) => {
                 return (
                     <Fragment key={channel.id} >
-                        <NavLink exact to={`/channels/${channel.id}`} className="tooltip">
+                        {isHidden && channel.id !== +channelId ? null : <NavLink key={channel.id} exact to={`/channels/${channel.id}`} className="tooltip">
                             <div>
                                 {Number(channel.id) === Number(channelId) ? (
                                     <>
@@ -64,7 +64,7 @@ export default function LeftSideBarDMSection({ channels, user }) {
                                 )}
                             </div>
 
-                        </NavLink>
+                        </NavLink>}
                     </Fragment>
                 )
             })}

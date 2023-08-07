@@ -115,11 +115,11 @@ function LeftSideLinks() {
                     <span className="ellipsis-if-long" style={{marginLeft: "-3px"}} >Channels</span>
                 </button>
 
-                {isHidden ? null : (userChannelList.length > 0) && userChannelList
+                {(userChannelList.length > 0) && userChannelList
                     .filter((channel) => !channel.is_direct)
                     .map((channel) => {
                         return (
-                            <NavLink key={channel.id} exact to={`/channels/${channel.id}`}>
+                            <NavLink hidden={isHidden && channel.id !== +channelId} key={channel.id} exact to={`/channels/${channel.id}`}>
 
                                 <div key={channel.id}>
 
@@ -128,7 +128,8 @@ function LeftSideLinks() {
                                             <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
                                             <span className="ellipsis-if-long" >{channel.name}</span>
                                         </button>
-                                    ) : (
+                                    ) :
+                                     (
                                         <button style={{ textDecoration: 'none' }} >
                                             <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
                                             <span className="ellipsis-if-long" >{channel.name}</span>

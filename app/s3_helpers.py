@@ -15,9 +15,14 @@ s3 = boto3.client(
 
 
 def get_unique_filename(filename):
-    ext = filename.rsplit(".", 1)[1].lower()
+    ext = filename.rsplit(".", 1)
+    if len(ext) > 1:
+        ext = "." + ext[1].lower()
+    else:
+        ext = ""
+
     unique_filename = uuid.uuid4().hex
-    return f"{unique_filename}.{ext}"
+    return f"{unique_filename}{ext}"
 
 
 def upload_file_to_s3(file, acl="public-read"):
@@ -39,7 +44,7 @@ def upload_file_to_s3(file, acl="public-read"):
 
 
 def remove_file_from_s3(image_url):
-    # AWS needs the image file name, not the URL, 
+    # AWS needs the image file name, not the URL,
     # so we split that out of the URL
     key = image_url.rsplit("/", 1)[1]
     print(key)

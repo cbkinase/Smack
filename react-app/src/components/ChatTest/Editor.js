@@ -12,11 +12,11 @@ export default function Editor({ functions, creating, setChatInput, user, attach
 
     function determineName(channel, user) {
         // The name displayed must be different depending on whether it's a DM or not.
-        if (!channel.is_direct) return `# ${channel.name}`
+        if (!channel.is_direct) return `Message  # ${channel.name}`
         else if (channel.is_direct && Object.values(channel.Members).length > 1) {
-            return userObjectToNameList(channel.Members, user)
+            return `Message ${userObjectToNameList(channel.Members, user)}`
         }
-        else return `${user.first_name} ${user.last_name}`
+        else return `Jot something down`
 
     }
 
@@ -163,7 +163,7 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                                 onChange={updateChatInput}
                                 placeholder={
                                     currentChannel[channelId]
-                                        ? `Message ${determineName(currentChannel[channelId], user)}`
+                                        ? `${determineName(currentChannel[channelId], user)}`
                                         : " "
                                 }
                             />

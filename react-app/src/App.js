@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authenticate, disconnectWebSocket } from "./store/session";
 import Shell from "./components/Shell";
 import LoginSignupPage from "./components/LoginSignupPage";
+import RouteIdProvider from "./context/RouteIdProvider";
 
 function App() {
     const dispatch = useDispatch();
@@ -28,7 +29,9 @@ function App() {
     const sessionUser = useSelector((state) => state.session.user);
 
     return (
-        <>{sessionUser ? <Shell isLoaded={isLoaded} /> : <LoginSignupPage />}</>
+        <>{sessionUser
+            ? <RouteIdProvider><Shell isLoaded={isLoaded} /></RouteIdProvider>
+            : <LoginSignupPage />}</>
     );
 }
 

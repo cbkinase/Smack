@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Header from "./Header";
 import LeftSide from "./LeftSide";
@@ -10,10 +10,12 @@ import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
 import { UserChannelThunk, OneChannelThunk } from "../../store/channel";
 import { useState, useEffect } from "react";
+import RouteIdContext from "../../context/RouteIdContext";
 
 function Shell({ isLoaded }) {
     const dispatch = useDispatch();
     const socket = useSelector(state => state.session.socket);
+    const [routeId, _] = useContext(RouteIdContext);
 
     useEffect(() => {
 
@@ -23,7 +25,9 @@ function Shell({ isLoaded }) {
             // Refresh the left sidebar info on receive
             dispatch(UserChannelThunk());
             // Refresh channel header info on receive
-            dispatch(OneChannelThunk(convoId))
+            // ONLY if convoId === routeId
+            if (+routeId === +convoId)
+                dispatch(OneChannelThunk(convoId));
 
             /*
 
@@ -32,8 +36,11 @@ function Shell({ isLoaded }) {
             There is almost certainly a better way to do this than performing additional queries, but it's an OK band-aid solution for now.
 
             */
+           return () => {
+            socket.off("new_DM_convo");
+           }
         });
-    }, [socket, dispatch])
+    }, [socket, dispatch, routeId])
 
 
 

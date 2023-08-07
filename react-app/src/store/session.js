@@ -171,6 +171,9 @@ export default function reducer(state = initialState, action) {
 				state.socket.disconnect();
 			};
 			return { ...state, socket: null }
+		case SET_SOCKET: {
+			return { ...state, socket: action.payload}
+		}
 		default:
 			return state;
 	}

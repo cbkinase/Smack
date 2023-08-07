@@ -60,3 +60,11 @@ def on_join(data):
 @socketio.on("new_DM_convo")
 def handle_new_dm(data):
     emit("new_DM_convo", data, broadcast=True)
+
+
+@socketio.on('join_multiple_rooms')
+def on_join_multiple_rooms(data):
+    # Allow us to listen for events in all relevant rooms
+    user_rooms = data['rooms']
+    for room in user_rooms:
+        join_room(room)

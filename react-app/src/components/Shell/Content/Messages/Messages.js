@@ -58,28 +58,32 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         (state) => state.channels.single_channel
     );
 
-    useEffect(() => {
-        dispatch(OneChannelThunk(channelId));
-        (async e => {
-            await fetch(`/api/channels/${channelId}/users`, {
-                method: "POST",
+    function scrollToBottomOfGrid() {
+        const element = document.getElementById("grid-content");
+        if (element) element.scrollTop = element.scrollHeight;
+    }
 
-            })
-            dispatch(UserChannelThunk())
-        })()
-    }, [channelId, dispatch]);
+    // Gives us a way to see which part(s) of
+    // the dependency array actually changed
+    // so we can act on this conditionally
+    const prevMessagesRef = useRef();
+    const prevChannelIdRef = useRef();
 
     useEffect(() => {
-        dispatch(getChannelMessages(channelId));
+        const prevMessages = prevMessagesRef.current;
+        const prevChannelId = prevChannelIdRef.current;
+        async function alterChannelMessages() {
+            await dispatch(getChannelMessages(channelId));
+            if (prevMessages !== messages || prevChannelId !== channelId) {
+                // Run when `messages` or `channelId` is the changed dependency
+                scrollToBottomOfGrid();
+            }
+        }
+        alterChannelMessages();
+        prevMessagesRef.current = messages;
+        prevChannelIdRef.current = channelId;
     }, [dispatch, messages, reactions, channelId]);
 
-    useEffect(() => {
-        dispatch(getChannelMessages(channelId)).then(() => {
-            const element = document.getElementById("grid-content");
-            if (element)
-                element.scrollTop = element.scrollHeight;
-        });
-    }, [dispatch, messages, channelId]);
 
     useEffect(() => {
         if (!socket) return;
@@ -126,7 +130,19 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             setMessages([]);
         });
 
-    }, [socket, channelId, messages, reactions, user.username]);
+        return () => {
+            socket.off("deleteAttachment");
+            socket.off("addReaction");
+            socket.off("deleteReaction");
+            socket.off("edit");
+            socket.off("delete");
+            socket.off("chat");
+        }
+
+    },
+    // [socket, channelId, messages, reactions, user.username]
+    [socket]
+    );
 
     const updateChatInput = (e) => {
         setChatInput(e.target.value);
@@ -154,8 +170,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         setAttachmentIsLoading(true)
         await dispatch(createChannelMessage(formData, channelId));
         setAttachmentIsLoading(false)
-        if (socket)
-            socket.emit("chat", { user: user.username, msg: chatInput });
+        socket.emit("chat", { user: user.username, msg: chatInput });
 
         setAttachmentBuffer({});
         setChatInput("");

@@ -1,21 +1,15 @@
 import React from 'react';
+import toggleRightPane from './toggleRightPane';
 
 
-function RightSideHeader() {
-
-    const hideRightPane = function toggleRightPane() {
-        document.getElementById("grid-container").className = "grid-container-hiderightside";
-        document.getElementById("grid-rightside-heading").className = "grid-rightside-heading-hide";
-        document.getElementById("grid-rightside").className = "grid-rightside-hide";
-        window.toggleLeftPane();
-    };
+export default function RightSideHeader() {
 
     return (
         <div id="grid-rightside-heading" className="grid-rightside-heading-hide">
             <div className="rightside-heading-holder">
                 <div>Profile</div>
                 <div>
-                    <button className="rightside-close-btn" onClick={() => { hideRightPane() }}>
+                    <button className="rightside-close-btn" onClick={() => { toggleRightPane() }}>
                         <i className="fa-solid fa-x"></i>
                     </button>
                 </div>
@@ -24,4 +18,3 @@ function RightSideHeader() {
     );
 }
 
-export default RightSideHeader;

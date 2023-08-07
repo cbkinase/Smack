@@ -10,8 +10,8 @@ import userObjectToNameList from "../../utils/userObjectToNameList";
 const EditChannelModal = ({ channelId, currChannel, user }) => {
     const [name, setName] = useState(currChannel[0]?.name || "");
     const [subject, setSubject] = useState(currChannel[0]?.subject || "");
-    const [is_private, setIsPrivate] = useState(currChannel[0]?.is_private);
-    const [is_direct, setIsDirect] = useState(currChannel[0]?.is_direct);
+    // const [is_private, setIsPrivate] = useState(currChannel[0]?.is_private);
+    // const [is_direct, setIsDirect] = useState(currChannel[0]?.is_direct);
 
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();

@@ -33,7 +33,7 @@ function Shell({ isLoaded }) {
 
             */
         });
-    }, [socket])
+    }, [socket, dispatch])
 
 
 

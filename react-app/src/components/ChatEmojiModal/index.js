@@ -22,7 +22,7 @@ export default function ChatEmojiModal({ setChatInput, chatInput }) {
         "💯",
         "👋",
         "😨", "😧", "😦", "😱", "😫", "😩", "👀",
-        "😮", "😯", "😲", "😺", "😸", "🐱", "😳", "😞", "😖", "😈", "😬", "🤨", "😉", "😜", "😣", "😖", "🤒", "😷", "🤢", "😎", "😪", "🙂", "😊", "😁", "🦀", "💵", "😔"
+        "😮", "😯", "😲", "😺", "😸", "🐱", "😳", "😞", "😖", "😈", "😬", "🤨", "😉", "😜", "😣", "🤒", "😷", "🤢", "😎", "😪", "🙂", "😊", "😁", "🦀", "💵", "😔"
     ];
     return (
         <>
@@ -36,7 +36,7 @@ export default function ChatEmojiModal({ setChatInput, chatInput }) {
                 }}
             >
                 {emojis.map((emoji) => (
-                    <button className="reaction-icon"
+                    <button key={emoji} className="reaction-icon"
                         onClick={(e) => {
                             setChatInput(chatInput + emoji + " ")
                             document.getElementsByClassName("editor-focus")[0].focus()

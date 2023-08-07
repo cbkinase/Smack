@@ -9,9 +9,7 @@ import loadingImg from '../../misc/Rolling-1s-200px (1).svg';
 export default function Editor({ functions, creating, setChatInput, user, attachmentBuffer, attachmentIsLoading }) {
     const { sendChat, chatInput, updateChatInput, currentChannel, channelId, addAttachBuffer, removeAttachBuffer } =
         functions;
-    function changeAdjustText(text, id) {
-        document.getElementById(`message-adjust-text-${id}`).textContent = text;
-    }
+
     function determineName(channel, user) {
         // The name displayed must be different depending on whether it's a DM or not.
         if (!channel.is_direct) return `# ${channel.name}`
@@ -30,7 +28,7 @@ export default function Editor({ functions, creating, setChatInput, user, attach
         <>
             <div id="grid-editor" className="grid-editor-threecolumn">
                 <div className="editor">
-                    {attachmentBufferArr.length ? 
+                    {attachmentBufferArr.length ?
                     (<div className="editor-attachments-wrapper"
                          style={{
                             position: "relative",
@@ -49,8 +47,8 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                                  key={file.id}
                                 onMouseEnter={() => { setHoverAttachId(file.id) }}
                                 onMouseLeave={() => { setHoverAttachId(0) }}
-                            >   
-                                {hoverAttachId === file.id ? 
+                            >
+                                {hoverAttachId === file.id ?
                                 <div className="attachment-name">
                                     {`${file.name.split(".")[0].substring(0,10)}...${file.name.split(".")[1]}`}
                                 </div>
@@ -68,27 +66,27 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                                         alt="attachment-preview">
                                     </img>
                                 }
-                                
-                                {!attachmentIsLoading && hoverAttachId === file.id ? 
+
+                                {!attachmentIsLoading && hoverAttachId === file.id ?
                                     <button className="delete-attachment-btn"
                                             onClick={(e) => removeAttachBuffer(e, file.id)}
                                     >
-                                        <i class="fa-solid fa-circle-xmark" style={{ color: "#000000", fontSize: "16px" }}></i>
+                                        <i className="fa-solid fa-circle-xmark" style={{ color: "#000000", fontSize: "16px" }}></i>
                                     </button>
                                     : null
                                 }
-                                
-                                {attachmentIsLoading ? 
+
+                                {attachmentIsLoading ?
                                     <img className="load-attachment"
                                         src={loadingImg}
                                         alt="attachment-loading"
                                     >
                                     </img>
                                 : null}
-                                
+
 
                             </div>
-                            
+
                         ))}
                     </div>)
                     : null
@@ -104,21 +102,21 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                             borderTopRightRadius: "12px",
                         }}
                     >
-                        
+
                         <span
 
                             className="message-adjust-attachment"
                         >
-                            
-                            <label for="attachment-upload" className="attachment-btn">
+
+                            <label htmlFor="attachment-upload" className="attachment-btn">
                                 <i className="fa-solid fa-circle-plus" style={{ color: "black" }}></i>
                             </label>
                             <input id="attachment-upload"
-                                    type="file" 
+                                    type="file"
                                     accept="*"
                                     onChange={addAttachBuffer}
                             />
-                            
+
                         </span>
                         <span
 

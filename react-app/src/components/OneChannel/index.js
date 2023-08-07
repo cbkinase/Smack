@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, NavLink, useHistory } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import { OneChannelThunk, DeleteChannelThunk } from '../../store/channel';
 
@@ -13,7 +13,7 @@ function OneChannel() {
 
     useEffect(() => {
         dispatch(OneChannelThunk(channelId))
-    }, [dispatch])
+    }, [dispatch, channelId])
 
     useEffect(() => {
         if (channels.single_channel) {

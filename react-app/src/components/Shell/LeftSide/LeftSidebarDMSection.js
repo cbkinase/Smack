@@ -2,20 +2,44 @@ import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import userObjectToNameList from "../../../utils/userObjectToNameList";
 import userObjectToAvatar from "../../../utils/userObjectToAvatar";
+import { useState, Fragment } from "react";
+
 export default function LeftSideBarDMSection({ channels, user }) {
     const { channelId } = useParams();
 
+    let defaultState = localStorage.getItem("DM_Section_Hidden");
+    if (defaultState) {
+        defaultState = defaultState === "false" ? false : true;
+    }
+    else {
+        defaultState = false;
+    }
+
+    const [isHidden, setIsHidden] = useState(defaultState);
+    const caretDisplayMap = {
+        false: "down",
+        true: "right",
+    }
+    const toggleIsHidden = () => {
+        setIsHidden((val) => {
+            const newVal = !val;
+            localStorage.setItem("DM_Section_Hidden", newVal.toString());
+            return newVal
+        });
+    }
+
     return (
         <>
-            {/* <!-- ### (leftside-button-selected OPTION) IF THIS MATCHES CURRENT CHANNEL ADD STYLE THIS STYLE TO BUTTON --> */}
-            {channels.map((channel) => {
-                return (
-                    <>
-                        <NavLink exact to={`/channels/${channel.id}`} className="tooltip">
-                            <div key={channel.id}>
-                                {/* <span><img src="https://ca.slack-edge.com/T03GU501J-U0476TK99LH-61c6e53dbd3d-512" alt="DM image" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
-                    <span className="ellipsis-if-long">{channel.name}</span> */}
+            <button onClick={toggleIsHidden} style={{ textDecoration: 'none', marginLeft: "14px", width: "91%" }} >
+                <span style={{ width: "20px" }}><i className={`fas fa-caret-${caretDisplayMap[isHidden]}`}></i></span>
+                <span className="ellipsis-if-long" style={{ marginLeft: "-3px" }} >Direct Messages</span>
+            </button>
 
+            {isHidden ? null : channels.map((channel) => {
+                return (
+                    <Fragment key={channel.id} >
+                        <NavLink exact to={`/channels/${channel.id}`} className="tooltip">
+                            <div>
                                 {Number(channel.id) === Number(channelId) ? (
                                     <>
                                         <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8', position: 'relative' }} >
@@ -25,8 +49,6 @@ export default function LeftSideBarDMSection({ channels, user }) {
                                         {userObjectToNameList(channel.Members, user).length >= 28 && (
                                             <span className="tooltiptext">{userObjectToNameList(channel.Members, user)}</span>
                                         )}
-
-
                                     </>
                                 ) : (
                                     <>
@@ -43,15 +65,9 @@ export default function LeftSideBarDMSection({ channels, user }) {
                             </div>
 
                         </NavLink>
-                    </>
+                    </Fragment>
                 )
             })}
-            {/* <button >
-            <span><img src="https://ca.slack-edge.com/T03GU501J-U0476TK99LH-61c6e53dbd3d-512"
-                alt="Brian Hitchin"
-                style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
-            <span className="ellipsis-if-long">Dave Titus</span>
-        </button> */}
         </>
     )
 }

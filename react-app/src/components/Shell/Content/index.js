@@ -1,10 +1,6 @@
 import React from "react";
 import ChannelHeader from "./Channels/ChannelHeader";
 import Messages from "./Messages/Messages";
-import Editor from "./Editor/Editor";
-import OneChannel from "../../OneChannel";
-import CreateChannel from "../Content/Channels/ChannelCreator";
-import EditChannel2 from "../Content/Channels/ChannelEditor";
 
 function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
     return (

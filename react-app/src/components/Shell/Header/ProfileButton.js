@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { logout, editUser } from "../../../store/session";
-import OpenModalButton from "../../OpenModalButton";
-import LoginFormModal from "../../LoginFormModal";
-import SignupFormModal from "../../SignupFormModal";
 import { useHistory } from "react-router-dom";
 
 function ProfileButton({ user }) {
@@ -36,7 +33,7 @@ function ProfileButton({ user }) {
     document.addEventListener("click", closeMenu);
 
     return () => document.removeEventListener("click", closeMenu);
-  }, [showMenu]);
+  }, [showMenu, user.first_name, user.last_name, user.avatar, user.bio]);
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -79,7 +76,7 @@ function ProfileButton({ user }) {
       seeEdit.style.display = "block";
     }
 
-  }, [showType])
+  }, [showType, user.first_name, user.last_name, user.avatar, user.bio])
 
   const handleEditUser = async (e) => {
 

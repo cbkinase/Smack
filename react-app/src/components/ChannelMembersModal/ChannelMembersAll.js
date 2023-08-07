@@ -8,25 +8,7 @@ import LoadingSpinner from "../LoadingSpinner";
 export default function ChannelMembersAll({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const dispatch = useDispatch();
-  // console.log(selectedUserRightBar);
-  function toggleRightPane(state) {
-    if (state === "close") {
-      document.getElementById("grid-container").className =
-        "grid-container-hiderightside";
-      document.getElementById("grid-rightside-heading").className =
-        "grid-rightside-heading-hide";
-      document.getElementById("grid-rightside").className =
-        "grid-rightside-hide";
-    } else {
-      document.getElementById("grid-container").className =
-        "grid-container";
-      document.getElementById("grid-rightside-heading").className =
-        "grid-rightside-heading";
-      document.getElementById("grid-rightside").className =
-        "grid-rightside";
-    }
-    window.toggleLeftPane();
-  }
+
   const [searchTerm, setSearchTerm] = useState('');
   const [allUsers, setAllUsers] = useState([]);
   const { closeModal } = useModal();
@@ -50,7 +32,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, s
       setAllUsers(Object.values(final));
       setIsLoaded(true);
     })()
-  }, [])
+  }, [userList])
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -101,7 +83,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, s
             <img style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }} src={member.avatar} alt=''></img>
             <p>{member.first_name} {member.last_name}</p>
           </div>
-        }) : <p style={{ display: "flex", alignItems: "center", padding: "16px 16px 5px 16px", marginTop: "5px", display: "block",
+        }) : <p style={{ alignItems: "center", padding: "16px 16px 5px 16px", marginTop: "5px", display: "block",
         fontWeight: "bold",
         color: "black",
         textDecoration: "none" }}>Sorry, no members found. Invite your friends to join Smack!</p>}

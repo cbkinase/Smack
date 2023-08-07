@@ -8,8 +8,8 @@ import '../EditFormModal/EditChannelModalStyling.css'
 const CreateChannelModal = ({ user }) => {
     const [name, setName] = useState("");
     const [subject, setSubject] = useState("");
-    const [is_private, setIsPrivate] = useState(false);
-    const [is_direct, setIsDirect] = useState(false);
+    // const [is_private, setIsPrivate] = useState(false);
+    // const [is_direct, setIsDirect] = useState(false);
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
     const history = useHistory();
@@ -33,7 +33,7 @@ const CreateChannelModal = ({ user }) => {
 
         if (Object.values(errors).length) return alert(`Oops, something went wrong with creating the channel. Please try again.`);
 
-        const created = dispatch(AddChannelThunk({ name: name, subject: subject, is_private: Boolean(is_private), is_direct: Boolean(is_direct) }))
+        const created = dispatch(AddChannelThunk({ name: name, subject: subject, is_private: false, is_direct: false }))
         const channelInfo = await created;
 
         if (channelInfo.errors) return alert(`Oops, something went wrong with creating the channel. Please try again.`);

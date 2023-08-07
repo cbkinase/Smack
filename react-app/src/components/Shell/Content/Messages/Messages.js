@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     createChannelMessage,
     getChannelMessages,
     editMessage,
-    destroyMessage,
     thunkDeleteReaction,
     thunkCreateReaction,
     thunkDeleteAttachment
@@ -41,11 +40,6 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     const [hoverId, setHoverId] = useState(0);
 
 
-    const openMenu = () => {
-        if (showMenu) return;
-        setShowMenu(true);
-    };
-
     useEffect(() => {
         if (!showMenu) return;
 
@@ -73,7 +67,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             })
             dispatch(UserChannelThunk())
         })()
-    }, []);
+    }, [channelId, dispatch]);
 
     useEffect(() => {
         dispatch(getChannelMessages(channelId));
@@ -132,7 +126,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
             setMessages([]);
         });
 
-    }, [socket]);
+    }, [socket, channelId, messages, reactions, user.username]);
 
     const updateChatInput = (e) => {
         setChatInput(e.target.value);
@@ -167,10 +161,10 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         setChatInput("");
     };
 
-    const handleDelete = (e, msg) => {
-        dispatch(destroyMessage(msg.id));
-        socket.emit("delete", { user: user.username, msg: msg.content });
-    };
+    // const handleDelete = (e, msg) => {
+    //     dispatch(destroyMessage(msg.id));
+    //     socket.emit("delete", { user: user.username, msg: msg.content });
+    // };
 
     const editMode = (e, msg) => {
         let content = document.getElementById(`msg-content-${msg.id}`);
@@ -288,7 +282,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
         let countEntries = Object.entries(counts);
 
         return countEntries.map((el) => (
-            <>
+            <Fragment key={el[0]}>
 
                 {hasUserReacted(msg, user, el[0]) ? (
 
@@ -322,7 +316,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                 }
 
 
-            </>
+            </Fragment>
         ));
     }
 
@@ -386,7 +380,7 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
     // download
     const downloadFile = (e, objectKey) => {
         e.preventDefault();
-        const downloadFetch = fetch(`/api/messages/attachments/${objectKey}`, {
+        fetch(`/api/messages/attachments/${objectKey}`, {
             method: "GET",
             headers: {"Content-Type": "application/json"}
         })
@@ -657,12 +651,12 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
                                                         </div>
                                                         <div className="attachment-hover-menu">
                                                         <button onClick={(e) => downloadFile(e, attch.content.split('/')[3])}>
-                                                            <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
+                                                            <i className="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
                                                         </button>
 
                                                             {user.id === attch.user_id ?
                                                                     <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
-                                                                        <i class="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
+                                                                        <i className="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
                                                                     </button>
                                                                 :
                                                                     null
@@ -673,12 +667,12 @@ const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
 
                                                 <div className="attachment-hover-menu">
                                                     <button onClick={(e) => downloadFile(e, attch.content.split('/')[3])}>
-                                                        <i class="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
+                                                        <i className="fa-solid fa-cloud-arrow-down" style={{ color: "#000000" }}></i>
                                                     </button>
 
                                                 {user.id === attch.user_id ?
                                                         <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
-                                                            <i class="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
+                                                            <i className="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
                                                         </button>
                                                     :
                                                         null

@@ -8,14 +8,14 @@ def seed_channels(users):
     marnie = users[1]
     bobbie = users[2]
     channel1 = Channel(
-        name = 'General',
+        name = 'general',
         subject = 'This channel is for team-wide communication.',
         is_private = False,
         is_direct = False,
         owner = bobbie
     )
     channel2 = Channel(
-        name = 'Help-requests',
+        name = 'help-requests',
         subject = 'For technical issues! Ask for help or aid in answering a question.',
         is_private = False,
         is_direct = False,
@@ -30,7 +30,7 @@ def seed_channels(users):
     )
 
     channel4 = Channel(
-        name='Cooking',
+        name='cooking',
         subject='Share recipes and cooking tips',
         is_private=False,
         is_direct=False,

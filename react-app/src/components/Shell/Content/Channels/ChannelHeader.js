@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as ChlActions from "../../../../store/channel";
 import OpenModalButton from '../../../OpenModalButton';
 import EditChannelModal from '../../../EditFormModal/EditChannelModal';
@@ -12,12 +12,6 @@ import determineChannelName from '../../../../utils/determineChannelName';
 function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     const user = useSelector(state => state.session.user)
 
-    // const { setPane, selectedUserRightBar, setSelectedUserRightBar } = props;
-    // console.log(selectedUserRightBar);
-    // console.log(selectedUserRightBar);
-
-
-
     const { channelId } = useParams();
     const history = useHistory();
     const dispatch = useDispatch()
@@ -26,20 +20,20 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
     let userList;
 
     useEffect(() => {
-        const thisChannel = dispatch(ChlActions.OneChannelThunk(channelId))
+        dispatch(ChlActions.OneChannelThunk(channelId))
             .then(res => {
                 if (res.errors) history.push('/channels/explore');
                 let channel = res.single_channel[0]
                 document.title = `${determineChannelName(res.single_channel[0], user)} - Smack`
 
                 if (!channel.is_direct) {
-                    document.title = document.title.slice(1)
+                    document.title = `# ${document.title.slice(1)}`
                 }
             })
         return () => {
             document.title = "Smack";
         };
-    }, [dispatch, channelId])
+    }, [dispatch, channelId, history, user])
 
     const currentChannel = Object.values(singleChannel);
 

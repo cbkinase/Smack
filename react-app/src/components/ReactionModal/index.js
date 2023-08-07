@@ -1,6 +1,5 @@
 import { useModal } from "../../context/Modal";
 import { thunkCreateReaction } from "../../store/messages";
-import { useDispatch } from "react-redux";
 
 export default function ReactionModal({ socket, msg, user, dispatch }) {
     const { closeModal } = useModal();
@@ -31,7 +30,7 @@ export default function ReactionModal({ socket, msg, user, dispatch }) {
         "💯",
         "👋",
         "😨", "😧", "😦", "😱", "😫", "😩", "👀",
-        "😮", "😯", "😲", "😺", "😸", "🐱", "😳", "😞", "😖", "😈", "😬", "🤨", "😉", "😜", "😣", "😖", "🤒", "😷", "🤢", "😎", "😪", "🙂", "😊", "😁", "🦀", "💵", "😔"
+        "😮", "😯", "😲", "😺", "😸", "🐱", "😳", "😞", "😖", "😈", "😬", "🤨", "😉", "😜", "😣", "🤒", "😷", "🤢", "😎", "😪", "🙂", "😊", "😁", "🦀", "💵", "😔"
     ];
     return (
         <>
@@ -45,7 +44,7 @@ export default function ReactionModal({ socket, msg, user, dispatch }) {
                 }}
             >
                 {emojis.map((emoji) => (
-                    <button className="reaction-icon"
+                    <button key={emoji} className="reaction-icon"
                         onClick={(e) => {
                             handleAddReaction(e, msg, emoji);
                             closeModal();

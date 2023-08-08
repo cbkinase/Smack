@@ -8,12 +8,10 @@ import {
     thunkCreateReaction,
     thunkDeleteAttachment
 } from "../../../../store/messages";
-import { OneChannelThunk } from "../../../../store/channel";
 import { useParams } from "react-router-dom";
 import Editor from "../../../ChatTest/Editor";
 import ReactionModal from "../../../ReactionModal";
 import OpenModalButton from "../../../OpenModalButton";
-import { UserChannelThunk } from "../../../../store/channel";
 import DeleteMessageModal from "../../../DeleteMessageModal"
 import { isImage, previewFilter, getFileExt } from "./AttachmentFncs";
 import PreviewImageModal from "../../../PreviewImageModal/PreviewImageModal";
@@ -22,7 +20,7 @@ let updatedMessage;
 
 const Messages = () => {
     let editing = false;
-    const [selectedUserRightBar, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
+    const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);

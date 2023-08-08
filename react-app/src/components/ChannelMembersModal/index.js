@@ -7,7 +7,7 @@ import isSelfDM from "../../utils/isSelfDM";
 import SelectedUserRightBarContext from "../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 
 export default function ChannelMembersModal({ currentChannel, numMemb, userList, user }) {
-  const [selectedUserRightBar, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
+  const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
 
   function toggleRightPane(state) {
     if (state === "close") {

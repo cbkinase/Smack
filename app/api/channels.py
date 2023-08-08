@@ -1,13 +1,11 @@
 from flask import Blueprint, request, jsonify
-from app.models import channel_user, Channel, User, db, Message, Reaction, Attachment
+from app.models import Channel, User, db, Message, Attachment
 from flask_login import login_required, current_user
 from ..socket import socketio
 from app.s3_helpers import (get_unique_filename, upload_file_to_s3, remove_file_from_s3)
 
 channel_routes = Blueprint('channels', __name__)
 
-def user_id_generator():
-    return int(str(current_user).split('<User ')[1].split('>')[0])
 
 @channel_routes.route('/all')
 @login_required
@@ -43,8 +41,7 @@ def one_channel(channel_id):
 @channel_routes.route('/', methods=['POST'])
 @login_required
 def create_channel():
-    user_id = user_id_generator()
-    this_user = User.query.get(user_id)
+    this_user = User.query.get(current_user.id)
     try:
         new_channel = Channel(
             name = request.json.get('name'),
@@ -89,7 +86,7 @@ def delete_channel(channel_id):
 @channel_routes.route('/<channel_id>', methods=['PUT'])
 @login_required
 def edit_channel(channel_id):
-    user_id = user_id_generator()
+    user_id = current_user.id
     channel_exist = Channel.query.get(channel_id)
     if not channel_exist:
         error_obj = {"errors": "Channel with the specified id could not be found."}
@@ -120,7 +117,7 @@ def edit_channel(channel_id):
 @login_required
 def add_channel_member(channel_id):
     channel = Channel.query.get(channel_id)
-    user = User.query.get(user_id_generator())
+    user = User.query.get(current_user.id)
 
     if not channel or not user:
         return {"message": "Resource not found"}, 404
@@ -179,7 +176,6 @@ def get_all_channel_members(channel_id):
 @login_required
 def delete_channel_member(channel_id, user_id):
     # Need to check to make sure the deleter is the channel owner
-    # print("hi")
     channel = Channel.query.get(channel_id)
     user_to_delete = User.query.get(user_id)
 
@@ -233,7 +229,7 @@ def make_post_for_channel(channel_id):
 
         incoming_attachments_arr = request.files
 
-        if incoming_attachments_arr: 
+        if incoming_attachments_arr:
             for attachment in incoming_attachments_arr.values():
 
                 attachment.filename = get_unique_filename(attachment.filename)
@@ -244,7 +240,7 @@ def make_post_for_channel(channel_id):
                 new_attach = Attachment(content=upload_attachment["url"], user=this_user, message=new_message)
                 db.session.add(new_attach)
 
-            
+
             db.session.commit()
 
         return new_message.to_dict()

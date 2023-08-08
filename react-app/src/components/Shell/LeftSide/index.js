@@ -6,7 +6,7 @@ import RouteIdContext from "../../../context/RouteId/RouteIdContext";
 
 function LeftSide({ isLoaded }) {
 
-    const [_, setRouteId] = useContext(RouteIdContext);
+    const [, setRouteId] = useContext(RouteIdContext);
     const { channelId } = useParams();
 
 

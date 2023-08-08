@@ -1,4 +1,4 @@
-import { useModal } from "../../context/Modal";
+import { useModal } from "../../context/Modal/Modal";
 
 export default function ChatEmojiModal({ setChatInput, chatInput }) {
     const { closeModal } = useModal();

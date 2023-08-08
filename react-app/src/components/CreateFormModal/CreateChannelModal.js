@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AddChannelThunk } from "../../store/channel";
-import { useModal } from "../../context/Modal";
+import { useModal } from "../../context/Modal/Modal";
 import '../EditFormModal/EditChannelModalStyling.css'
 
 const CreateChannelModal = ({ user }) => {

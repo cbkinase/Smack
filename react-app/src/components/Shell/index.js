@@ -9,8 +9,8 @@ import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
 import { UserChannelThunk, OneChannelThunk } from "../../store/channel";
-import { useState, useEffect } from "react";
-import RouteIdContext from "../../context/RouteIdContext";
+import { useEffect } from "react";
+import RouteIdContext from "../../context/RouteId/RouteIdContext";
 
 function Shell({ isLoaded }) {
     const dispatch = useDispatch();
@@ -42,10 +42,6 @@ function Shell({ isLoaded }) {
         });
     }, [socket, dispatch, routeId])
 
-
-
-
-    const [selectedUserRightBar, setSelectedUserRightBar] = useState();
     return (
         <div id="grid-container" className="grid-container-hiderightside">
             <Header isLoaded={isLoaded} />
@@ -53,29 +49,29 @@ function Shell({ isLoaded }) {
             <Switch>
                 <Route exact path="/">
                     <LeftSide />
-                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+                    <RightSide />
                     <AllChannels />
                 </Route>
                 <Route exact path="/channels/explore">
                     <LeftSide />
-                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+                    <RightSide />
                     <AllChannels />
                 </Route>
                 <Route exact path="/channels/new">
                     <LeftSide />
-                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+                    <RightSide />
                     <CreateChannel />
                 </Route>
                 <Route exact path="/channels/direct">
                     <LeftSide />
-                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+                    <RightSide />
                     <DMChannels />
                 </Route>
 
                 <Route path="/channels/:channelId">
                     <LeftSide />
-                    <RightSide selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
-                    <Content selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+                    <RightSide />
+                    <Content />
                 </Route>
 
             </Switch>

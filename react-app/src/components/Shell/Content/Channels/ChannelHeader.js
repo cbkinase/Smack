@@ -9,7 +9,7 @@ import ChannelMembersModal from '../../../ChannelMembersModal';
 import userObjectToNameList from '../../../../utils/userObjectToNameList';
 import determineChannelName from '../../../../utils/determineChannelName';
 
-function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
+function ChannelHeader() {
     const user = useSelector(state => state.session.user);
 
     const { channelId } = useParams();
@@ -75,7 +75,7 @@ function ChannelHeader({selectedUserRightBar, setSelectedUserRightBar}) {
                     {currentChannel.length ? currentChannel[0].subject : ""}
                 </div>
             </div>
-            <OpenModalButton modalComponent={<ChannelMembersModal selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb} currUser={user}></OpenModalButton>
+            <OpenModalButton modalComponent={<ChannelMembersModal currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb} currUser={user}></OpenModalButton>
         </div>
 
     )

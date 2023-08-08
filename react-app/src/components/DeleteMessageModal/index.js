@@ -1,4 +1,4 @@
-import { useModal } from "../../context/Modal";
+import { useModal } from "../../context/Modal/Modal";
 import { destroyMessage } from "../../store/messages";
 import { useDispatch } from "react-redux";
 import "./DeleteMessage.css";

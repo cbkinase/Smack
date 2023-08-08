@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { EditChannelThunk } from "../../store/channel"
 import { DeleteChannelThunk } from "../../store/channel"
-import { useModal } from "../../context/Modal";
+import { useModal } from "../../context/Modal/Modal";
 import './EditChannelModalStyling.css'
 import userObjectToNameList from "../../utils/userObjectToNameList";
 

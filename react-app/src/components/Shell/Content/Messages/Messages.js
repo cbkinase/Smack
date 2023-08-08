@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Fragment } from "react";
+import React, { useState, useEffect, useRef, Fragment, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     createChannelMessage,
@@ -17,10 +17,12 @@ import { UserChannelThunk } from "../../../../store/channel";
 import DeleteMessageModal from "../../../DeleteMessageModal"
 import { isImage, previewFilter, getFileExt } from "./AttachmentFncs";
 import PreviewImageModal from "../../../PreviewImageModal/PreviewImageModal";
+import SelectedUserRightBarContext from "../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 let updatedMessage;
 
-const Messages = ({ selectedUserRightBar, setSelectedUserRightBar }) => {
+const Messages = () => {
     let editing = false;
+    const [selectedUserRightBar, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);

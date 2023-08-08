@@ -4,6 +4,7 @@ import { authenticate, disconnectWebSocket } from "./store/session";
 import Shell from "./components/Shell";
 import LoginSignupPage from "./components/LoginSignupPage";
 import RouteIdProvider from "./context/RouteId/RouteIdProvider";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 function App() {
     const dispatch = useDispatch();
@@ -29,7 +30,8 @@ function App() {
     const sessionUser = useSelector((state) => state.session.user);
 
     return (
-        <>{sessionUser
+        <>{!isLoaded ?
+            <LoadingSpinner /> : sessionUser
             ? <RouteIdProvider>
                     <Shell isLoaded={isLoaded} />
               </RouteIdProvider>

@@ -27,7 +27,7 @@ function ChannelHeader() {
                 document.title = `${determineChannelName(res.single_channel[0], user)} - Smack`
 
                 if (!channel.is_direct) {
-                    document.title = `# ${document.title.slice(1)}`
+                    document.title = `${document.title.slice(1)}`
                 }
             })
         return () => {

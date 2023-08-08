@@ -15,7 +15,7 @@ import RouteIdContext from "../../context/RouteId/RouteIdContext";
 function Shell({ isLoaded }) {
     const dispatch = useDispatch();
     const socket = useSelector(state => state.session.socket);
-    const [routeId, _] = useContext(RouteIdContext);
+    const [routeId, ] = useContext(RouteIdContext);
 
     useEffect(() => {
 

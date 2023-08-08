@@ -33,19 +33,12 @@ export default function userObjectToAvatar(obj, currUser, bgColor, textColor, bd
 
     }
 
-    // Figure out what to do for multi-person DMs later
-    // For now:
-    // Render the first avatar
+    // With multi-person DMs, we include one avatar and also show the number of other participants
 
     return (
         <>
-
-            {/* <span style={{ position: 'relative', padding: 'revert', left: 'revert' }}> */}
-
             <span style={{ position: 'relative', borderRadius: "4px", width: "14px", height: "14px", top: "-4px", margin: '0px' }}><img src={obj_arr[0].avatar} alt="DM" style={{ borderRadius: "4px", width: "14px", height: "14px" }} /></span>
             <span style={{ position: 'relative', height: '14px', width: '14px', fontSize: '9px', top: '5px', right: '15px', backgroundColor: bgColor, padding: '1px 3px 3px 3px', color: textColor, borderRadius: '4px', marginRight: '-15px', borderWidth: '1px', borderStyle: 'solid', borderColor: bdrColor }}>{obj_arr.length}</span>
-
-            {/* </span> */}
         </>
     )
 

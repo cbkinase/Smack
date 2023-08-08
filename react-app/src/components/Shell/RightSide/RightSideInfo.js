@@ -8,7 +8,7 @@ import SelectedUserRightBarContext from '../../../context/SelectedUserRightBar/S
 
 
 function RightSideInfo() {
-    const [selectedUserRightBar, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
+    const [selectedUserRightBar, ] = useContext(SelectedUserRightBarContext);
     const user_channels = useSelector(state => state.channels.user_channels);
     const currUser = useSelector(state => state.session.user);
     const history = useHistory();

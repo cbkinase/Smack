@@ -2,7 +2,7 @@ import ChatEmojiModal from "../ChatEmojiModal";
 import OpenModalButton from "../OpenModalButton";
 import userObjectToNameList from "../../utils/userObjectToNameList";
 import { useState } from "react";
-import { isImage, previewFilter } from "../Shell/Content/Messages/AttachmentFncs";
+import { isImage, previewFilter } from "../Shell/Content/Messages/Attachments/AttachmentFncs"
 
 import loadingImg from '../../misc/Rolling-1s-200px (1).svg';
 

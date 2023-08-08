@@ -1,19 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import userChannelDMSearch from '../../../utils/userChannelDMSearch';
 import { useHistory } from 'react-router-dom';
 import { AddChannelThunk, UserChannelThunk } from '../../../store/channel';
 import toggleRightPane from './toggleRightPane';
+import SelectedUserRightBarContext from '../../../context/SelectedUserRightBar/SelectedUserRightBarContext';
 
 
-function RightSideInfo({ selectedUserRightBar, setSelectedUserRightBar }) {
-    const user_channels = useSelector(state => state.channels.user_channels)
-    const currUser = useSelector(state => state.session.user)
+function RightSideInfo() {
+    const [selectedUserRightBar, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
+    const user_channels = useSelector(state => state.channels.user_channels);
+    const currUser = useSelector(state => state.session.user);
     const history = useHistory();
     const dispatch = useDispatch();
-
-
-
 
     return (
         <div id="grid-rightside" className="grid-rightside-hide">

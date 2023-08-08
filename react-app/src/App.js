@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authenticate, disconnectWebSocket } from "./store/session";
 import Shell from "./components/Shell";
 import LoginSignupPage from "./components/LoginSignupPage";
-import RouteIdProvider from "./context/RouteIdProvider";
+import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 
 function App() {
     const dispatch = useDispatch();
@@ -30,7 +30,10 @@ function App() {
 
     return (
         <>{sessionUser
-            ? <RouteIdProvider><Shell isLoaded={isLoaded} /></RouteIdProvider>
+            ? <RouteIdProvider>
+                    <Shell isLoaded={isLoaded} />
+              </RouteIdProvider>
+
             : <LoginSignupPage />}</>
     );
 }

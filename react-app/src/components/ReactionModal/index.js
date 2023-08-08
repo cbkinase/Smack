@@ -1,4 +1,4 @@
-import { useModal } from "../../context/Modal";
+import { useModal } from "../../context/Modal/Modal";
 import { thunkCreateReaction } from "../../store/messages";
 
 export default function ReactionModal({ socket, msg, user, dispatch }) {

@@ -2,14 +2,14 @@ import React from "react";
 import ChannelHeader from "./Channels/ChannelHeader";
 import Messages from "./Messages/Messages";
 
-function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
+function Content() {
     return (
         <>
             <div
                 id="grid-content-heading"
                 className="grid-content-heading-threecolumn"
             >
-                <ChannelHeader selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+                <ChannelHeader />
 
             </div>
 
@@ -18,7 +18,7 @@ function Content({ selectedUserRightBar, setSelectedUserRightBar }) {
 
             <div id="grid-content" className="grid-content-threecolumn" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
-                <Messages selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} />
+                <Messages />
 
             </div>
             {/* <div id="grid-editor" className="grid-editor-threecolumn"> */}

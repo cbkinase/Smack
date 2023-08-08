@@ -1,12 +1,14 @@
-import { useModal } from "../../context/Modal";
-import { useState } from "react";
+import { useModal } from "../../context/Modal/Modal";
+import { useState, useContext } from "react";
 import userObjectToNameList from "../../utils/userObjectToNameList";
 import OpenModalButton from "../OpenModalButton";
 import ChannelMembersAll from "./ChannelMembersAll";
 import isSelfDM from "../../utils/isSelfDM";
+import SelectedUserRightBarContext from "../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 
-export default function ChannelMembersModal({ currentChannel, numMemb, userList, selectedUserRightBar, setSelectedUserRightBar, user }) {
-  // console.log(selectedUserRightBar);
+export default function ChannelMembersModal({ currentChannel, numMemb, userList, user }) {
+  const [selectedUserRightBar, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
+
   function toggleRightPane(state) {
     if (state === "close") {
       document.getElementById("grid-container").className =
@@ -60,7 +62,7 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
       <div className="channels-list" style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
         {filteredMembers.map((member, index) => {
           return <div onClick={(e) => {
-            setSelectedUserRightBar(member)
+            setSelectedUserRightBar(member);
             toggleRightPane();
             closeModal();
           }} key={member.id} className="channels-list-item" style={{ display: "flex", alignItems: "center", border: "none" }}>
@@ -69,7 +71,7 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
           </div>
         })}
         {!isSelfDM(currentChannel[0], user)  ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
-          {<OpenModalButton className="login-input-submit-alt" modalComponent={<ChannelMembersAll currentChannel={currentChannel} numMemb={numMemb} userList={userList} selectedUserRightBar={selectedUserRightBar} setSelectedUserRightBar={setSelectedUserRightBar} user={user} />} buttonText="Add members" />}
+          {<OpenModalButton className="login-input-submit-alt" modalComponent={<ChannelMembersAll currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user} />} buttonText="Add members" />}
         </div> : null}
       </div>
     </div>

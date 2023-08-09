@@ -10,19 +10,11 @@ import {
 } from "../../../../store/messages";
 import { useParams } from "react-router-dom";
 import Editor from "../../../ChatTest/Editor";
-import ReactionModal from "../../../ReactionModal";
-import OpenModalButton from "../../../OpenModalButton";
-import DeleteMessageModal from "../../../DeleteMessageModal"
-import { isImage, previewFilter, getFileExt } from "./Attachments/AttachmentFncs";
-import PreviewImageModal from "../../../PreviewImageModal/PreviewImageModal";
-import SelectedUserRightBarContext from "../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
+
 import MessageCard from "./MessageCard/MessageCard";
-let updatedMessage;
 
 
 const Messages = () => {
-    let editing = false;
-    const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);
@@ -38,8 +30,6 @@ const Messages = () => {
     const [attachmentBuffer, setAttachmentBuffer] = useState({});
     const [attachmentIsLoading, setAttachmentIsLoading] = useState(false);
 
-    // hover functionality for attachments
-    const [hoverId, setHoverId] = useState(0);
 
 
     useEffect(() => {
@@ -176,35 +166,6 @@ const Messages = () => {
         setChatInput("");
     };
 
-    // const handleDelete = (e, msg) => {
-    //     dispatch(destroyMessage(msg.id));
-    //     socket.emit("delete", { user: user.username, msg: msg.content });
-    // };
-
-    
-
-    // const handleEdit = async (e, msg) => {
-    //     document.getElementById("edit-msg-form").remove();
-    //     e.preventDefault();
-    //     await dispatch(
-    //         editMessage(
-    //             {
-    //                 content: updatedMessage,
-    //                 user_id: user.id,
-    //                 channel_id: channelId,
-    //                 is_pinned: false,
-    //             },
-    //             msg.id
-    //         )
-    //     );
-
-    //     socket.emit("edit", {
-    //         user: user.username,
-    //         msg: updatedMessage,
-    //         msg_id: msg.id,
-    //     });
-    // };
-
     function handleDeleteReaction(e, reaction) {
         e.preventDefault();
         dispatch(thunkDeleteReaction(reaction));
@@ -293,29 +254,6 @@ const Messages = () => {
 
             </Fragment>
         ));
-    }
-
-    function changeAdjustText(text, id) {
-        document.getElementById(`message-adjust-text-${id}`).textContent = text;
-    }
-
-    function toggleRightPane(state) {
-        if (state === "close") {
-            document.getElementById("grid-container").className =
-                "grid-container-hiderightside";
-            document.getElementById("grid-rightside-heading").className =
-                "grid-rightside-heading-hide";
-            document.getElementById("grid-rightside").className =
-                "grid-rightside-hide";
-        } else {
-            document.getElementById("grid-container").className =
-                "grid-container";
-            document.getElementById("grid-rightside-heading").className =
-                "grid-rightside-heading";
-            document.getElementById("grid-rightside").className =
-                "grid-rightside";
-        }
-        window.toggleLeftPane();
     }
 
     // Attachments

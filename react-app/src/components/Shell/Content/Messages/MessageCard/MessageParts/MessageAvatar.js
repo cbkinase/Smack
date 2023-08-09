@@ -1,7 +1,7 @@
 import React from "react";
 import toggleOnRightPane from "../../../../RightSide/toggleOnRightPane";
 
-export default function MessageUser({messageUser, user, setSelectedUserRightBar}) {
+export default function MessageAvatar({messageUser, user, setSelectedUserRightBar}) {
 
     return (
         <div>

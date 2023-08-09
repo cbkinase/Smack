@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef, Fragment, useContext } from "react";
-import toggleRightPane from "../../RightSide/toggleRightPane";
-import SelectedUserRightBarContext from "../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
+import toggleRightPane from "../../../RightSide/toggleRightPane";
+import SelectedUserRightBarContext from "../../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 
+import OpenModalButton from "../../../../OpenModalButton";
+import ReactionModal from "../../../../ReactionModal";
+import DeleteMessageModal from "../../../../DeleteMessageModal"
+import AttachmentCard from "../Attachments/AttachmentCard";
 
-
-
-import OpenModalButton from "../../../OpenModalButton";
-import ReactionModal from "../../../ReactionModal";
-import DeleteMessageModal from "../../../DeleteMessageModal"
-import AttachmentCard from "./Attachments/AttachmentCard";
+import MessageUser from "./MessageParts/MessageUser";
 
 let updatedMessage;
 
@@ -20,6 +19,8 @@ function MessageCard({message, user, socket, dispatch, messageFunctions}) {
             channelId,
             handleDeleteAttachment, 
             storeConverter } = messageFunctions;
+
+    
 
     const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
     let editing = false;
@@ -108,29 +109,12 @@ function MessageCard({message, user, socket, dispatch, messageFunctions}) {
 
 
 
-            <div>
-                <img onClick={(e) => {
-                    setSelectedUserRightBar(message.User)
-                    toggleRightPane();
-                }}
-                    src={
-                        message.User ? message.User.avatar : user.avatar
-                    }
-                    alt={`${message.User
-                        ? message.User.first_name
-                        : user.first_name
-                        } ${message.User
-                            ? message.User.last_name
-                            : user.last_name
-                        }`}
-                    style={{
-                        borderRadius: "5px",
-                        width: "36px",
-                        height: "36px",
-                        cursor: "pointer",
-                    }}
-                ></img>
-            </div>
+            <MessageUser messageUser={message.User}
+                         user={user}
+                         setSelectedUserRightBar={setSelectedUserRightBar}
+            />
+
+            
 
 
             <div className="message-card-content">

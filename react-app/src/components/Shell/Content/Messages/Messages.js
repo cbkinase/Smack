@@ -16,7 +16,7 @@ import DeleteMessageModal from "../../../DeleteMessageModal"
 import { isImage, previewFilter, getFileExt } from "./Attachments/AttachmentFncs";
 import PreviewImageModal from "../../../PreviewImageModal/PreviewImageModal";
 import SelectedUserRightBarContext from "../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
-import MessageCard from "./MessageCard";
+import MessageCard from "./MessageCard/MessageCard";
 let updatedMessage;
 
 

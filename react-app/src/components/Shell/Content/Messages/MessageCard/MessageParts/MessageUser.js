@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React from "react";
 import toggleOnRightPane from "../../../../RightSide/toggleOnRightPane";
 
 export default function MessageUser({messageUser, user, setSelectedUserRightBar}) {

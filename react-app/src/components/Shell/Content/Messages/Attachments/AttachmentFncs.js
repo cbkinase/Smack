@@ -1,7 +1,7 @@
-import pdfImg from '../../../../misc/pdf-svgrepo-com.svg'
-import csvImg from '../../../../misc/excel-svgrepo-com (1).svg';
-import zipImg from '../../../../misc/file-zip-fill-svgrepo-com.svg';
-import fileImg from '../../../../misc/file-ui-svgrepo-com.svg';
+import pdfImg from '../../../../../misc/pdf-svgrepo-com.svg'
+import csvImg from '../../../../../misc/excel-svgrepo-com (1).svg';
+import zipImg from '../../../../../misc/file-zip-fill-svgrepo-com.svg';
+import fileImg from '../../../../../misc/file-ui-svgrepo-com.svg';
 
 export function isImage(filename) {
     const imageTypes = 'jpegjpgpngsvggif';

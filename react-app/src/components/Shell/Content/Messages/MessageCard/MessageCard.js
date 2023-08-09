@@ -1,24 +1,17 @@
-import React, { useState, useEffect, useRef, Fragment, useContext } from "react";
-import toggleRightPane from "../../../RightSide/toggleRightPane";
+import React, { useState, Fragment, useContext } from "react";
 import SelectedUserRightBarContext from "../../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
-
-import OpenModalButton from "../../../../OpenModalButton";
-import ReactionModal from "../../../../ReactionModal";
-import DeleteMessageModal from "../../../../DeleteMessageModal"
+import storeConverter from "./MessageHelpers/MessageHelpers";
 import AttachmentCard from "../Attachments/AttachmentCard";
 
 import MessageAvatar from "./MessageParts/MessageAvatar";
 import MessageHeader from "./MessageParts/MessageHeader";
-let updatedMessage;
 
 
 function MessageCard({message, user, socket, dispatch, messageFunctions}) {
     
-
     const { editMessage,
             channelId,
-            handleDeleteAttachment, 
-            storeConverter } = messageFunctions;
+            handleDeleteAttachment } = messageFunctions;
 
     const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
     
@@ -34,7 +27,6 @@ function MessageCard({message, user, socket, dispatch, messageFunctions}) {
     }
 
     
-
     return (
         <div className="message-card"
             key={message.id}
@@ -76,7 +68,7 @@ function MessageCard({message, user, socket, dispatch, messageFunctions}) {
                 }
 
                 <div style={{}} className="message-card-footer">
-                    {storeConverter(message, user)}
+                    {storeConverter(message, user, Fragment, dispatch, socket)}
                 </div>
 
             </div>

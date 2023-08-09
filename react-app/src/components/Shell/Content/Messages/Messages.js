@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef, Fragment, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     createChannelMessage,
     getChannelMessages,
     editMessage,
-    thunkDeleteReaction,
-    thunkCreateReaction,
     thunkDeleteAttachment
 } from "../../../../store/messages";
 import { useParams } from "react-router-dom";
@@ -166,95 +164,6 @@ const Messages = () => {
         setChatInput("");
     };
 
-    function handleDeleteReaction(e, reaction) {
-        e.preventDefault();
-        dispatch(thunkDeleteReaction(reaction));
-        socket.emit("deleteReaction", {
-            user: user.username,
-            reaction: reaction.reaction,
-        });
-    }
-    function handleAddReaction(e, msg, rxn) {
-        e.preventDefault();
-        dispatch(thunkCreateReaction(msg.id, { reaction: rxn }));
-        socket.emit("addReaction", {
-            user: user.username,
-            reaction: rxn,
-        });
-    }
-
-    function hasUserReacted(message, user, reaction) {
-        // Define logic for seeing whether
-        // A user has posted a given reaction
-        // To a given message
-        let userReaction = Object.values(message.Reactions).filter(
-            (rxn) => rxn.user_id === user.id && rxn.reaction === reaction
-        );
-        if (!userReaction.length) return null;
-        return userReaction[0];
-    }
-
-    function storeConverter(msg, user) {
-        if (!msg.Reactions) return null;
-        let arr = Object.values(msg.Reactions);
-        let emojiStuff = arr.map((el) => [el.reaction, el.id]);
-        const counts = {};
-
-        for (const num of emojiStuff) {
-            if (!counts[num[0]]) {
-                let countObj = {
-                    frequency: 1,
-                    reaction_ids: [num[1]],
-                };
-
-                counts[num[0]] = countObj;
-                continue;
-            }
-
-            counts[num[0]].frequency++;
-            counts[num[0]].reaction_ids.push(num[1]);
-        }
-
-        let countEntries = Object.entries(counts);
-
-        return countEntries.map((el) => (
-            <Fragment key={el[0]}>
-
-                {hasUserReacted(msg, user, el[0]) ? (
-
-
-                    <button
-                        style={{ padding: "0px 6px", backgroundColor: "#e7f3f9", border: "1px solid #bad3f2" }}
-                        className="message-card-reaction"
-                        onClick={(e) =>
-                            handleDeleteReaction(
-                                e,
-                                hasUserReacted(msg, user, el[0]),
-                                msg.id
-                            )
-                        }
-                    >
-                        <p style={{ paddingRight: "5px" }}>{el[0]}</p> <p style={{ fontSize: '12px', color: "#333333" }}>{counts[el[0]].frequency}</p>
-                    </button >
-                ) : (
-                    <button
-                        style={{ padding: "0px 6px" }}
-                        className="message-card-reaction"
-                        onClick={(e) => handleAddReaction(e, msg, el[0])}
-                    >
-                        {el[0]}{" "}
-                        <span className="message-card-reaction-count">
-
-                            <p style={{ paddingRight: "5px" }}>{counts[el[0]].frequency}</p>
-                        </span>
-                    </button>
-                )
-                }
-
-
-            </Fragment>
-        ));
-    }
 
     // Attachments
     // add each attachment to buffer, buffer will be used when uploading
@@ -307,7 +216,6 @@ const Messages = () => {
         removeAttachBuffer,
         handleDeleteAttachment,
         editMessage,
-        storeConverter
     };
 
     return user && currentChannel && allMessages ? (
@@ -334,8 +242,6 @@ const Messages = () => {
             <div style={{ position: 'sticky', bottom: 0 }} >
                 <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} user={user} attachmentBuffer={attachmentBuffer} attachmentIsLoading={attachmentIsLoading}/>
             </div>
-
-
 
 
         </>

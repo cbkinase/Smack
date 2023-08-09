@@ -18,10 +18,11 @@ const createReaction = (reaction) => ({
 });
 
 
-const loadMessages = (messages) => {
+const loadMessages = (messages, page) => {
     return {
         type: LOAD_MESSAGES,
         messages,
+        page,
     };
 };
 
@@ -42,15 +43,23 @@ const deleteAttachment = (attachment) => ({
     payload: attachment,
 });
 
-export const getChannelMessages = (id) => async (dispatch) => {
-    const res = await fetch(`/api/channels/${id}/messages`, {
+export const getChannelMessages = (id, page, perPage) => async (dispatch) => {
+    let fetchUrl = `/api/channels/${id}/messages`;
+    if (page && perPage) {
+        fetchUrl += `?page=${page}&per_page=${perPage}`;
+    }
+    const res = await fetch(fetchUrl, {
         method: "GET",
     });
 
     if (res.ok) {
         const data = await res.json();
-        dispatch(loadMessages(data));
+        dispatch(loadMessages(data, page));
         return data;
+    }
+    else {
+        // Refine this for more specific errors later
+        return { errors: "Failed to fetch" }
     }
 };
 
@@ -163,11 +172,19 @@ const messageReducer = (state = initialState, action) => {
             };
         }
         case LOAD_MESSAGES: {
-            let newState = { allMessages: {} };
+            // Merge new messages into existing messages if using infinite scrolling
+            let newState;
+            if (action.page && action.page > 1) {
+                newState = { allMessages: {...state.allMessages} }
+            }
+            else {
+                newState = { allMessages: {} };
+            }
             action.messages.forEach((msg) => {
                 newState["allMessages"][msg.id] = msg;
             });
             return newState;
+
         }
         case DELETE_MESSAGE: {
             let newState = { ...state, allMessages: { ...state.allMessages } };

@@ -200,8 +200,9 @@ def get_all_messages_for_channel(channel_id):
     page = request.args.get('page', type=int)
     per_page = request.args.get('per_page', type=int)
     channel_messages = Message.query.filter(Message.channel_id == channel_id)\
-            .order_by(Message.id.desc())\
-            .paginate(page=page, per_page=per_page)
+            .order_by(Message.id.desc())
+    if page and per_page:
+            channel_messages = channel_messages.paginate(page=page, per_page=per_page)
     channel_messages_data = []
 
     for msg in channel_messages:

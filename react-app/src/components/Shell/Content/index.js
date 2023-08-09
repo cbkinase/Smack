@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import ChannelHeader from "./Channels/ChannelHeader";
 import Messages from "./Messages/Messages";
 
 function Content() {
+    // The container for messages, which must be referenced to know if we've reached the top
+    // of our container to implement infinite scrolling.
+    const scrollContainerRef = useRef(null);
     return (
         <>
             <div
@@ -13,12 +16,9 @@ function Content() {
 
             </div>
 
+            <div ref={scrollContainerRef} id="grid-content" className="grid-content-threecolumn" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
-
-
-            <div id="grid-content" className="grid-content-threecolumn" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-
-                <Messages />
+                <Messages scrollContainerRef={scrollContainerRef} />
 
             </div>
             {/* <div id="grid-editor" className="grid-editor-threecolumn"> */}

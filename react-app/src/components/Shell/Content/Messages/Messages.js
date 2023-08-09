@@ -8,11 +8,11 @@ import {
 } from "../../../../store/messages";
 import { useParams } from "react-router-dom";
 import Editor from "../../../ChatTest/Editor";
-
 import MessageCard from "./MessageCard/MessageCard";
+import useInfiniteScrollingTop from "../../../../hooks/useInfiniteScrollingTop";
 
 
-const Messages = () => {
+const Messages = ({ scrollContainerRef }) => {
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);
@@ -28,6 +28,34 @@ const Messages = () => {
     const [attachmentBuffer, setAttachmentBuffer] = useState({});
     const [attachmentIsLoading, setAttachmentIsLoading] = useState(false);
 
+    // Variables for infinite scrolling
+    const page = useInfiniteScrollingTop(scrollContainerRef);
+    const perPage = 25;
+    const [prevScrollHeight, setPrevScrollHeight] = useState(0);
+    const [hasMoreToLoad, setHasMoreToLoad] = useState(true);
+
+    // Effect for infinite scrolling
+    useEffect(() => {
+        // Keep track of scroll height before getting new data
+        const currentScrollHeight = scrollContainerRef.current.scrollHeight;
+        setPrevScrollHeight(currentScrollHeight);
+
+        (async function() {
+            if (!hasMoreToLoad) return;
+            const res = await dispatch(getChannelMessages(channelId, page, perPage));
+            if (res.errors) {
+                setHasMoreToLoad(false);
+            }
+        })()
+    }, [dispatch, page, scrollContainerRef, hasMoreToLoad])
+
+    // Handle adjusting the scroll position after the data has been fetched and rendered
+    useEffect(() => {
+        const newScrollHeight = scrollContainerRef.current.scrollHeight;
+        const heightDifference = newScrollHeight - prevScrollHeight;
+
+        scrollContainerRef.current.scrollTop += heightDifference;
+    }, [scrollContainerRef, prevScrollHeight, allMessages]);
 
 
     useEffect(() => {
@@ -138,7 +166,7 @@ const Messages = () => {
         setChatInput(e.target.value);
     };
 
-    
+
 
     const sendChat = async (e) => {
         e.preventDefault();
@@ -233,7 +261,7 @@ const Messages = () => {
                                  messageFunctions={messageFunctions}
                     />
 
-                    
+
                 ))}
 
             </div>

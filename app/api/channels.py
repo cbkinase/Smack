@@ -197,8 +197,11 @@ def delete_channel_member(channel_id, user_id):
 def get_all_messages_for_channel(channel_id):
     # We should check to ensure the conversation is accessible to the user making the request
     # I.e. -- the channel is not private, or the user is a member of that private channel
-    channel_messages = Message.query.filter(Message.channel_id ==
-        channel_id).all()
+    page = request.args.get('page', type=int)
+    per_page = request.args.get('per_page', type=int)
+    channel_messages = Message.query.filter(Message.channel_id == channel_id)\
+            .order_by(Message.id.desc())\
+            .paginate(page=page, per_page=per_page)
     channel_messages_data = []
 
     for msg in channel_messages:

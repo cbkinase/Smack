@@ -13,14 +13,12 @@ export default function MessageUtils({ message, user, socket, dispatch, changeAd
                 className="message-adjust-text"
             ></span>
 
-            {user.id === message.user_id && (
-                <AddReactionButton message={message}
-                                    user={user}
-                                    socket={socket}
-                                    dispatch={dispatch}
-                                    changeAdjustText={changeAdjustText}
-                />
-            )}
+            <AddReactionButton message={message}
+                                user={user}
+                                socket={socket}
+                                dispatch={dispatch}
+                                changeAdjustText={changeAdjustText}
+            />
 
             {/* GOING TO FIX EDITMESSAGE TO DRILL LESS PROPS */}
 

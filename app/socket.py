@@ -24,8 +24,8 @@ def handle_chat(data):
         new_message = Message(content=data["msg"], users=this_user, channels=this_channel)
         db.session.add(new_message)
         db.session.commit()
-        emit("chat", data, broadcast=True)
-        return {'status': 'ok', 'message': new_message.to_dict_socket()}
+        emit("chat", new_message.to_dict_socket(), broadcast=True)
+        return {'status': 'ok'}
         
     except:
         return {'status': 'socket_error', 'message': 'Something went wrong with sockets.'} 

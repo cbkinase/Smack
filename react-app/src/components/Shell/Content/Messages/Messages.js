@@ -90,6 +90,7 @@ const Messages = ({ scrollContainerRef }) => {
     useEffect(() => {
         const prevMessages = prevMessagesRef.current;
         const prevChannelId = prevChannelIdRef.current;
+
         async function alterChannelMessages() {
             await dispatch(getChannelMessages(channelId));
             if (prevMessages !== messages || prevChannelId !== channelId) {
@@ -102,7 +103,7 @@ const Messages = ({ scrollContainerRef }) => {
         prevChannelIdRef.current = channelId;
     }, [dispatch, messages, reactions, channelId]);
 
-
+    
     useEffect(() => {
         if (!socket) return;
 
@@ -183,10 +184,15 @@ const Messages = ({ scrollContainerRef }) => {
         //     channel_id: channelId,
         //     content: chatInput,
         // };
+        
+
         setAttachmentIsLoading(true)
         await dispatch(createChannelMessage(formData, channelId));
         setAttachmentIsLoading(false)
-        socket.emit("chat", { user: user.username, msg: chatInput });
+        socket.emit("chat", {msg: chatInput, channel_id: +channelId}, (response) => {
+            console.log("response: ", response)
+            console.log("status: ", response.status)
+        });
 
         setAttachmentBuffer({});
         setChatInput("");

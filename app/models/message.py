@@ -28,5 +28,21 @@ class Message(db.Model):
             "is_pinned": self.is_pinned,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "User": self.users.to_dict(),
+            "Reactions": {reaction.id:reaction.to_dict() for reaction in self.reactions},
+            "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
+        }
+    
+    def to_dict_socket(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "channel_id": self.channel_id,
+            "content": self.content,
+            "is_pinned": self.is_pinned,
+            "created_at": str(self.created_at),
+            "updated_at": str(self.updated_at),
+            "User": self.users.to_dict(),
+            "Reactions": {reaction.id:reaction.to_dict() for reaction in self.reactions},
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }

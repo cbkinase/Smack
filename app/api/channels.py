@@ -210,15 +210,6 @@ def get_all_messages_for_channel(channel_id):
 
     for msg in channel_messages:
         msg_data = msg.to_dict()
-        msg_data['User'] = {
-            'id': msg.users.id,
-            'username': msg.users.username,
-            'avatar': msg.users.avatar,
-            'first_name': msg.users.first_name,
-            'last_name': msg.users.last_name,
-            "bio": msg.users.bio
-        }
-        msg_data['Reactions'] = {reaction.id:reaction.to_dict() for reaction in msg.reactions}
         channel_messages_data.append(msg_data)
 
     return jsonify(channel_messages_data)

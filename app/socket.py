@@ -1,5 +1,8 @@
 from flask_socketio import SocketIO, emit, join_room
 import os
+from app.models import db, Message, Channel, User
+from flask_login import current_user
+
 
 if os.environ.get("FLASK_ENV") == "production":
     origins = [
@@ -13,7 +16,21 @@ socketio = SocketIO(cors_allowed_origins="*")
 
 @socketio.on("chat")
 def handle_chat(data):
-    emit("chat", data, broadcast=True)
+    
+    try:
+        this_channel = Channel.query.get(int(data["channel_id"]))
+        this_user = User.query.get(current_user.id)
+
+        new_message = Message(content=data["msg"], users=this_user, channels=this_channel)
+        db.session.add(new_message)
+        db.session.commit()
+        emit("chat", new_message.to_dict_socket(), broadcast=True)
+        return {'status': 'ok'}
+        
+    except:
+        return {'status': 'socket_error', 'message': 'Something went wrong with sockets.'} 
+
+    
 
 
 @socketio.on("delete")

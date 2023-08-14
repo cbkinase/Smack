@@ -39,6 +39,7 @@ else
 fi
 
 cd react-app
+bash ./set-localhost-proxy.js
 
 # Spawn processes in a subshell and trap SIGINT to kill 0
 # (See https://stackoverflow.com/a/52033580 for more)

@@ -36,7 +36,7 @@ def seed_reactions(users, messages):
     for rction in rctions:
         db.session.add(rction)
 
-    other_reactions = Reaction.create(2_000, users, messages)
+    other_reactions = Reaction.create(80, users, messages)
     db.session.add_all(other_reactions)
     db.session.commit()
 

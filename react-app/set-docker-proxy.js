@@ -11,4 +11,3 @@ fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2));
 const filePath = path.join(__dirname, '.env.development');
 const feVal = "HOST=http://frontend:3000\n";
 fs.writeFileSync(filePath, feVal);
-console.log(`Wrote to ${filePath}!`, feVal);

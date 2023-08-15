@@ -40,5 +40,8 @@ ENV DATABASE_URL=sqlite:///dev.db
 ENV SCHEMA=smack_schema
 ENV REACT_APP_BASE_URL=http://localhost:5000
 
+
+COPY init.sh /app/init.sh
+
 # Create DB if not present & run the app when the container launches.
-CMD if [ ! -f instance/dev.db ]; then flask db upgrade && flask seed all; fi && flask run
+CMD ["bash", "./init.sh"]

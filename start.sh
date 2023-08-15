@@ -2,6 +2,7 @@ source_file=".env.example"
 destination_file=".env"
 be_directory=".venv"
 fe_directory="react-app/node_modules"
+db_file="instance/dev.db"
 env_contents="SECRET_KEY=lkasjdf09ajsdkfljalsiorj12n3490re9485309irefvn,u90818734902139489230
 DATABASE_URL=sqlite:///dev.db
 SCHEMA=smack_schema"
@@ -26,6 +27,13 @@ else
     echo "Starting up Smack!!!"
 fi
 
+# Generally relevant only if someone's installed deps with Docker
+# but then wants to run app locally
+if [ ! -f "$db_file" ]; then
+    echo "Creating/seeding DB..."
+    pipenv run flask db upgrade && pipenv run flask seed all
+fi
+
 
 # Check if the directory exists
 
@@ -39,7 +47,7 @@ else
 fi
 
 cd react-app
-bash ./set-localhost-proxy.js
+node ./set-localhost-proxy.js
 
 # Spawn processes in a subshell and trap SIGINT to kill 0
 # (See https://stackoverflow.com/a/52033580 for more)

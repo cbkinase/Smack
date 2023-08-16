@@ -1,4 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from faker import Faker
+from random import choice, randint
 
 class Message(db.Model):
     __tablename__ = 'messages'
@@ -46,3 +48,13 @@ class Message(db.Model):
             "Reactions": {reaction.id:reaction.to_dict() for reaction in self.reactions},
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }
+
+    @classmethod
+    def create(cls, qty, users, channels):
+        fake = Faker()
+
+        return [
+            cls(users=choice(users),
+                channels=choice(channels),
+                content=fake.sentence(nb_words = randint(3, 100)))
+            for _ in range(qty)]

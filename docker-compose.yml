@@ -16,8 +16,6 @@ services:
     build:
       context: ./react-app
       dockerfile: Dockerfile
-    depends_on:
-      - backend
     environment:
       - HOST=0.0.0.0
     restart: always
@@ -30,5 +28,9 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - .:/app
+      - .:/app  # bind mount the application code
+      - instancedata:/app/instance  # use a named volume for the instance directory
     restart: always
+
+volumes:
+  instancedata:

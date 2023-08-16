@@ -62,8 +62,10 @@ def seed_messages(users, channels):
     for msg in msgs:
         db.session.add(msg)
 
+    other_messages = Message.create(40, [demo, marnie, bobbie], [channel1, channel2, channel3])
+    db.session.add_all(other_messages)
     db.session.commit()
-    return tuple(msgs)
+    return (*msgs, *other_messages)
 
 
 def undo_messages():

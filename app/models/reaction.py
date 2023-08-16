@@ -1,4 +1,5 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from random import choice
 
 class Reaction(db.Model):
     __tablename__ = 'reactions'
@@ -12,7 +13,6 @@ class Reaction(db.Model):
     reaction = db.Column(db.String, nullable=False)
 
     messages = db.relationship("Message", back_populates="reactions")
-
     user = db.relationship("User", back_populates="reactions")
 
 
@@ -23,3 +23,11 @@ class Reaction(db.Model):
             'message_id': self.message_id,
             'reaction': self.reaction
         }
+
+    @classmethod
+    def create(cls, qty, users, messages):
+        emoji_choices = ["😂", "❤️", "👍", "🎉", "😳", "💯"]
+        return [cls(user=choice(users),
+                    messages=choice(messages),
+                    reaction=choice(emoji_choices))
+                    for _ in range(qty)]

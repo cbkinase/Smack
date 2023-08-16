@@ -27,5 +27,5 @@ COPY --chown=node:node . .
 # Make port 3000 available to the world outside this container
 EXPOSE 3000
 
-# Start the app
-CMD [ "npm", "start" ]
+# Ensure config options are correct for deployment method & start the app
+CMD node ./set-docker-proxy.js && npm start

@@ -1,0 +1,38 @@
+# General
+.env
+
+# Python & Flask
+__pycache__/
+*.pyc
+.venv/
+
+# Version Control
+.git/
+.gitignore
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build & Distribution
+dist/
+build/
+
+# Tests and Docs
+tests/
+docs/
+
+# Database
+*.sqlite3
+*.db
+instance/
+
+# Misc
+*.log
+*.bak
+*.swp
+*.swo

@@ -1,17 +1,16 @@
+#!/bin/bash
 source_file=".env.example"
 destination_file=".env"
 be_directory=".venv"
 fe_directory="react-app/node_modules"
 db_file="instance/dev.db"
-env_contents="SECRET_KEY=lkasjdf09ajsdkfljalsiorj12n3490re9485309irefvn,u90818734902139489230
-DATABASE_URL=sqlite:///dev.db
-SCHEMA=smack_schema"
+db_folder="instance"
 
 # Create .env if it doesn't exist
 
 if [ ! -f "$destination_file" ]; then
     # Copy the contents of .env.example into .env
-    echo "$env_contents" > "$destination_file"
+    cat "$source_file" > "$destination_file"
 
 else
     echo "File $destination_file already exists"
@@ -30,6 +29,10 @@ fi
 # Generally relevant only if someone's installed deps with Docker
 # but then wants to run app locally
 if [ ! -f "$db_file" ]; then
+    if [ -f "$db_folder" ]; then
+        echo "Removing empty instance directory"
+        rm -rf instance
+    fi
     echo "Creating/seeding DB..."
     pipenv run flask db upgrade && pipenv run flask seed all
 fi

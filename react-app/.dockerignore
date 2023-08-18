@@ -1,0 +1,38 @@
+# General
+.env
+
+# Node & JS
+node_modules/
+.npmrc
+npm-debug.log
+yarn-error.log
+
+# Version Control
+.git/
+.gitignore
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build & Distribution
+dist/
+build/
+
+# Tests and Docs
+tests/
+docs/
+
+# Database
+*.sqlite3
+*.db
+
+# Misc
+*.log
+*.bak
+*.swp
+*.swo

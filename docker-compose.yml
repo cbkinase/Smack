@@ -27,6 +27,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - SECRET_KEY
+      - DATABASE_URL
+      - SCHEMA
+      - REACT_APP_BASE_URL
+      - S3_BUCKET
+      - S3_KEY
+      - S3_SECRET
+      - FLASK_APP
+      - FLASK_ENV
+      - FLASK_DEBUG
+      - FLASK_RUN_HOST
     volumes:
       - .:/app  # bind mount the application code
       - instancedata:/app/instance  # use a named volume for the instance directory

@@ -1,3 +1,4 @@
+#!/bin/bash
 source_file=".env.example"
 destination_file=".env"
 
@@ -11,4 +12,4 @@ else
     echo "File $destination_file already exists"
 fi
 
-docker compose up
+docker compose up --build

@@ -26,7 +26,7 @@ export default function useInfiniteScrollingTop(containerRef) {
                 container.removeEventListener("scroll", throttledHandleScroll);
             }
         };
-    }, [containerRef]);
+    }, [containerRef, throttledHandleScroll]);
 
     return page;
 }

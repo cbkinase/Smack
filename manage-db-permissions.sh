@@ -1,3 +1,4 @@
+#!/bin/bash
 # Check and set the ownership for instance directory
 if [ "$(stat -c %U /app/instance)" != "appuser" ]; then
     if [ ! -d /app/instance/ ]; then

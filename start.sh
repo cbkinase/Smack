@@ -1,8 +1,10 @@
+#!/bin/bash
 source_file=".env.example"
 destination_file=".env"
 be_directory=".venv"
 fe_directory="react-app/node_modules"
 db_file="instance/dev.db"
+db_folder="instance"
 
 # Create .env if it doesn't exist
 
@@ -27,6 +29,10 @@ fi
 # Generally relevant only if someone's installed deps with Docker
 # but then wants to run app locally
 if [ ! -f "$db_file" ]; then
+    if [ -f "$db_folder" ]; then
+        echo "Removing empty instance directory"
+        rm -rf instance
+    fi
     echo "Creating/seeding DB..."
     pipenv run flask db upgrade && pipenv run flask seed all
 fi

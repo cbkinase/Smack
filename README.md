@@ -2,7 +2,7 @@
 
 
 Smack is a project developed to emulate <a href="https://slack.com">Slack</a>, built with a Flask backend and React frontend.
-   
+
 Smack was a collaborative effort, with the following creators:
 
 - Cameron Beck <a target="_blank" href="https://github.com/cbkinase">(GitHub)</a>
@@ -10,7 +10,7 @@ Smack was a collaborative effort, with the following creators:
 - Dave Titus <a href="https://github.com/dtitus929">(GitHub)</a>
 - Brian Hitchin <a href="https://github.com/brianhitchin">(GitHub)</a>
 
-Please reference the <a href="https://github.com/brianhitchin/wack/wiki">Wiki</a> for full documentation, schema, store shape, and other information. 
+Please reference the <a href="https://github.com/brianhitchin/wack/wiki">Wiki</a> for full documentation, schema, store shape, and other information.
 
 ## How to Run Locally
 
@@ -26,7 +26,7 @@ If you already have `Node 16` and `pyenv 3.9.4`:
 Otherwise, you can use Docker:
 
 1. Clone this repository.
-2. Run `docker compose up` in the root directory of the project.
+2. Run `bash start-docker.sh` in the root directory of the project.
 3. Your SQLite database will automatically persist on a Docker volume.
 4. Your nginx server will be available at `localhost:8080`, acting as a reverse proxy to route requests to the web application's services.
 

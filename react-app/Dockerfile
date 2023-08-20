@@ -14,7 +14,7 @@ USER node
 COPY --chown=node:node package*.json ./
 
 # Install app dependencies
-RUN npm install
+RUN npm install && npm cache clean --force
 
 # Copy the app source to the working directory
 COPY --chown=node:node . .

@@ -1,5 +1,5 @@
 // import { useState, useEffect } from "react";
-// import { useHistory, useParams } from "react-router-dom";
+// import { useNavigate, useParams } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import { EditChannelThunk } from "../../../../store/channel";
 // import { DeleteChannelThunk } from "../../../../store/channel";
@@ -14,7 +14,7 @@
 //     const [is_direct, setIsDirect] = useState(false);
 //     const [errors, setErrors] = useState([]);
 //     const dispatch = useDispatch();
-//     const history = useHistory();
+//     const history = useNavigate();
 
 
 
@@ -32,14 +32,14 @@
 //             })
 //         );
 //         if (!edited.errors) {
-//             history.push(`/channels/${channelId}`);
+//             navigate(`/channels/${channelId}`);
 //         }
 //     };
 
 //     const handleDelete = (e) => {
 //         e.preventDefault();
 //         dispatch(DeleteChannelThunk(channelId));
-//         return history.push(`/channels/explore`);
+//         return navigate(`/channels/explore`);
 //     };
 //     return (currChannel && user.id === currChannel.owner_id ?
 //         <div

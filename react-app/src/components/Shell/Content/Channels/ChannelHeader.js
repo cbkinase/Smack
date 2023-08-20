@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react';
 import * as ChlActions from "../../../../store/channel";
 import OpenModalButton from '../../../OpenModalButton';
@@ -13,7 +13,7 @@ function ChannelHeader() {
     const user = useSelector(state => state.session.user);
 
     const { channelId } = useParams();
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch()
     const singleChannel = useSelector((state) => state.channels.single_channel);
     let numMemb = 0;
@@ -22,7 +22,7 @@ function ChannelHeader() {
     useEffect(() => {
         dispatch(ChlActions.OneChannelThunk(channelId))
             .then(res => {
-                if (res.errors) history.push('/channels/explore');
+                if (res.errors) navigate('/channels/explore');
                 let channel = res.single_channel[0]
                 document.title = `${determineChannelName(res.single_channel[0], user)} - Smack`
 
@@ -33,7 +33,7 @@ function ChannelHeader() {
         return () => {
             document.title = "Smack";
         };
-    }, [dispatch, channelId, history, user])
+    }, [dispatch, channelId, navigate, user])
 
     const currentChannel = Object.values(singleChannel);
 

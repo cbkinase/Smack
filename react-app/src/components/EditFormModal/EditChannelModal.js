@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { EditChannelThunk } from "../../store/channel"
 import { DeleteChannelThunk } from "../../store/channel"
@@ -10,12 +10,14 @@ import userObjectToNameList from "../../utils/userObjectToNameList";
 const EditChannelModal = ({ channelId, currChannel, user }) => {
     const [name, setName] = useState(currChannel[0]?.name || "");
     const [subject, setSubject] = useState(currChannel[0]?.subject || "");
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+    const [confirmDeleteName, setConfirmDeleteName] = useState("");
     // const [is_private, setIsPrivate] = useState(currChannel[0]?.is_private);
     // const [is_direct, setIsDirect] = useState(currChannel[0]?.is_direct);
 
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const { closeModal } = useModal();
     let owner;
 
@@ -24,7 +26,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
         const err = {};
         if (!name.length) err["name"] = "Name field must not be empty";
         if (name.length > 80) err["name"] = "Name can’t be longer than 80 characters."
-        if (!subject.length) err["subject"] = "Channel topics cannot be empty "
+        // if (!subject.length) err["subject"] = "Channel topics cannot be empty "
         if (subject.length > 250) err["subject"] = "Channel topics must be max 250 characters long "
 
         setErrors(err)
@@ -33,6 +35,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setHasSubmitted(true);
 
         if (Object.values(errors).length) return alert(`Oops, something went wrong with renaming the channel. Please try again.`);
 
@@ -52,7 +55,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
     const handleDelete = (e) => {
         e.preventDefault();
         dispatch(DeleteChannelThunk(channelId));
-        history.push('/channels/explore');
+        navigate('/channels/explore');
         closeModal();
     };
 
@@ -74,10 +77,10 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
             (
                 <div className="edit-modal-container">
                     <div style={{ paddingLeft: "17px" }} className='edit-modal-header'>
-                        <div>&nbsp;</div>
+                        {/* <div>&nbsp;</div> */}
                         <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
 
-                        <button className="edit-modal-close-btn" onClick={() => closeModal()}>
+                        <button style={{top: "5.5%"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
                         </button>
                     </div>
@@ -86,8 +89,8 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                     <form onSubmit={handleSubmit} className="edit-modal-form">
 
                         <div className="edit-modal-form-box">
-                            <ul style={{ padding: '0px', margin: '8px 0px 20px 28px', color: 'red' }}>
-                                {Object.values(errors).map((error, idx) => (
+                            <ul style={{ paddingTop: '10px', margin: '0px 0px 0px 28px', color: 'red' }}>
+                                {hasSubmitted && Object.values(errors).map((error, idx) => (
                                     <li key={idx} className="edit-errors">
                                         {error}
                                     </li>
@@ -121,10 +124,18 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                             </button>
                         </div>
 
-                        {!currChannel[0].is_direct ? <div className="edit-modal-form-box">
-                            <div style={{ paddingLeft: "7px", fontWeight: "bold" }}>Created by</div>
-                            <div id="edit-owner-name">{`${owner[0].username}`}</div>
-                            <button className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
+                        {!currChannel[0].is_direct ?
+                        <div className="edit-modal-form-box">
+                            <div style={{height: "5px"}}></div>
+                            <label style={{marginLeft: "7px"}} htmlFor="confirm-delete">Channel deletion</label>
+                            <div style={{height: "10px"}}></div>
+                            <p style={{marginLeft: "7px"}}>Type <span style={{color: "#631965", fontWeight: "bold"}}>{currChannel[0].name}</span> below to confirm the deletion of the channel</p>
+                            <input
+                                type="text"
+                                id="confirm-delete"
+                                value={confirmDeleteName}
+                                onChange={(e) => setConfirmDeleteName(e.target.value)} />
+                            <button disabled={confirmDeleteName !== currChannel[0].name} className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
                         </div> : null}
 
 
@@ -136,25 +147,27 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                 <div className="edit-modal-container">
 
                     <div className='edit-modal-header'>
-                        <div>&nbsp;</div>
+                        {/* <div>&nbsp;</div> */}
                         <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
 
-                        <button className="edit-modal-close-btn" onClick={() => closeModal()}>
+                        <button style={{top: "5.5%"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
                         </button>
                     </div>
                     <div className='edit-modal-tabs-menu'></div>
 
                     <form onSubmit={handleSubmit} className="edit-modal-form">
-                        <ul style={{ padding: '0px', margin: '10px 0px 10px 60px', color: 'red' }}>
-                            {Object.values(errors).map((error, idx) => (
+                        <ul style={{ padding: '0px', margin: '0px 0px 0px 60px', color: 'red' }}>
+                            {hasSubmitted && Object.values(errors).map((error, idx) => (
                                 <li key={idx} className="edit-errors">
                                     {error}
                                 </li>
                             ))}
                         </ul>
+
                         <div className="edit-modal-form-box">
-                            <label htmlFor="name"> Channel name </label>
+                        <div style={{height: "10px"}}></div>
+                            <label style={{paddingTop: "0px", marginLeft: "7px"}} htmlFor="name"> Channel name </label>
                             <input
                                 disabled={true}
                                 type="text"
@@ -163,7 +176,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                                 onChange={(e) => setName(e.target.value)}
                             ></input>
                             <div className="edit-modal-border"></div>
-                            <label htmlFor="subject"> Topic </label>
+                            <label style={{marginLeft: "7px"}} htmlFor="subject"> Topic </label>
                             <input
                                 disabled={true}
                                 type="text"
@@ -176,8 +189,8 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                         </div>
 
                         {!currChannel[0].is_direct ? <div className="edit-modal-form-box">
-                            <div>Created by</div>
-                            <div id="edit-owner-name">{`${owner[0].username}`}</div>
+                            <div style={{paddingLeft: "7px", fontWeight: "bold"}}>Created by</div>
+                            <div id="edit-owner-name">{`${owner[0].first_name} ${owner[0].last_name}`}</div>
                         </div> : null}
 
 

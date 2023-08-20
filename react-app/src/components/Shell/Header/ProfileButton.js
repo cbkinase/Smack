@@ -1,44 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { logout, editUser } from "../../../store/session";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
-  const openMenu = () => {
-    if (showMenu) return;
-    setShowMenu(true);
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
   };
-
-  useEffect(() => {
-    if (!showMenu) return;
-
-    const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
-        setShowMenu(false);
-
-        setShowType('info');
-        setFirstName(user.first_name);
-        setLastName(user.last_name);
-        setAvatar(user.avatar);
-        setBio(user.bio);
-        setErrors([]);
-      }
-    };
-
-    document.addEventListener("click", closeMenu);
-
-    return () => document.removeEventListener("click", closeMenu);
-  }, [showMenu, user.first_name, user.last_name, user.avatar, user.bio]);
 
   const handleLogout = (e) => {
     e.preventDefault();
     dispatch(logout());
-    history.push("/")
+    navigate("/")
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
@@ -51,7 +29,6 @@ function ProfileButton({ user }) {
   const [last_name, setLastName] = useState(user.last_name);
   const [avatar, setAvatar] = useState(user.avatar);
   const [bio, setBio] = useState(user.bio);
-  const id = user.id
 
   let showInfo = useRef(null);
   let editInfo = useRef(null);
@@ -81,7 +58,7 @@ function ProfileButton({ user }) {
   const handleEditUser = async (e) => {
 
     e.preventDefault();
-    const data = await dispatch(editUser(first_name, last_name, avatar, bio, id));
+    const data = await dispatch(editUser(first_name, last_name, avatar, bio, user.id));
     if (data) {
       setErrors(data);
     } else {
@@ -95,7 +72,7 @@ function ProfileButton({ user }) {
     <>
 
       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <button className="topright-avatar-btn" onClick={openMenu}>
+        <button className="topright-avatar-btn" onClick={toggleMenu}>
           <img style={{ borderRadius: '4px', width: '26px', height: '26px' }} src={user.avatar} alt={user.first_name + " " + user.last_name} />
         </button>
 

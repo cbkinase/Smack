@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import { OneChannelThunk, DeleteChannelThunk } from '../../store/channel';
 
@@ -8,7 +8,7 @@ function OneChannel() {
     const { channelId } = useParams()
     const dispatch = useDispatch()
     const channels = useSelector(state => state.channels)
-    const history = useHistory()
+    const navigate = useNavigate()
     const [oneChannel, setOneChannel] = useState(null)
 
     useEffect(() => {
@@ -23,12 +23,12 @@ function OneChannel() {
 
     const createroute = (e) => {
         e.preventDefault();
-        history.push('/create')
+        navigate('/create')
     }
 
     const editroute = (e) => {
         e.preventDefault();
-        history.push(`/${channelId}/edit`)
+        navigate(`/${channelId}/edit`)
     }
 
     let deleted;
@@ -36,7 +36,7 @@ function OneChannel() {
     const deleteroute = (e) => {
         e.preventDefault();
         deleted = dispatch(DeleteChannelThunk(channelId))
-        if (!deleted.errors) { (history.push(`/`)) }
+        if (!deleted.errors) { (navigate(`/`)) }
     }
 
     return (

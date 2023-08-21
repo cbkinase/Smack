@@ -32,6 +32,7 @@ const Messages = ({ scrollContainerRef }) => {
     const perPage = 25;
     const [prevScrollHeight, setPrevScrollHeight] = useState(0);
     const [hasMoreToLoad, setHasMoreToLoad] = useState(true);
+    const [loadedMore, setLoadedMore] = useState(false);
 
     // Effect for infinite scrolling
     useEffect(() => {
@@ -42,6 +43,7 @@ const Messages = ({ scrollContainerRef }) => {
         (async function() {
             if (!hasMoreToLoad) return;
             const res = await dispatch(getChannelMessages(channelId, page, perPage));
+            setLoadedMore(true);
             if (res.errors) {
                 setHasMoreToLoad(false);
             }
@@ -50,11 +52,14 @@ const Messages = ({ scrollContainerRef }) => {
 
     // Handle adjusting the scroll position after the data has been fetched and rendered
     useEffect(() => {
+        if (!loadedMore) return;
+
         const newScrollHeight = scrollContainerRef.current.scrollHeight;
         const heightDifference = newScrollHeight - prevScrollHeight;
 
         scrollContainerRef.current.scrollTop += heightDifference;
-    }, [scrollContainerRef, prevScrollHeight, allMessages]);
+        setLoadedMore(false);
+    }, [scrollContainerRef, prevScrollHeight, loadedMore]);
 
     function scrollToBottomOfGrid() {
         const element = document.getElementById("grid-content");
@@ -79,8 +84,8 @@ const Messages = ({ scrollContainerRef }) => {
             channel_id: channelId,
         });
 
-        socket.on("chat", (chat) => {
-            dispatch(addMessage(chat));
+        socket.on("chat", async (chat) => {
+            await dispatch(addMessage(chat));
             scrollToBottomOfGrid();
         });
 
@@ -156,9 +161,9 @@ const Messages = ({ scrollContainerRef }) => {
             socketPayload["attachments"] = uploadedFiles;
         }
 
-        socket.emit("chat", socketPayload, (res) => {
+        socket.emit("chat", socketPayload, async (res) => {
             if (res.status === "success") {
-                dispatch(addMessage(res.message));
+                await dispatch(addMessage(res.message));
                 scrollToBottomOfGrid();
             } else {
                 // TODO: handle message send failures

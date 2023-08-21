@@ -182,6 +182,10 @@
     border-color: #631965;
 }
 
+.decorated-button-edit-channel:not(:disabled):hover {
+    background-color: #350d36;
+    border-color: #350d36;
+}
 
 
 

@@ -55,7 +55,7 @@ const CreateChannelModal = ({ user }) => {
                 {/* <div>&nbsp;</div> */}
                 <div style={{ paddingLeft: "7px" }} className='edit-modal-title'>{`Create a new channel`}</div>
 
-                <button style={{top: "5%"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
+                <button style={{top: "24px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
                     <i className="fa-solid fa-x"></i>
                 </button>
             </div>

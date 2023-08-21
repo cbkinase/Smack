@@ -1,8 +1,9 @@
 import React from "react";
 import OpenModalButton from "../../../../../../OpenModalButton";
 import DeleteMessageModal from "../../../../../../DeleteMessageModal";
+import changeAdjustText from "../../../../../../../utils/changeAdjustText";
 
-export default function DeleteMessageButton({message, user, socket, dispatch, changeAdjustText}) {
+export default function DeleteMessageButton({message, user, socket, dispatch}) {
     return (
         <span
             onMouseOver={(e) =>

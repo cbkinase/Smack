@@ -1,25 +1,39 @@
-
-import { thunkDeleteReaction,
-         thunkCreateReaction
+import { Fragment } from "react";
+import { deleteReaction,
+         createReaction
  } from "../../../../../../store/messages";
 
-
-
-function handleDeleteReaction(e, reaction, dispatch, socket, user) {
+function handleDeleteReaction(e, reaction, dispatch, socket, msg) {
     e.preventDefault();
-    dispatch(thunkDeleteReaction(reaction));
-    socket.emit("deleteReaction", {
-        user: user.username,
-        reaction: reaction.reaction,
+    let socketPayload = { id: reaction.id, channel_id: msg.channel_id, message_id: msg.id }
+
+    socket.emit("deleteReaction", socketPayload, (res) => {
+        if (res.status === 'success') {
+            dispatch(deleteReaction(res.payload));
+        }
+        else {
+            console.log(res);
+        }
     });
 }
 
-function handleAddReaction(e, msg, rxn, dispatch, socket, user) {
+function handleAddReaction(e, msg, rxn, dispatch, socket) {
     e.preventDefault();
-    dispatch(thunkCreateReaction(msg.id, { reaction: rxn }));
-    socket.emit("addReaction", {
-        user: user.username,
+
+    let socketPayload = {
+        message_id: msg.id,
+        channel_id: msg.channel_id,
         reaction: rxn,
+        id: rxn.id
+    };
+
+    socket.emit("addReaction", socketPayload, (res) => {
+        if (res.status === "success") {
+            dispatch(createReaction(res.payload));
+        }
+        else {
+            console.log(res);
+        }
     });
 }
 
@@ -34,7 +48,7 @@ function hasUserReacted(message, user, reaction) {
     return userReaction[0];
 }
 
-export default function storeConverter(msg, user, Fragment, dispatch, socket) {
+export default function storeConverter(msg, user, dispatch, socket) {
     if (!msg.Reactions) return null;
     let arr = Object.values(msg.Reactions);
     let emojiStuff = arr.map((el) => [el.reaction, el.id]);
@@ -72,7 +86,7 @@ export default function storeConverter(msg, user, Fragment, dispatch, socket) {
                             hasUserReacted(msg, user, el[0]),
                             dispatch,
                             socket,
-                            user
+                            msg
                         )
                     }
                 >

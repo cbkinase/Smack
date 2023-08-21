@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import throttle from "../utils/throttle";
+import debounce from "../utils/debounce";
 
 export default function useInfiniteScrollingTop(containerRef) {
     const [page, setPage] = useState(1);
@@ -7,26 +7,27 @@ export default function useInfiniteScrollingTop(containerRef) {
     const handleScroll = () => {
         if (!containerRef.current) return;
         const scrollTop = containerRef.current.scrollTop;  // Distance from the top of the container to the scrolled content
-        const topThreshold = 250;  // Threshold value to determine how close (in pixels) to the top we need to be to trigger loading
+        const topThreshold = 100;  // Threshold value to determine how close (in pixels) to the top we need to be to trigger loading
 
         if (scrollTop <= topThreshold) {
             setPage((prevPage) => prevPage + 1);
         }
     };
 
-    const throttledHandleScroll = throttle(handleScroll, 150); // 150ms limit for updating page
+    const debounceTimeLimit = 250;
+    const debouncedHandleScroll = debounce(handleScroll, debounceTimeLimit);
 
     useEffect(() => {
         const container = containerRef.current;
         if (container) {
-            container.addEventListener("scroll", throttledHandleScroll, { passive: true });
+            container.addEventListener("scroll", debouncedHandleScroll, { passive: true });
         }
         return () => {
             if (container) {
-                container.removeEventListener("scroll", throttledHandleScroll);
+                container.removeEventListener("scroll", debouncedHandleScroll);
             }
         };
-    }, [containerRef, throttledHandleScroll]);
+    }, [containerRef, debouncedHandleScroll]);
 
-    return page;
+    return [page, setPage];
 }

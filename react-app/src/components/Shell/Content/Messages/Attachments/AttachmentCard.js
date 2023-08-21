@@ -3,7 +3,7 @@ import { isImage, previewFilter, getFileExt } from "./AttachmentFncs.js";
 import PreviewImageModal from "../../../../PreviewImageModal/PreviewImageModal";
 import OpenModalButton from "../../../../OpenModalButton";
 
-function AttachmentCard({attachments, messageId, user, handleDeleteAttachment, setHoverId, hoverId}) {
+function AttachmentCard({attachments, messageId, user, handleDeleteAttachment, setHoverId, hoverId, message}) {
 
     // download
     const downloadFile = (e, objectKey) => {
@@ -98,7 +98,7 @@ function AttachmentCard({attachments, messageId, user, handleDeleteAttachment, s
                                     </button>
 
                                     {user.id === attch.user_id ?
-                                        <button onClick={(e) => handleDeleteAttachment(e, messageId, attch)}>
+                                        <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
                                             <i className="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
                                         </button>
                                         :
@@ -114,7 +114,7 @@ function AttachmentCard({attachments, messageId, user, handleDeleteAttachment, s
                                 </button>
 
                                 {user.id === attch.user_id ?
-                                    <button onClick={(e) => handleDeleteAttachment(e, messageId, attch)}>
+                                    <button onClick={(e) => handleDeleteAttachment(e, message, attch)}>
                                         <i className="fa-solid fa-trash-can" style={{ color: "#000000" }}></i>
                                     </button>
                                     :

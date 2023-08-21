@@ -80,7 +80,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                         {/* <div>&nbsp;</div> */}
                         <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
 
-                        <button style={{top: "5.5%"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
+                        <button style={{top: "24px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
                         </button>
                     </div>
@@ -150,7 +150,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                         {/* <div>&nbsp;</div> */}
                         <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
 
-                        <button style={{top: "5.5%"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
+                        <button style={{top: "24px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
                         </button>
                     </div>

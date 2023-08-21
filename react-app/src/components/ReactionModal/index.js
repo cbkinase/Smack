@@ -1,15 +1,26 @@
 import { useModal } from "../../context/Modal/Modal";
-import { thunkCreateReaction } from "../../store/messages";
+import { createReaction } from "../../store/messages";
 
-export default function ReactionModal({ socket, msg, user, dispatch }) {
+export default function ReactionModal({ socket, msg, dispatch }) {
     const { closeModal } = useModal();
 
     function handleAddReaction(e, msg, rxn) {
         e.preventDefault();
-        dispatch(thunkCreateReaction(msg.id, { reaction: rxn }));
-        socket.emit("addReaction", {
-            user: user.username,
+
+        let socketPayload = {
+            message_id: msg.id,
+            channel_id: msg.channel_id,
             reaction: rxn,
+            id: rxn.id,
+        };
+
+        socket.emit("addReaction", socketPayload, (res) => {
+            if (res.status === "success") {
+                dispatch(createReaction(res.payload));
+            }
+            else {
+                console.log(res);
+            }
         });
     }
     const emojis = [

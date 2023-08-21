@@ -28,9 +28,6 @@ def edit_message(message_id):
     message = db.session.query(Message).get(message_id)
     this_user = current_user.to_dict()
     current_timestamp = datetime.utcnow()
-    # print(message)
-    # print(message.user_id)
-    # print(current_user.to_dict())
 
     if not message:
         return message_not_found()
@@ -38,8 +35,6 @@ def edit_message(message_id):
     if this_user['id'] != message.user_id:
         return forbidden()
 
-    # form = MessageForm()
-    # form['csrf_token'].data = request.cookies['csrf_token']
     new_content = req["content"]
     new_pinned = req["is_pinned"]
 

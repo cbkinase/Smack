@@ -17,11 +17,6 @@ function MessageCard({message, user, socket, dispatch, messageFunctions}) {
     // TO CHANGE TO STATE VARIABLE
     let editing = false;
 
-    function changeAdjustText(text, id) {
-        document.getElementById(`message-adjust-text-${id}`).textContent = text;
-    }
-
-
     return (
         <div className="message-card"
             key={message.id}
@@ -29,19 +24,18 @@ function MessageCard({message, user, socket, dispatch, messageFunctions}) {
         >
 
             <MessageAvatar messageUser={message.User}
-                         user={user}
-                         setSelectedUserRightBar={setSelectedUserRightBar}
+                           user={user}
+                           setSelectedUserRightBar={setSelectedUserRightBar}
             />
 
             <div className="message-card-content">
 
                 <MessageHeader message={message}
-                                user={user}
-                                socket={socket}
-                                dispatch={dispatch}
-                                changeAdjustText={changeAdjustText}
-                                channelId={channelId}
-                                editing={editing}
+                               user={user}
+                               socket={socket}
+                               dispatch={dispatch}
+                               channelId={channelId}
+                               editing={editing}
 
                 />
 

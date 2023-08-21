@@ -1,6 +1,6 @@
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import os
-from .socket_helpers import handle_chat_helper
+from .socket_helpers import handle_chat_helper, handle_edit_message_helper
 
 
 if os.environ.get("FLASK_ENV") == "production":
@@ -30,12 +30,15 @@ def handle_chat(data):
         return {'status': 'socket_error', 'message': 'Something went wrong with sockets.'}
 
 
-@socketio.on("delete")
-def handle_delete(data):
-    emit("delete", data, broadcast=True)
-
-
 @socketio.on("edit")
+def handle_edit(data):
+    room = str(data.get('channel_id'))
+    edited_message = handle_edit_message_helper(data)
+    emit("edit", edited_message, to=room, include_self=False)
+    return {'status': 'success', 'message': edited_message}
+
+
+@socketio.on("delete")
 def handle_delete(data):
     emit("delete", data, broadcast=True)
 

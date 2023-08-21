@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
-from app.models import Channel, User, db, Message, Attachment
+from app.models import Channel, User, db, Message
 from flask_login import login_required, current_user
 from ..socket import socketio
-from app.s3_helpers import (get_unique_filename, upload_file_to_s3, remove_file_from_s3)
 from sqlalchemy.orm import joinedload
 
 channel_routes = Blueprint('channels', __name__)
@@ -20,8 +19,6 @@ def all_channels():
 def user_channels():
     user = User.query.get(current_user.id)
     user_channels = user.channel
-    # print(user_channels)
-
     return {"user_channels":[channel.to_dict() for channel in user_channels]}, 200
 
 # GET single channel
@@ -29,6 +26,7 @@ def user_channels():
 @login_required
 def one_channel(channel_id):
     channel = Channel.query.get(channel_id)
+
     if not channel:
         error_obj = {"errors": "Channel with the specified id could not be found."}
         return error_obj, 404
@@ -196,8 +194,11 @@ def delete_channel_member(channel_id, user_id):
 @channel_routes.route("/<int:channel_id>/messages")
 @login_required
 def get_all_messages_for_channel(channel_id):
-    # We should check to ensure the conversation is accessible to the user making the request
-    # I.e. -- the channel is not private, or the user is a member of that private channel
+    channel = Channel.query.get(channel_id)
+
+    if current_user not in channel.users:
+        return {"error": "Forbidden"}, 403
+
     page = request.args.get('page', type=int)
     per_page = request.args.get('per_page', type=int)
 
@@ -220,54 +221,3 @@ def get_all_messages_for_channel(channel_id):
         channel_messages_data.append(msg_data)
 
     return jsonify(channel_messages_data)
-
-@channel_routes.route("<int:channel_id>", methods=["POST"])
-@login_required
-def make_post_for_channel(channel_id):
-
-        this_channel = Channel.query.get(channel_id)
-        this_user = User.query.get(current_user.id)
-
-        new_message = Message(content=request.form.get("content"), users=this_user, channels=this_channel)
-        db.session.add(new_message)
-        db.session.commit()
-
-        incoming_attachments_arr = request.files
-
-        if incoming_attachments_arr:
-            for attachment in incoming_attachments_arr.values():
-
-                attachment.filename = get_unique_filename(attachment.filename)
-                upload_attachment = upload_file_to_s3(attachment)
-                if "url" not in upload_attachment:
-                    print('Failed to upload to AWS')
-                    return {'errors': ['Failed to upload to AWS']}, 400
-                new_attach = Attachment(content=upload_attachment["url"], user=this_user, message=new_message)
-                db.session.add(new_attach)
-
-
-            db.session.commit()
-
-        return new_message.to_dict()
-
-
-# ORIGINAL POST MESSAGE
-# @channel_routes.route("<int:channel_id>", methods=["POST"])
-# @login_required
-# def make_post_for_channel(channel_id):
-#     # We should check to ensure the conversation is accessible to the user making the request
-#     # I.e. -- the channel is not private, or the user is a member of that private channel
-
-#     # need to get form
-
-#     try:
-#         new_message = Message(**request.get_json())
-#         db.session.add(new_message)
-#         db.session.commit()
-#         return new_message.to_dict()
-#     except:
-#         # This message will depend on what we check on the form. Probably message length.
-#         return { "message": "Failed to create message" }, 400
-
-# if channel_id not in [channel.id for channel in User.query.get(user_id).channel]:
-#     # return error

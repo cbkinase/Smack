@@ -1,8 +1,9 @@
 import React from "react";
 import OpenModalButton from "../../../../../../OpenModalButton";
 import ReactionModal from "../../../../../../ReactionModal";
+import changeAdjustText from "../../../../../../../utils/changeAdjustText";
 
-export default function AddReactionButton({message, user, socket, dispatch, changeAdjustText}) {
+export default function AddReactionButton({message, user, socket, dispatch}) {
 
     return (
         <span

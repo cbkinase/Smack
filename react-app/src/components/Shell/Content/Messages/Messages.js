@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getChannelMessages, editMessage, thunkDeleteAttachment, addMessage } from "../../../../store/messages";
+import {
+    getChannelMessages,
+    editMessage,
+    thunkDeleteAttachment,
+    addMessage } from "../../../../store/messages";
 import { useParams } from "react-router-dom";
 import Editor from "../Editor/Editor";
 import MessageCard from "./MessageCard/MessageCard";
@@ -10,8 +14,6 @@ const Messages = ({ scrollContainerRef }) => {
     const { channelId } = useParams();
     const dispatch = useDispatch();
     const [chatInput, setChatInput] = useState("");
-    const [messages, setMessages] = useState([]);
-    const [reactions, setReactions] = useState([]);
     const user = useSelector((state) => state.session.user);
     const allMessages = useSelector((state) => state.messages.allMessages);
     const currentChannel = useSelector((state) => state.channels.single_channel);
@@ -78,34 +80,19 @@ const Messages = ({ scrollContainerRef }) => {
         });
 
         socket.on("delete", (chat) => {
-            let messageIdx = messages.findIndex((msg) => msg === chat);
-            let newMessages = messages.filter((_, idx) => idx !== messageIdx);
-            setMessages(newMessages);
         });
 
         socket.on("edit", (chat) => {
-            let messageIdx = messages.findIndex(
-                (msg) => msg.id === chat.msg_id
-            );
-            messages[messageIdx] = chat;
-            let newMessages;
-            setMessages(newMessages);
+            dispatch(addMessage(chat));
         });
 
         socket.on("deleteReaction", (reaction) => {
-            let reactionIdx = reactions.findIndex((rxn) => rxn === reaction);
-            let newReactions = reactions.filter(
-                (_, idx) => idx !== reactionIdx
-            );
-            setReactions(newReactions);
         });
 
         socket.on("addReaction", (reaction) => {
-            setReactions((reactions) => [...reactions, reaction]);
         });
 
         socket.on("deleteAttachment", (chat) => {
-            setMessages([]);
         });
 
         return () => {
@@ -234,25 +221,23 @@ const Messages = ({ scrollContainerRef }) => {
         <>
             <div style={{ marginBottom: '10px' }}>
                 {Object.values(allMessages).map((message, ind) => (
-                    <MessageCard
-                        key={message.id}
-                        message={message}
-                        user={user}
-                        socket={socket}
-                        dispatch={dispatch}
-                        messageFunctions={messageFunctions}
+                    <MessageCard key={message.id}
+                                 message={message}
+                                 user={user}
+                                 socket={socket}
+                                 dispatch={dispatch}
+                                 messageFunctions={messageFunctions}
                     />
                 ))}
             </div>
 
             <div style={{ position: 'sticky', bottom: 0 }} >
-                <Editor
-                    functions={messageFunctions}
-                    creating={true}
-                    setChatInput={setChatInput}
-                    user={user}
-                    attachmentBuffer={attachmentBuffer}
-                    attachmentIsLoading={attachmentIsLoading}
+                <Editor functions={messageFunctions}
+                        creating={true}
+                        setChatInput={setChatInput}
+                        user={user}
+                        attachmentBuffer={attachmentBuffer}
+                        attachmentIsLoading={attachmentIsLoading}
                 />
             </div>
         </>

@@ -1,5 +1,5 @@
 import { useModal } from "../../context/Modal/Modal";
-import { destroyMessage } from "../../store/messages";
+import { deleteMessage } from "../../store/messages";
 import { useDispatch } from "react-redux";
 import "./DeleteMessage.css";
 
@@ -8,8 +8,14 @@ export default function DeleteMessageModal({ user, msg, socket }) {
     const dispatch = useDispatch();
 
     const handleDelete = (e) => {
-        dispatch(destroyMessage(msg.id));
-        socket.emit("delete", { user: user.username, msg: msg.content });
+        socket.emit("delete", { message_id: msg.id, channel_id: msg.channel_id }, (res) => {
+            if (res.status === "success") {
+                dispatch(deleteMessage(msg.id))
+            }
+            else {
+                console.log(res);
+            }
+        });
         closeModal();
     };
 
@@ -30,7 +36,7 @@ export default function DeleteMessageModal({ user, msg, socket }) {
                     marginBottom: "10px",
                 }}
             >
-                Confirm Delete
+                Confirm Deletion
             </h2>
             <h4 style={{ fontWeight: "normal", marginBottom: "10px" }}>
                 Are you sure you want to remove this message?
@@ -44,14 +50,14 @@ export default function DeleteMessageModal({ user, msg, socket }) {
                 className="decorated-button-delete"
                 onClick={handleDelete}
             >
-                Yes (Delete Message)
+                Confirm
             </button>
             <button
                 style={{ width: "100%" }}
                 className="decorated-button-delete alt-color-button-2"
                 onClick={closeModal}
             >
-                No (Keep Message)
+                Cancel
             </button>
         </div>
     );

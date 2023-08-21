@@ -12,7 +12,7 @@ export const addMessage = (message) => {
     };
 };
 
-const createReaction = (reaction) => ({
+export const createReaction = (reaction) => ({
     type: ADD_REACTION,
     payload: reaction,
 });
@@ -26,19 +26,19 @@ const loadMessages = (messages, page) => {
     };
 };
 
-const deleteMessage = (id) => {
+export const deleteMessage = (id) => {
     return {
         type: DELETE_MESSAGE,
         id,
     };
 };
 
-const deleteReaction = (reaction) => ({
+export const deleteReaction = (reaction) => ({
     type: DELETE_REACTION,
     payload: reaction,
 });
 
-const deleteAttachment = (attachment) => ({
+export const deleteAttachment = (attachment) => ({
     type: DELETE_ATTACHMENT,
     payload: attachment,
 });

@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     getChannelMessages,
-    editMessage,
     thunkDeleteAttachment,
-    addMessage } from "../../../../store/messages";
+    addMessage,
+    deleteMessage,
+    createReaction,
+    deleteReaction,
+    deleteAttachment
+ } from "../../../../store/messages";
 import { useParams } from "react-router-dom";
 import Editor from "../Editor/Editor";
 import MessageCard from "./MessageCard/MessageCard";
@@ -57,6 +61,7 @@ const Messages = ({ scrollContainerRef }) => {
         if (element) element.scrollTop = element.scrollHeight;
     }
 
+    // Load new channel messages on changing channel
     useEffect(() => {
         async function alterChannelMessages() {
             await dispatch(getChannelMessages(channelId, 1, perPage));
@@ -64,7 +69,7 @@ const Messages = ({ scrollContainerRef }) => {
             setPage(1);
         }
         alterChannelMessages().then(() => scrollToBottomOfGrid());
-    }, [dispatch, channelId]);
+    }, [dispatch, channelId, setPage]);
 
 
     useEffect(() => {
@@ -80,25 +85,29 @@ const Messages = ({ scrollContainerRef }) => {
         });
 
         socket.on("delete", (chat) => {
+            dispatch(deleteMessage(chat));
         });
 
         socket.on("edit", (chat) => {
             dispatch(addMessage(chat));
         });
 
-        socket.on("deleteReaction", (reaction) => {
-        });
-
         socket.on("addReaction", (reaction) => {
+            dispatch(createReaction(reaction));
         });
 
-        socket.on("deleteAttachment", (chat) => {
+        socket.on("deleteReaction", (reaction) => {
+            dispatch(deleteReaction(reaction));
+        });
+
+        socket.on("deleteAttachment", (attachment) => {
+            dispatch(deleteAttachment(attachment));
         });
 
         return () => {
             socket.off("deleteAttachment");
-            socket.off("addReaction");
             socket.off("deleteReaction");
+            socket.off("addReaction");
             socket.off("edit");
             socket.off("delete");
             socket.off("chat");
@@ -164,6 +173,7 @@ const Messages = ({ scrollContainerRef }) => {
     };
 
     // Attachments
+
     // add each attachment to buffer, buffer will be used when uploading
     const addAttachBuffer = (e) => {
         if (e.target.files[0]) {
@@ -195,10 +205,18 @@ const Messages = ({ scrollContainerRef }) => {
     }
 
     // delete attachment
-    const handleDeleteAttachment = async (e, msgId, attachment) => {
+    const handleDeleteAttachment = async (e, msg, attachment) => {
         e.preventDefault();
-        await dispatch(thunkDeleteAttachment(attachment))
-        socket.emit("deleteAttachment", { user: user.username, msgId: msgId });
+        let socketPayload = { channel_id: msg.channel_id, id: attachment.id, message_id: msg.id };
+        socket.emit("deleteAttachment", socketPayload, (res) => {
+            if (res.status === 'success') {
+                dispatch(deleteAttachment(attachment));
+            }
+            else {
+                console.log(res);
+            }
+
+        });
     }
 
     const messageFunctions = {
@@ -210,7 +228,6 @@ const Messages = ({ scrollContainerRef }) => {
         addAttachBuffer,
         removeAttachBuffer,
         handleDeleteAttachment,
-        editMessage,
     };
 
     if (!user || !currentChannel || !allMessages) {

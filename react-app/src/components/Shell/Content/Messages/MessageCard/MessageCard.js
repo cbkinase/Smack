@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useContext } from "react";
+import React, { useState, useContext } from "react";
 import SelectedUserRightBarContext from "../../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 import storeConverter from "./MessageHelpers/MessageHelpers";
 import AttachmentCard from "../Attachments/AttachmentCard";
@@ -55,13 +55,14 @@ function MessageCard({message, user, socket, dispatch, messageFunctions}) {
                                     handleDeleteAttachment={handleDeleteAttachment}
                                     hoverId={hoverId}
                                     setHoverId={setHoverId}
+                                    message={message}
                     />
 
                     : null
                 }
 
                 <div style={{}} className="message-card-footer">
-                    {storeConverter(message, user, Fragment, dispatch, socket)}
+                    {storeConverter(message, user, dispatch, socket)}
                 </div>
 
             </div>

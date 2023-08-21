@@ -2,6 +2,7 @@ from .db import db, environment, SCHEMA, add_prefix_for_prod
 from faker import Faker
 from random import choice, randint
 
+
 class Message(db.Model):
     __tablename__ = 'messages'
 
@@ -21,6 +22,7 @@ class Message(db.Model):
     reactions = db.relationship("Reaction", back_populates="messages", cascade="all, delete, delete-orphan")
     attachments = db.relationship("Attachment", back_populates="message", cascade="all, delete, delete-orphan")
 
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -35,6 +37,7 @@ class Message(db.Model):
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }
 
+
     def to_dict_socket(self):
         return {
             "id": self.id,
@@ -42,12 +45,13 @@ class Message(db.Model):
             "channel_id": self.channel_id,
             "content": self.content,
             "is_pinned": self.is_pinned,
-            "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at),
+            "created_at": str(self.created_at) + " GMT",
+            "updated_at": str(self.updated_at) + " GMT",
             "User": self.users.to_dict(),
             "Reactions": {reaction.id: reaction.to_dict() for reaction in self.reactions},
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }
+
 
     @classmethod
     def create(cls, qty, users, channels):

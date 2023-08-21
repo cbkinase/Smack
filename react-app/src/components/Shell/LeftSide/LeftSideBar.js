@@ -53,7 +53,7 @@ function LeftSideLinks() {
 
                 <div className="leftside-channeldirect-holder">
 
-                    <NavLink exact to={`/channels/explore`}>
+                    <NavLink to={`/channels/explore`}>
                         <div>
 
                             {/explore/.test(window.location.href) ? (
@@ -73,7 +73,7 @@ function LeftSideLinks() {
                     </NavLink>
 
                     <NavLink
-                        exact to={`/channels/direct`}
+                         to={`/channels/direct`}
                     >
                         <div>
                             {/\/channels\/direct/.test(window.location.href) ? (
@@ -119,7 +119,7 @@ function LeftSideLinks() {
                     .filter((channel) => !channel.is_direct)
                     .map((channel) => {
                         return (
-                            <NavLink hidden={isHidden && channel.id !== +channelId} key={channel.id} exact to={`/channels/${channel.id}`}>
+                            <NavLink hidden={isHidden && channel.id !== +channelId} key={channel.id} to={`/channels/${channel.id}`}>
 
                                 <div key={channel.id}>
 

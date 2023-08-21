@@ -1,5 +1,5 @@
 # Use an official Node runtime as a parent image
-FROM node:16
+FROM node:16-alpine
 
 # Create a directory to hold the application with correct permissions for hot reloading
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
@@ -14,12 +14,7 @@ USER node
 COPY --chown=node:node package*.json ./
 
 # Install app dependencies
-RUN npm install
-
-# Change the ownership of the node_modules folder
-USER root
-RUN chown -R node:node /home/node/app
-USER node
+RUN npm install && npm cache clean --force
 
 # Copy the app source to the working directory
 COPY --chown=node:node . .
@@ -27,5 +22,5 @@ COPY --chown=node:node . .
 # Make port 3000 available to the world outside this container
 EXPOSE 3000
 
-# Start the app
-CMD [ "npm", "start" ]
+# Ensure config options are correct for deployment method & start the app
+CMD node ./set-docker-proxy.js && npm start

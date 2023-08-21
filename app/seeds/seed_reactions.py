@@ -7,7 +7,10 @@ def seed_reactions(users, messages):
     demo = users[0]
     marnie = users[1]
     bobbie = users[2]
-    demo_message_1, demo_message_2, marnie_message_1, marnie_message_2, bob_message_1, bob_message_2, gm_1, gm_2, gm_3, gm_4, gm_5 = messages
+
+    demo_message_2 = messages[1]
+    marnie_message_2 = messages[3]
+    bob_message_1 = messages[4]
 
     rctions = []
     reaction_marnie_demo_message_2 = Reaction(
@@ -33,6 +36,8 @@ def seed_reactions(users, messages):
     for rction in rctions:
         db.session.add(rction)
 
+    other_reactions = Reaction.create(80, users, messages)
+    db.session.add_all(other_reactions)
     db.session.commit()
 
 def undo_reactions():

@@ -3,7 +3,7 @@ import MessageUsername from "./MessageUsername";
 import MessageUtils from "./MessageUtils/MessageUtils";
 
 export default function MessageHeader({
-    message, user, socket, dispatch, changeAdjustText,
+    message, user, socket, dispatch,
     channelId, editing
 }) {
 
@@ -19,7 +19,6 @@ export default function MessageHeader({
                           user={user}
                           socket={socket}
                           dispatch={dispatch}
-                          changeAdjustText={changeAdjustText}
                           channelId={channelId}
                           editing={editing}
             />

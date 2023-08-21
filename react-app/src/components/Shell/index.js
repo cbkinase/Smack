@@ -4,7 +4,7 @@ import Header from "./Header";
 import LeftSide from "./LeftSide";
 import Content from "./Content";
 import RightSide from "./RightSide/RightSide";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
@@ -15,7 +15,7 @@ import RouteIdContext from "../../context/RouteId/RouteIdContext";
 function Shell({ isLoaded }) {
     const dispatch = useDispatch();
     const socket = useSelector(state => state.session.socket);
-    const [routeId, ] = useContext(RouteIdContext);
+    const [routeId,] = useContext(RouteIdContext);
 
     useEffect(() => {
 
@@ -36,9 +36,9 @@ function Shell({ isLoaded }) {
             There is almost certainly a better way to do this than performing additional queries, but it's an OK band-aid solution for now.
 
             */
-           return () => {
-            socket.off("new_DM_convo");
-           }
+            return () => {
+                socket.off("new_DM_convo");
+            }
         });
     }, [socket, dispatch, routeId])
 
@@ -46,35 +46,44 @@ function Shell({ isLoaded }) {
         <div id="grid-container" className="grid-container-hiderightside">
             <Header isLoaded={isLoaded} />
 
-            <Switch>
-                <Route exact path="/">
+            <Routes>
+                <Route path="/" element={<>
                     <LeftSide />
                     <RightSide />
                     <AllChannels />
+                    </>
+                }>
+
                 </Route>
-                <Route exact path="/channels/explore">
+                <Route path="/channels/explore" element={<>
                     <LeftSide />
                     <RightSide />
                     <AllChannels />
+                </>
+            }>
+
                 </Route>
-                <Route exact path="/channels/new">
+                <Route path="/channels/new" element={<>
                     <LeftSide />
                     <RightSide />
                     <CreateChannel />
+                </>}>
                 </Route>
-                <Route exact path="/channels/direct">
+                <Route path="/channels/direct" element={<>
                     <LeftSide />
                     <RightSide />
                     <DMChannels />
+                </>}>
                 </Route>
 
-                <Route path="/channels/:channelId">
+                <Route path="/channels/:channelId" element={<>
                     <LeftSide />
                     <RightSide />
                     <Content />
+                </>}>
                 </Route>
 
-            </Switch>
+            </Routes>
 
         </div>
     );

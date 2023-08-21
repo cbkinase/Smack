@@ -1,37 +1,36 @@
 import React from "react";
-import { editMessage } from "../../../../../../../store/messages";
+import { addMessage } from "../../../../../../../store/messages";
+import changeAdjustText from "../../../../../../../utils/changeAdjustText";
 
 let updatedMessage;
 
 export default function EditMessageButton({
-                                            message, 
-                                            user, 
-                                            dispatch, 
-                                            socket, 
-                                            changeAdjustText, 
+                                            message,
+                                            dispatch,
+                                            socket,
                                             channelId,
-                                            editing }) 
+                                            editing })
 {
 
     const handleEdit = async (e, msg) => {
         document.getElementById("edit-msg-form").remove();
         e.preventDefault();
-        await dispatch(
-            editMessage(
-                {
-                    content: updatedMessage,
-                    user_id: user.id,
-                    channel_id: channelId,
-                    is_pinned: false,
-                },
-                msg.id
-            )
-        );
 
-        socket.emit("edit", {
-            user: user.username,
-            msg: updatedMessage,
-            msg_id: msg.id,
+        let socketPayload = {
+            content: updatedMessage,
+            user_id: msg.user_id,
+            channel_id: channelId,
+            is_pinned: msg.is_pinned,
+            message_id: msg.id
+        }
+
+        socket.emit("edit", socketPayload, (res) => {
+            if (res.status === "success") {
+                dispatch(addMessage(res.message))
+            }
+            else {
+                console.log(res)
+            }
         });
     };
 

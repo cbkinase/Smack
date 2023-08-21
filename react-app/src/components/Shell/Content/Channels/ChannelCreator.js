@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch} from 'react-redux'
 import { AddChannelThunk } from '../../../../store/channel'
 
@@ -9,7 +9,7 @@ const CreateChannel = () => {
     const [subject, setSubject] = useState(null)
     const [errors, setErrors] = useState([]);
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     let created;
 
@@ -18,7 +18,7 @@ const CreateChannel = () => {
         setErrors([]);
         created = dispatch(AddChannelThunk({ name: name, subject: subject, is_private: false, is_direct: false }))
         // should be to specific channel id of newly created channel
-        if (!created.errors) { (history.push(`/channels/explore`)) }
+        if (!created.errors) { (navigate(`/channels/explore`)) }
     }
 
     return (

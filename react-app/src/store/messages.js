@@ -5,14 +5,14 @@ const DELETE_REACTION = "messages/DELETE_REACTION";
 const ADD_REACTION = "messages/ADD_REACTION";
 const DELETE_ATTACHMENT = "messages/DELETE_ATTACHMENT";
 
-const addMessage = (message) => {
+export const addMessage = (message) => {
     return {
         type: ADD_MESSAGE,
         message,
     };
 };
 
-const createReaction = (reaction) => ({
+export const createReaction = (reaction) => ({
     type: ADD_REACTION,
     payload: reaction,
 });
@@ -26,19 +26,19 @@ const loadMessages = (messages, page) => {
     };
 };
 
-const deleteMessage = (id) => {
+export const deleteMessage = (id) => {
     return {
         type: DELETE_MESSAGE,
         id,
     };
 };
 
-const deleteReaction = (reaction) => ({
+export const deleteReaction = (reaction) => ({
     type: DELETE_REACTION,
     payload: reaction,
 });
 
-const deleteAttachment = (attachment) => ({
+export const deleteAttachment = (attachment) => ({
     type: DELETE_ATTACHMENT,
     payload: attachment,
 });

@@ -38,7 +38,7 @@ export default function LeftSideBarDMSection({ channels, user }) {
             {channels.map((channel) => {
                 return (
                     <Fragment key={channel.id} >
-                        {isHidden && channel.id !== +channelId ? null : <NavLink key={channel.id} exact to={`/channels/${channel.id}`} className="tooltip">
+                        {isHidden && channel.id !== +channelId ? null : <NavLink key={channel.id} to={`/channels/${channel.id}`} className="tooltip">
                             <div>
                                 {Number(channel.id) === Number(channelId) ? (
                                     <>

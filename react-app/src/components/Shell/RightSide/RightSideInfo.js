@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import userChannelDMSearch from '../../../utils/userChannelDMSearch';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AddChannelThunk, UserChannelThunk } from '../../../store/channel';
 import toggleRightPane from './toggleRightPane';
 import SelectedUserRightBarContext from '../../../context/SelectedUserRightBar/SelectedUserRightBarContext';
@@ -11,7 +11,7 @@ function RightSideInfo() {
     const [selectedUserRightBar, ] = useContext(SelectedUserRightBarContext);
     const user_channels = useSelector(state => state.channels.user_channels);
     const currUser = useSelector(state => state.session.user);
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     return (
@@ -36,7 +36,7 @@ function RightSideInfo() {
                             onClick={async e => {
                                 let possibleChannel = userChannelDMSearch(user_channels, currUser, selectedUserRightBar);
                                 if (possibleChannel) {
-                                    history.push(`/channels/${possibleChannel.id}`);
+                                    navigate(`/channels/${possibleChannel.id}`);
                                     toggleRightPane();
                                 }
                                 else {
@@ -53,7 +53,7 @@ function RightSideInfo() {
                                     There's probably a better way to do this, but for now this is how I'm getting the components that depend on the above fetch to re-render, since it doesn't go through Redux at all.
                                      */
                                     await dispatch(UserChannelThunk());
-                                    history.push(`/channels/${newChan.id}`);
+                                    navigate(`/channels/${newChan.id}`);
                                     toggleRightPane();
                                 }
                             }}

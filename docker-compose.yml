@@ -16,10 +16,9 @@ services:
     build:
       context: ./react-app
       dockerfile: Dockerfile
-    depends_on:
-      - backend
     environment:
       - HOST=0.0.0.0
+      - WDS_SOCKET_PORT
     restart: always
     volumes:
       - /home/node/app/node_modules
@@ -29,6 +28,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - SECRET_KEY
+      - DATABASE_URL
+      - SCHEMA
+      - REACT_APP_BASE_URL
+      - S3_BUCKET
+      - S3_KEY
+      - S3_SECRET
+      - FLASK_APP
+      - FLASK_ENV
+      - FLASK_DEBUG
+      - FLASK_RUN_HOST
+      - WDS_SOCKET_PORT
     volumes:
-      - .:/app
+      - .:/app  # bind mount the application code
+      - instancedata:/app/instance  # use a named volume for the instance directory
     restart: always
+
+volumes:
+  instancedata:

@@ -1,6 +1,7 @@
 from .db import db, environment, SCHEMA
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from faker import Faker
 
 
 class User(db.Model, UserMixin):
@@ -50,3 +51,29 @@ class User(db.Model, UserMixin):
             'avatar': self.avatar,
             'bio': self.bio
         }
+
+    @classmethod
+    def create(cls, qty):
+        fake = Faker()
+        profiles = []
+        # Ensure we don't fail the unique constraint on emails and usernames non-deterministically
+        emails = set()
+        usernames = set()
+
+        while len(profiles) < qty:
+            profile = fake.profile()
+            if profile['mail'] not in emails and profile['username'] not in usernames:
+                profiles.append(profile)
+                emails.add(profile['mail'])
+                usernames.add(profile['username'])
+
+        new_users = [
+            cls(username=user['username'],
+                email=user['mail'],
+                password="password",
+                bio=fake.paragraph(),
+                first_name=fake.first_name(),
+                last_name=fake.last_name())
+            for user in profiles]
+
+        return new_users

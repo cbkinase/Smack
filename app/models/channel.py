@@ -1,4 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from faker import Faker
+from random import choice
 
 class Channel(db.Model):
     __tablename__ = 'channels'
@@ -43,3 +45,12 @@ class Channel(db.Model):
                 for user in self.users
             }
         return base_dict
+
+
+    @classmethod
+    def create(cls, qty, users):
+        fake = Faker()
+        return [cls(subject=fake.sentence(),
+                    name=f"{fake.word().lower()}-{fake.word().lower()}",
+                    owner=choice(users))
+                    for _ in range(qty)]

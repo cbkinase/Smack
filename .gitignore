@@ -9,3 +9,4 @@ package-lock.json
 Pipfile.lock
 *.db
 instance/
+.python-version

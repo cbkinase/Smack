@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { login, signUp } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect, useHistory } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import signinupLogo from './smack-logo-black.svg'
 
 function LoginSignupPage() {
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const sessionUser = useSelector((state) => state.session.user);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -49,7 +49,7 @@ function LoginSignupPage() {
     }, [formType])
 
 
-    if (sessionUser) return <Redirect to="/" />;
+    if (sessionUser) return <Navigate to="/" />;
 
     const handleDemo = () => {
         setEmail('demo@aa.io');
@@ -63,7 +63,7 @@ function LoginSignupPage() {
             setErrors(data);
             return
         }
-        history.push("/channels/explore");
+        navigate("/channels/explore");
     };
 
     const handleSubmitSignup = async (e) => {
@@ -78,7 +78,7 @@ function LoginSignupPage() {
             setErrors(['Password does not match confirmation password.']);
             return
         }
-        history.push("/channels/explore");
+        navigate("/channels/explore");
     };
 
 

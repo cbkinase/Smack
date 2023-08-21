@@ -10,6 +10,7 @@ from .socket_helpers import (
     )
 
 
+# Should probably make these .env variables, but it's fine for now...
 if os.environ.get("FLASK_ENV") == "production":
     origins = [
         "https://cameron-smack.onrender.com",
@@ -37,6 +38,7 @@ def handle_chat(data):
         return {'status': 'socket_error', 'message': 'Something went wrong with sockets.'}
 
 
+# TODO: proper error handling for the remaining routes
 @socketio.on("edit")
 def handle_edit(data):
     room = str(data.get('channel_id'))

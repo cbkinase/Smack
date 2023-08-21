@@ -1,35 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-    createChannelMessage,
-    getChannelMessages,
-    editMessage,
-    thunkDeleteAttachment
-} from "../../../../store/messages";
+import { getChannelMessages, editMessage, thunkDeleteAttachment, addMessage } from "../../../../store/messages";
 import { useParams } from "react-router-dom";
-import Editor from "../../../ChatTest/Editor";
+import Editor from "../Editor/Editor";
 import MessageCard from "./MessageCard/MessageCard";
 import useInfiniteScrollingTop from "../../../../hooks/useInfiniteScrollingTop";
 
-
 const Messages = ({ scrollContainerRef }) => {
+    const { channelId } = useParams();
+    const dispatch = useDispatch();
     const [chatInput, setChatInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [reactions, setReactions] = useState([]);
     const user = useSelector((state) => state.session.user);
-    const dispatch = useDispatch();
     const allMessages = useSelector((state) => state.messages.allMessages);
-    const { channelId } = useParams();
-    const [showMenu, setShowMenu] = useState(false);
-    const ulRef = useRef();
-    const socket = useSelector(state => state.session.socket);
+    const currentChannel = useSelector((state) => state.channels.single_channel);
+    const socket = useSelector((state) => state.session.socket);
 
     // buffer for actual attachments to be uploaded
     const [attachmentBuffer, setAttachmentBuffer] = useState({});
     const [attachmentIsLoading, setAttachmentIsLoading] = useState(false);
 
     // Variables for infinite scrolling
-    const page = useInfiniteScrollingTop(scrollContainerRef);
+    const [page, setPage] = useInfiniteScrollingTop(scrollContainerRef);
     const perPage = 25;
     const [prevScrollHeight, setPrevScrollHeight] = useState(0);
     const [hasMoreToLoad, setHasMoreToLoad] = useState(true);
@@ -47,7 +40,7 @@ const Messages = ({ scrollContainerRef }) => {
                 setHasMoreToLoad(false);
             }
         })()
-    }, [dispatch, page, scrollContainerRef, hasMoreToLoad])
+    }, [dispatch, page, scrollContainerRef, hasMoreToLoad, channelId])
 
     // Handle adjusting the scroll position after the data has been fetched and rendered
     useEffect(() => {
@@ -57,63 +50,31 @@ const Messages = ({ scrollContainerRef }) => {
         scrollContainerRef.current.scrollTop += heightDifference;
     }, [scrollContainerRef, prevScrollHeight, allMessages]);
 
-
-    useEffect(() => {
-        if (!showMenu) return;
-
-        const closeMenu = (e) => {
-            if (!ulRef.current.contains(e.target)) {
-                setShowMenu(false);
-            }
-        };
-
-        document.addEventListener("click", closeMenu);
-
-        return () => document.removeEventListener("click", closeMenu);
-    }, [showMenu]);
-
-    const currentChannel = useSelector(
-        (state) => state.channels.single_channel
-    );
-
     function scrollToBottomOfGrid() {
         const element = document.getElementById("grid-content");
         if (element) element.scrollTop = element.scrollHeight;
     }
 
-    // Gives us a way to see which part(s) of
-    // the dependency array actually changed
-    // so we can act on this conditionally
-    const prevMessagesRef = useRef();
-    const prevChannelIdRef = useRef();
-
     useEffect(() => {
-        const prevMessages = prevMessagesRef.current;
-        const prevChannelId = prevChannelIdRef.current;
-
         async function alterChannelMessages() {
-            await dispatch(getChannelMessages(channelId));
-            if (prevMessages !== messages || prevChannelId !== channelId) {
-                // Run when `messages` or `channelId` is the changed dependency
-                scrollToBottomOfGrid();
-            }
+            await dispatch(getChannelMessages(channelId, 1, perPage));
+            setHasMoreToLoad(true);
+            setPage(1);
         }
-        alterChannelMessages();
-        prevMessagesRef.current = messages;
-        prevChannelIdRef.current = channelId;
-    }, [dispatch, messages, reactions, channelId]);
+        alterChannelMessages().then(() => scrollToBottomOfGrid());
+    }, [dispatch, channelId]);
 
-    
+
     useEffect(() => {
         if (!socket) return;
 
         socket.emit("join", {
             channel_id: channelId,
-            username: user.username,
         });
 
         socket.on("chat", (chat) => {
-            setMessages((messages) => [...messages, chat]);
+            dispatch(addMessage(chat));
+            scrollToBottomOfGrid();
         });
 
         socket.on("delete", (chat) => {
@@ -137,12 +98,10 @@ const Messages = ({ scrollContainerRef }) => {
                 (_, idx) => idx !== reactionIdx
             );
             setReactions(newReactions);
-            // console.log(reactions);
         });
 
         socket.on("addReaction", (reaction) => {
             setReactions((reactions) => [...reactions, reaction]);
-            // console.log(reactions);
         });
 
         socket.on("deleteAttachment", (chat) => {
@@ -156,48 +115,66 @@ const Messages = ({ scrollContainerRef }) => {
             socket.off("edit");
             socket.off("delete");
             socket.off("chat");
+            socket.emit("leave", {
+                channel_id: channelId,
+            });
+            socket.off("leave");
         }
-
-    },
-    // [socket, channelId, messages, reactions, user.username]
-    [socket]
-    );
+    }, [socket, channelId, dispatch]);
 
     const updateChatInput = (e) => {
         setChatInput(e.target.value);
     };
 
+    async function handleSendingAttachments(attachmentBuffer) {
+        const attachmentsArr = Object.values(attachmentBuffer);
+        const formData = new FormData();
 
+        for (let i = 0; i < attachmentsArr.length; i++) {
+            formData.append("attachmentsBuffer" + i, attachmentsArr[i]);
+        }
+
+        const uploadResponse = await fetch("/api/messages/attachments/upload", {
+            method: "POST",
+            body: formData,
+        });
+
+        const uploadData = await uploadResponse.json();
+
+        if (uploadData.errors) {
+            alert(uploadData.errors);
+            return null;
+        } else {
+            return uploadData;
+        }
+    }
 
     const sendChat = async (e) => {
         e.preventDefault();
-        const attachmentsArr = Object.values(attachmentBuffer)
-        const formData = new FormData();
-        formData.append("content", chatInput);
-        for(let i = 0; i < attachmentsArr.length; i++) {
-            formData.append("attachmentsBuffer"+i, attachmentsArr[i])
-        }
-        // console.log("FORM SENDING: ", formData.get("attachmentsBuffer0"));
-        // console.log("FORM SENDING: ", formData.get("attachmentsBuffer1"));
-        // const newMessage = {
-        //     user_id: user.id,
-        //     channel_id: channelId,
-        //     content: chatInput,
-        // };
-        
+        let socketPayload = { msg: chatInput, channel_id: +channelId };
 
-        setAttachmentIsLoading(true)
-        await dispatch(createChannelMessage(formData, channelId));
-        setAttachmentIsLoading(false)
-        socket.emit("chat", {msg: chatInput, channel_id: +channelId}, (response) => {
-            console.log("response: ", response)
-            console.log("status: ", response.status)
+        if (Object.keys(attachmentBuffer).length > 0) {
+            setAttachmentIsLoading(true);
+            const uploadedFiles = await handleSendingAttachments(attachmentBuffer);
+            setAttachmentIsLoading(false);
+            socketPayload["attachments"] = uploadedFiles;
+        }
+
+        socket.emit("chat", socketPayload, (res) => {
+            if (res.status === "success") {
+                dispatch(addMessage(res.message));
+                scrollToBottomOfGrid();
+            } else {
+                // TODO: handle message send failures
+                // depending on specific failure point
+                console.log("response: ", res);
+                console.log("status: ", res.status);
+            }
         });
 
         setAttachmentBuffer({});
         setChatInput("");
     };
-
 
     // Attachments
     // add each attachment to buffer, buffer will be used when uploading
@@ -219,8 +196,6 @@ const Messages = ({ scrollContainerRef }) => {
             curBuffer[currId] = file;
             setAttachmentBuffer(curBuffer);
         }
-
-
     }
 
     // remove attachment from buffer
@@ -230,7 +205,6 @@ const Messages = ({ scrollContainerRef }) => {
         const curBuffer = { ...attachmentBuffer };
         delete curBuffer[id];
         setAttachmentBuffer(curBuffer);
-
     }
 
     // delete attachment
@@ -252,33 +226,36 @@ const Messages = ({ scrollContainerRef }) => {
         editMessage,
     };
 
-    return user && currentChannel && allMessages ? (
+    if (!user || !currentChannel || !allMessages) {
+        return null;
+    }
+
+    return (
         <>
-
             <div style={{ marginBottom: '10px' }}>
-
                 {Object.values(allMessages).map((message, ind) => (
-
-                    <MessageCard key={ind}
-                                 message={message}
-                                 user={user}
-                                 socket={socket}
-                                 dispatch={dispatch}
-                                 messageFunctions={messageFunctions}
+                    <MessageCard
+                        key={message.id}
+                        message={message}
+                        user={user}
+                        socket={socket}
+                        dispatch={dispatch}
+                        messageFunctions={messageFunctions}
                     />
-
-
                 ))}
-
             </div>
-
 
             <div style={{ position: 'sticky', bottom: 0 }} >
-                <Editor functions={messageFunctions} creating={true} setChatInput={setChatInput} user={user} attachmentBuffer={attachmentBuffer} attachmentIsLoading={attachmentIsLoading}/>
+                <Editor
+                    functions={messageFunctions}
+                    creating={true}
+                    setChatInput={setChatInput}
+                    user={user}
+                    attachmentBuffer={attachmentBuffer}
+                    attachmentIsLoading={attachmentIsLoading}
+                />
             </div>
-
-
         </>
-    ) : null;
+    )
 };
 export default Messages;

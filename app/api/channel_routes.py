@@ -3,6 +3,7 @@ from app.models import Channel, User, db, Message, Attachment
 from flask_login import login_required, current_user
 from ..socket import socketio
 from app.s3_helpers import (get_unique_filename, upload_file_to_s3, remove_file_from_s3)
+from sqlalchemy.orm import joinedload
 
 channel_routes = Blueprint('channels', __name__)
 
@@ -199,8 +200,14 @@ def get_all_messages_for_channel(channel_id):
     # I.e. -- the channel is not private, or the user is a member of that private channel
     page = request.args.get('page', type=int)
     per_page = request.args.get('per_page', type=int)
-    channel_messages = Message.query.filter(Message.channel_id == channel_id)\
-            .order_by(Message.id.desc())
+
+    channel_messages = Message.query.options(
+        joinedload(Message.reactions),
+        joinedload(Message.attachments),
+        joinedload(Message.users),
+        ).filter(Message.channel_id == channel_id)\
+        .order_by(Message.id.desc())
+
     if page and per_page:
             try:
                 channel_messages = channel_messages.paginate(page=page, per_page=per_page).items

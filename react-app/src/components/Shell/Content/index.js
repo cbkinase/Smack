@@ -13,17 +13,16 @@ function Content() {
                 className="grid-content-heading-threecolumn"
             >
                 <ChannelHeader />
-
             </div>
 
-            <div ref={scrollContainerRef} id="grid-content" className="grid-content-threecolumn" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-
+            <div
+                ref={scrollContainerRef}
+                id="grid-content"
+                className="grid-content-threecolumn"
+                style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+            >
                 <Messages scrollContainerRef={scrollContainerRef} />
-
             </div>
-            {/* <div id="grid-editor" className="grid-editor-threecolumn"> */}
-            {/* <Editor /> */}
-            {/* </div> */}
         </>
     );
 }

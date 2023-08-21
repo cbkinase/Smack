@@ -1,36 +1,33 @@
-from flask_socketio import SocketIO, emit, join_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import os
-from app.models import db, Message, Channel, User
-from flask_login import current_user
+from .socket_helpers import handle_chat_helper
 
 
 if os.environ.get("FLASK_ENV") == "production":
     origins = [
-        "https://smack.onrender.com/",
-        "http://smack.onrender.com/"
+        "https://cameron-smack.onrender.com",
+        "http://cameron-smack.onrender.com"
     ]
 else:
     origins = "*"
 
-socketio = SocketIO(cors_allowed_origins="*")
+socketio = SocketIO(cors_allowed_origins=origins)
+
 
 @socketio.on("chat")
 def handle_chat(data):
-    
+    room = str(data.get('channel_id'))
+    # Create the message (and attachments, if present)
+    new_message = handle_chat_helper(data)
+    if new_message.get("error"):
+        return {'status': new_message.error, 'message': new_message.error_message}
+    # Relay the message to relevant clients
     try:
-        this_channel = Channel.query.get(int(data["channel_id"]))
-        this_user = User.query.get(current_user.id)
-
-        new_message = Message(content=data["msg"], users=this_user, channels=this_channel)
-        db.session.add(new_message)
-        db.session.commit()
-        emit("chat", new_message.to_dict_socket(), broadcast=True)
-        return {'status': 'ok'}
-        
-    except:
-        return {'status': 'socket_error', 'message': 'Something went wrong with sockets.'} 
-
-    
+        emit("chat", new_message, to=room, include_self=False)
+        return {'status': 'success', 'message': new_message}
+    except Exception as e:
+        print(e)
+        return {'status': 'socket_error', 'message': 'Something went wrong with sockets.'}
 
 
 @socketio.on("delete")
@@ -42,6 +39,7 @@ def handle_delete(data):
 def handle_delete(data):
     emit("delete", data, broadcast=True)
 
+
 @socketio.on("addReaction")
 def handle_add_reaction(data):
     emit("addReaction", data, broadcast=True)
@@ -51,27 +49,34 @@ def handle_add_reaction(data):
 def handle_delete_reaction(data):
     emit("deleteReaction", data, broadcast=True)
 
+
 @socketio.on("deleteAttachment")
 def handle_delete_attachment(data):
     emit("deleteAttachment", data, broadcast=True)
 
+
 @socketio.on('connect')
 def handle_connect():
-    print('Client connected')
-
+    print(f'Client connected')
 
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    print('Client disconnected')
+    print(f'Client disconnected')
 
 
 @socketio.on('join')
 def on_join(data):
-    username = data['username']
     room = data['channel_id']
     join_room(room)
-    emit("welcome", f"{username}", room=room)
+    print(f"Client joined room {room}")
+
+
+@socketio.on('leave')
+def on_leave(data):
+    room = data['channel_id']
+    leave_room(room)
+    print(f"Client left room {room}")
 
 
 @socketio.on("new_DM_convo")

@@ -5,7 +5,7 @@ const DELETE_REACTION = "messages/DELETE_REACTION";
 const ADD_REACTION = "messages/ADD_REACTION";
 const DELETE_ATTACHMENT = "messages/DELETE_ATTACHMENT";
 
-const addMessage = (message) => {
+export const addMessage = (message) => {
     return {
         type: ADD_MESSAGE,
         message,

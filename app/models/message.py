@@ -34,7 +34,7 @@ class Message(db.Model):
             "Reactions": {reaction.id:reaction.to_dict() for reaction in self.reactions},
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }
-    
+
     def to_dict_socket(self):
         return {
             "id": self.id,
@@ -42,10 +42,10 @@ class Message(db.Model):
             "channel_id": self.channel_id,
             "content": self.content,
             "is_pinned": self.is_pinned,
-            "created_at": str(self.created_at) + " GMT",
-            "updated_at": str(self.updated_at) + " GMT",
+            "created_at": str(self.created_at),
+            "updated_at": str(self.updated_at),
             "User": self.users.to_dict(),
-            "Reactions": {reaction.id:reaction.to_dict() for reaction in self.reactions},
+            "Reactions": {reaction.id: reaction.to_dict() for reaction in self.reactions},
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}
         }
 

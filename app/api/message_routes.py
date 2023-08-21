@@ -65,15 +65,15 @@ def delete_message(message_id):
     if this_user['id'] != message.user_id:
         return forbidden()
 
-    
+
     message_attachments = message.attachments
     for attachment in message_attachments:
 
         remove_attachment = remove_file_from_s3(attachment.content)
         if not remove_attachment:
             return {'errors': ['Failed to delete files from AWS']}, 400
-        
-    
+
+
     db.session.delete(message)
     db.session.commit()
     return {
@@ -127,7 +127,7 @@ def get_reactions_for_message(message_id):
         return reactions_data
     except:
         return { "message": "Failed to get reactions" }, 400
-    
+
 
 # ATTACHMENTS
 @message_routes.route("/attachments/<content_name>", methods=["GET"])
@@ -144,22 +144,40 @@ def download_attachment(content_name):
 @message_routes.route("/attachments/<int:attachments_id>", methods=["DELETE"])
 @login_required
 def delete_attachment_for_messages(attachments_id):
-    try: 
+    try:
         this_attachment = Attachment.query.get(attachments_id)
 
         if not this_attachment:
             return {'errors': ['Resource not found']}, 404
         if current_user.id != this_attachment.user_id:
             return {'errors': ['Unauthorized']}, 403
-        
+
         remove_attachment = remove_file_from_s3(this_attachment.content)
 
         if not remove_attachment:
             return {'errors': ['Failed to delete files from AWS']}, 400
-        
+
         db.session.delete(this_attachment)
         db.session.commit()
         return {'message': 'successfully deleted'}, 200
     except:
         return {'errors': 'Failed to delete attachment'}, 400
-    
+
+
+@message_routes.route("/attachments/upload", methods=["POST"])
+@login_required
+def upload_attachments_and_get_links():
+    incoming_attachments_arr = request.files
+    outgoing_attachments = {}
+
+    for id, attachment in incoming_attachments_arr.items():
+        attachment.filename = get_unique_filename(attachment.filename)
+        upload_attachment = upload_file_to_s3(attachment)
+
+        if "url" not in upload_attachment:
+            print('Failed to upload to AWS')
+            return {'errors': ['Failed to upload to AWS']}, 400
+        else:
+            outgoing_attachments[id] = upload_attachment["url"]
+
+    return outgoing_attachments

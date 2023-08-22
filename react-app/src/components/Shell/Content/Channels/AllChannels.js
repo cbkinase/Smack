@@ -3,11 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import * as ChlActions from "../../../../store/channel";
 import { NavLink } from "react-router-dom";
 import './ViewAllChannels.css';
+import useViewportWidth from "../../../../hooks/useViewportWidth";
+import { adjustLeftPane } from "../../../../utils/togglePaneFunctions";
 
 function AllChannels() {
   const dispatch = useDispatch();
   const allChannels = useSelector((state) => state.channels.all_channels);
   const [searchTerm, setSearchTerm] = useState('');
+  const viewportWidth = useViewportWidth();
+
+  useEffect(() => {
+    if (viewportWidth >= 768) {
+      adjustLeftPane("open");
+    }
+    else {
+      adjustLeftPane("close");
+    }
+  }, [viewportWidth])
 
   useEffect(() => {
     dispatch(ChlActions.AllChannelThunk());
@@ -56,49 +68,5 @@ function AllChannels() {
     </>
   );
 }
-
-// return (
-//     <>
-//         <h2 style={{paddingLeft: "20px", margin: "20px 20px"}}>Explore Channels on Smack</h2>
-//         <div>
-//         {allChannelsArr.map((channel) => (
-// <NavLink style={{display: "flex", marginBottom: "10px"}} onClick={async e => {
-//     await fetch(`/api/channels/${channel.id}/users`, {
-//         method: "POST",
-
-//     })
-//     dispatch(ChlActions.UserChannelThunk())
-// }} to={`/channels/${channel.id}`}>
-//     <div style={{paddingLeft: "40px"}}>{`#${channel.id}`}</div>
-//     <div style={{paddingLeft: "20px"}}>{channel.name}</div>
-// </NavLink>
-//         ))}
-//         </div>
-//     </>
-// );
-//     return (
-//         <>
-// <div className="view-all-channels">
-//   <div className="channels-header">
-//     <h2>All Channels on Smack</h2>
-//     <button className="close-btn">Close</button>
-//   </div>
-//   <input type="text" placeholder="Search channels"/>
-//   <ul className="channels-list">
-//     <li>#general</li>
-//     <li>#random</li>
-//     <li>#marketing</li>
-//     <li>#design</li>
-//     <li>#engineering</li>
-//     <li>#sales</li>
-//     <li>#support</li>
-//     <li>#product</li>
-//     <li>#hr</li>
-//     <li>#finance</li>
-//   </ul>
-// </div>
-//         </>
-//     )
-
 
 export default AllChannels;

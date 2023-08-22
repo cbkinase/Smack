@@ -1,34 +1,35 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
+import { hideShowLeftPane } from '../../../utils/togglePaneFunctions';
 
 function Header({ isLoaded }) {
 
 	const sessionUser = useSelector(state => state.session.user);
 
-	const toggleLeftPane = function hideShowLeftPane() {
-		if (document.getElementById("grid-leftside-heading").className === "grid-leftside-heading-closed") {
-			document.getElementById("grid-leftside-heading").className = "grid-leftside-heading"
-			document.getElementById("grid-leftside").className = "grid-leftside";
-			document.getElementById("hideshow-leftpane-hamburger").style.display = "none";
-			document.getElementById("hideshow-leftpane-arrow").style.display = "block";
-		} else {
-			document.getElementById("grid-leftside-heading").className = "grid-leftside-heading-closed"
-			document.getElementById("grid-leftside").className = "grid-leftside-closed";
-			document.getElementById("hideshow-leftpane-hamburger").style.display = "block";
-			document.getElementById("hideshow-leftpane-arrow").style.display = "none";
-		}
-	}
+	// const toggleLeftPane = function hideShowLeftPane() {
+	// 	if (document.getElementById("grid-leftside-heading").className === "grid-leftside-heading-closed") {
+	// 		document.getElementById("grid-leftside-heading").className = "grid-leftside-heading"
+	// 		document.getElementById("grid-leftside").className = "grid-leftside";
+	// 		document.getElementById("hideshow-leftpane-hamburger").style.display = "none";
+	// 		document.getElementById("hideshow-leftpane-arrow").style.display = "block";
+	// 	} else {
+	// 		document.getElementById("grid-leftside-heading").className = "grid-leftside-heading-closed"
+	// 		document.getElementById("grid-leftside").className = "grid-leftside-closed";
+	// 		document.getElementById("hideshow-leftpane-hamburger").style.display = "block";
+	// 		document.getElementById("hideshow-leftpane-arrow").style.display = "none";
+	// 	}
+	// }
 
 	return (
 		<div className="grid-header">
 			<div className="header-holder">
 				<div>
-					<button id="hideshow-leftpane-hamburger" onClick={() => { toggleLeftPane() }}
+					<button id="hideshow-leftpane-hamburger" onClick={hideShowLeftPane}
 						className="hideshow-leftpane">
 						<i className="fas fa-bars" style={{ fontSize: "18px" }}></i>
 					</button>
-					<button id="hideshow-leftpane-arrow" onClick={() => { toggleLeftPane() }}
+					<button id="hideshow-leftpane-arrow" onClick={hideShowLeftPane}
 						className="hideshow-leftpane">
 						<i className="fas fa-arrow-left" style={{ fontSize: "18px" }}></i>
 					</button>

@@ -5,28 +5,10 @@ import OpenModalButton from "../OpenModalButton";
 import ChannelMembersAll from "./ChannelMembersAll";
 import isSelfDM from "../../utils/isSelfDM";
 import SelectedUserRightBarContext from "../../context/SelectedUserRightBar/SelectedUserRightBarContext";
+import { toggleRightPane } from "../../utils/togglePaneFunctions";
 
 export default function ChannelMembersModal({ currentChannel, numMemb, userList, user }) {
   const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
-
-  function toggleRightPane(state) {
-    if (state === "close") {
-      document.getElementById("grid-container").className =
-        "grid-container-hiderightside";
-      document.getElementById("grid-rightside-heading").className =
-        "grid-rightside-heading-hide";
-      document.getElementById("grid-rightside").className =
-        "grid-rightside-hide";
-    } else {
-      document.getElementById("grid-container").className =
-        "grid-container";
-      document.getElementById("grid-rightside-heading").className =
-        "grid-rightside-heading";
-      document.getElementById("grid-rightside").className =
-        "grid-rightside";
-    }
-    window.toggleLeftPane();
-  }
   const [searchTerm, setSearchTerm] = useState('');
   const { closeModal } = useModal();
 

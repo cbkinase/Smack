@@ -554,6 +554,10 @@ a:active {
     background-color: inherit;
     padding: 2px 8px;
     border-radius: 5px;
+    max-width: 60vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #hideshow-leftpane-hamburger {

@@ -13,6 +13,8 @@ import Editor from "../Editor/Editor";
 import MessageCard from "./MessageCard/MessageCard";
 import useInfiniteScrollingTop from "../../../../hooks/useInfiniteScrollingTop";
 import scrollToBottomOfGrid from "../../../../utils/scrollToBottomOfGrid";
+import useViewportWidth from "../../../../hooks/useViewportWidth";
+import { toggleLeftPane } from "../../../../utils/togglePaneFunctions";
 
 const Messages = ({ scrollContainerRef }) => {
     const { channelId } = useParams();
@@ -22,6 +24,12 @@ const Messages = ({ scrollContainerRef }) => {
     const allMessages = useSelector((state) => state.messages.allMessages);
     const currentChannel = useSelector((state) => state.channels.single_channel);
     const socket = useSelector((state) => state.session.socket);
+
+    // For improved responsiveness - particularly on load
+    const viewportWidth = useViewportWidth();
+    useEffect(() => {
+        toggleLeftPane();
+    }, [viewportWidth])
 
     // buffer for actual attachments to be uploaded
     const [attachmentBuffer, setAttachmentBuffer] = useState({});

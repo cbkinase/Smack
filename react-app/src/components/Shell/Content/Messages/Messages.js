@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     getChannelMessages,
-    thunkDeleteAttachment,
     addMessage,
     deleteMessage,
     createReaction,
@@ -13,6 +12,7 @@ import { useParams } from "react-router-dom";
 import Editor from "../Editor/Editor";
 import MessageCard from "./MessageCard/MessageCard";
 import useInfiniteScrollingTop from "../../../../hooks/useInfiniteScrollingTop";
+import scrollToBottomOfGrid from "../../../../utils/scrollToBottomOfGrid";
 
 const Messages = ({ scrollContainerRef }) => {
     const { channelId } = useParams();
@@ -61,11 +61,6 @@ const Messages = ({ scrollContainerRef }) => {
         setLoadedMore(false);
     }, [scrollContainerRef, prevScrollHeight, loadedMore]);
 
-    function scrollToBottomOfGrid() {
-        const element = document.getElementById("grid-content");
-        if (element) element.scrollTop = element.scrollHeight;
-    }
-
     // Load new channel messages on changing channel
     useEffect(() => {
         async function alterChannelMessages() {
@@ -76,7 +71,6 @@ const Messages = ({ scrollContainerRef }) => {
         alterChannelMessages().then(() => scrollToBottomOfGrid());
     }, [dispatch, channelId, setPage]);
 
-
     useEffect(() => {
         if (!socket) return;
 
@@ -85,28 +79,41 @@ const Messages = ({ scrollContainerRef }) => {
         });
 
         socket.on("chat", async (chat) => {
+            // Ensure UI updates before trying to scroll
             await dispatch(addMessage(chat));
+            // We may only want to do this when a user is already at the bottom.
+            // Then, if they're reading old messages, they won't be 'interrupted'
             scrollToBottomOfGrid();
         });
 
-        socket.on("delete", (chat) => {
-            dispatch(deleteMessage(chat));
+        socket.on("delete", (chatId) => {
+            if (allMessages[chatId] !== undefined) {
+                dispatch(deleteMessage(chatId));
+            }
         });
 
         socket.on("edit", (chat) => {
-            dispatch(addMessage(chat));
+            if (allMessages[chat.id] !== undefined) {
+                dispatch(addMessage(chat));
+            }
         });
 
         socket.on("addReaction", (reaction) => {
-            dispatch(createReaction(reaction));
+            if (allMessages[reaction.message_id] !== undefined) {
+                dispatch(createReaction(reaction));
+            }
         });
 
         socket.on("deleteReaction", (reaction) => {
-            dispatch(deleteReaction(reaction));
+            if (allMessages[reaction.message_id] !== undefined) {
+                dispatch(deleteReaction(reaction));
+            }
         });
 
         socket.on("deleteAttachment", (attachment) => {
-            dispatch(deleteAttachment(attachment));
+            if (allMessages[attachment.message_id] !== undefined) {
+                dispatch(deleteAttachment(attachment));
+            }
         });
 
         return () => {
@@ -121,7 +128,7 @@ const Messages = ({ scrollContainerRef }) => {
             });
             socket.off("leave");
         }
-    }, [socket, channelId, dispatch]);
+    }, [socket, channelId, dispatch, allMessages]);
 
     const updateChatInput = (e) => {
         setChatInput(e.target.value);

@@ -4,12 +4,24 @@ import * as ChlActions from "../../../../store/channel";
 import { NavLink } from "react-router-dom";
 import './ViewAllChannels.css';
 import userObjectToNameList from "../../../../utils/userObjectToNameList";
+import { adjustLeftPane } from "../../../../utils/togglePaneFunctions";
+import useViewportWidth from "../../../../hooks/useViewportWidth";
 
 function DMChannels() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.session.user)
     const allChannels = useSelector((state) => state.channels.user_channels);
     const [searchTerm, setSearchTerm] = useState('');
+    const viewportWidth = useViewportWidth();
+
+    useEffect(() => {
+      if (viewportWidth >= 768) {
+        adjustLeftPane("open");
+      }
+      else {
+        adjustLeftPane("close");
+      }
+    }, [viewportWidth])
 
     useEffect(() => {
         dispatch(ChlActions.UserChannelThunk());

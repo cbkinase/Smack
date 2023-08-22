@@ -1,6 +1,7 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from faker import Faker
 from random import choice, randint
+from datetime import datetime
 
 
 class Message(db.Model):
@@ -45,8 +46,8 @@ class Message(db.Model):
             "channel_id": self.channel_id,
             "content": self.content,
             "is_pinned": self.is_pinned,
-            "created_at": str(self.created_at) + " GMT",
-            "updated_at": str(self.updated_at) + " GMT",
+            "created_at": str(self.created_at) + "+0",
+            "updated_at": str(self.updated_at) + "+0",
             "User": self.users.to_dict(),
             "Reactions": {reaction.id: reaction.to_dict() for reaction in self.reactions},
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}

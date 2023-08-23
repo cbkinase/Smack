@@ -46,8 +46,8 @@ class Message(db.Model):
             "channel_id": self.channel_id,
             "content": self.content,
             "is_pinned": self.is_pinned,
-            "created_at": str(self.created_at) + "+0",
-            "updated_at": str(self.updated_at) + "+0",
+            "created_at": self.created_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+            "updated_at": self.updated_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
             "User": self.users.to_dict(),
             "Reactions": {reaction.id: reaction.to_dict() for reaction in self.reactions},
             "Attachments": {attachment.id: attachment.to_dict() for attachment in self.attachments}

@@ -129,7 +129,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                             <div style={{height: "5px"}}></div>
                             <label style={{marginLeft: "7px"}} htmlFor="confirm-delete">Channel deletion</label>
                             <div style={{height: "10px"}}></div>
-                            <p style={{marginLeft: "7px"}}>Type <span style={{color: "#631965", fontWeight: "bold"}}>{currChannel[0].name}</span> below to confirm the deletion of the channel</p>
+                            <p style={{marginLeft: "7px", overflowWrap: "break-word"}}>Type "<span style={{color: "#631965", fontWeight: "bold"}}>{currChannel[0].name}</span>" below to confirm the deletion of the channel</p>
                             <input
                                 type="text"
                                 id="confirm-delete"

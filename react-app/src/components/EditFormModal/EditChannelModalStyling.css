@@ -35,6 +35,10 @@
     font-size: 20px;
     color: #1d1c1d;
     margin-left: 4%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80%;
 }
 
 .edit-modal-form {

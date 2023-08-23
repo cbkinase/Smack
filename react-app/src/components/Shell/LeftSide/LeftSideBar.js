@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import LeftSideBarDMSection from './LeftSidebarDMSection'
+import LeftSideBarDMSection from './LeftSidebarDMSection';
+import LeftSidebarAboutMe from './LeftSidebarAboutMe';
 
 import * as ChlActions from "../../../store/channel"
 
@@ -45,10 +46,7 @@ function LeftSideLinks() {
 
 
     return (
-
         <div id="grid-leftside" className="grid-leftside-threecolumn">
-
-
             <div className="leftside-link-holder">
 
                 <div className="leftside-channeldirect-holder">
@@ -105,14 +103,25 @@ function LeftSideLinks() {
 
             </div>
 
-            <div className="leftside-channeldirect-holder">
+            <div id="last-leftside-holder" className="leftside-channeldirect-holder">
 
                 {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
                 <div style={{ padding: "4px" }}></div>
 
-                <button className="leftside-channeldirect-holder-button" onClick={toggleIsHidden} style={{ textDecoration: 'none', marginLeft: "14px", width: "91%" }} >
-                    <span style={{ width: "20px" }}><i className={`fas fa-caret-${caretDisplayMap[isHidden]}`}></i></span>
-                    <span className="ellipsis-if-long" style={{marginLeft: "-3px"}} >Channels</span>
+                <button
+                    className="leftside-channeldirect-holder-button"
+                    onClick={toggleIsHidden}
+                    style={{ textDecoration: 'none', marginLeft: "14px", width: "91%" }} >
+                        <span
+                            style={{ width: "20px" }}>
+                                <i className={`fas fa-caret-${caretDisplayMap[isHidden]}`}>
+                                </i>
+                        </span>
+                    <span
+                        className="ellipsis-if-long"
+                        style={{marginLeft: "-3px"}} >
+                            Channels
+                    </span>
                 </button>
 
                 {(userChannelList.length > 0) && userChannelList
@@ -120,9 +129,7 @@ function LeftSideLinks() {
                     .map((channel) => {
                         return (
                             <NavLink hidden={isHidden && channel.id !== +channelId} key={channel.id} to={`/channels/${channel.id}`}>
-
                                 <div key={channel.id}>
-
                                     {Number(channel.id) === Number(channelId) ? (
                                         <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8' }} >
                                             <span style={{ width: "20px" }}><i className="fas fa-hashtag"></i></span>
@@ -135,73 +142,24 @@ function LeftSideLinks() {
                                             <span className="ellipsis-if-long" >{channel.name}</span>
                                         </button>
                                     )}
-
-
                                 </div>
                             </NavLink>
-
                         )
                     })}
 
                 {/* <!-- ------ Spacer Div for Between leftside sections------- --> */}
+
                 <div style={{ padding: "8px" }}></div>
 
-                <LeftSideBarDMSection user={sessionUser} channels={userChannelList.filter((channel) => channel.is_direct)} />
-
-
+                <LeftSideBarDMSection
+                    user={sessionUser}
+                    channels={userChannelList.filter((channel) => channel.is_direct)}
+                />
             </div>
-            <div style={{ position: 'absolute', bottom: '0px' }}>
-                <div className="footer" style={{ padding: '20px', justifyContent: 'flex-start', alignItems: "flex-start", backgroundColor: '#3f0e40' }}>
-
-                    <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '5px', textAlign: 'left' }}>
-
-                        <div>
-                            <span style={{ color: '#969696' }}>Cameron Beck:</span>
-                        </div>
-
-                        <div className="footer-link">
-                            <span>
-                                <a className="footer-button" href="https://cbkinase.github.io/" target="_blank" rel="noreferrer">
-                                    <button className="copyright-button2">
-                                        <i className="fas fa-eye" style={{ fontSize: '14px' }}></i>
-                                    </button>
-                                </a>
-                            </span>
-                        </div>
-
-                        <div className="footer-link">
-                            <span>
-                                <a className="footer-button" href="https://github.com/cbkinase/Smack" target="_blank" rel="noreferrer">
-                                    <button className="copyright-button2">
-                                        <i className="fa fa-github" style={{ fontSize: '14px' }}></i>
-                                    </button>
-                                </a>
-                            </span>
-                        </div>
-
-                        <div className="footer-link">
-                            <span>
-                                <a className="footer-button" href="https://www.linkedin.com/in/cameron-beck-4a9a44274/" target="_blank" rel="noreferrer">
-                                    <button className="copyright-button2">
-                                        <i className="fa fa-linkedin-square" style={{ fontSize: '14px' }}></i>
-                                    </button>
-
-
-                                </a>
-                            </span>
-                        </div>
-
-                    </div >
-
-                    <div className="footer-link" style={{ fontSize: '11px' }}>Additional Contributors:<br />Dave Titus,&nbsp;&nbsp;Brian Hitchin,&nbsp;&nbsp;Cynthia Liang</div>
-
-
-
-                </div >
-            </div>
-
-
+          <LeftSidebarAboutMe />
         </div>
+
+
     );
 }
 

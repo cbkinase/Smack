@@ -55,7 +55,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
   }
 
   return isLoaded ? <>
-    <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="view-all-channels">
+    <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="">
       <div className="channels-header">
         <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
         <button style={{top: "18px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>

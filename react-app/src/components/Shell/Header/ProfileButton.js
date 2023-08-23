@@ -8,6 +8,7 @@ function ProfileButton({ user }) {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+  const mainRef = useRef();
 
   const toggleMenu = () => {
     setShowMenu((prev) => !prev);
@@ -20,6 +21,16 @@ function ProfileButton({ user }) {
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+
+  useEffect(() => {
+    const closeDropdown = (e) => {
+      if (!mainRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener("click", closeDropdown);
+    return () => document.removeEventListener("click", closeDropdown);
+  }, [mainRef])
 
   // ###### EDIT USER ######
 
@@ -43,8 +54,6 @@ function ProfileButton({ user }) {
     setBio(user.bio);
     setErrors([]);
 
-
-
     if (showType === 'info') {
       seeInfo.style.display = "block";
       seeEdit.style.display = "none";
@@ -66,13 +75,14 @@ function ProfileButton({ user }) {
     }
   };
 
-
   return (
 
     <>
-
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <button className="topright-avatar-btn" onClick={toggleMenu}>
+      <div ref={mainRef} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <button
+          className="topright-avatar-btn"
+          onClick={toggleMenu}
+          >
           <img style={{ borderRadius: '4px', width: '26px', height: '26px' }} src={user.avatar} alt={user.first_name + " " + user.last_name} />
         </button>
 
@@ -127,14 +137,6 @@ function ProfileButton({ user }) {
               </div>
               <form onSubmit={handleEditUser}>
 
-
-                {/* {errors.length > 0 &&
-                  <div style={{ padding: '10px 0px 8px 20px', color: 'red', display: 'block' }}>
-                    <li>URL is not valid</li>
-                  </div >
-                } */}
-
-
                 {errors.length > 0 &&
                   <div style={{ paddingTop: '20px', paddingLeft: '10px', color: 'red', display: 'block' }}>
 
@@ -144,51 +146,69 @@ function ProfileButton({ user }) {
                 }
 
                 <div>
-                  <input className="edituser-input-field" type="text" value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="Avatar URL" />
+                  <input
+                    className="edituser-input-field"
+                    type="text"
+                    value={avatar}
+                    onChange={(e) => setAvatar(e.target.value)}
+                    placeholder="Avatar URL" />
                 </div>
 
                 <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
 
                 <div>
-                  <input className="edituser-input-field" type="text" value={first_name} onChange={(e) => setFirstName(e.target.value)}
+                  <input
+                    className="edituser-input-field"
+                    type="text"
+                    value={first_name}
+                    onChange={(e) => setFirstName(e.target.value)}
                     required />
                 </div>
 
                 <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
 
                 <div>
-                  <input className="edituser-input-field" type="text" value={last_name} onChange={(e) => setLastName(e.target.value)}
+                  <input
+                    className="edituser-input-field"
+                    type="text" value={last_name}
+                    onChange={(e) => setLastName(e.target.value)}
                     required />
                 </div>
 
                 <div style={{ borderTop: '1px solid #cfcfcf', margin: '6px 0px 6px 0px', padding: '0px' }}></div>
 
                 <div>
-                  <textarea className="edituser-input-field" style={{ resize: 'none' }} rows={4} value={bio} onChange={(e) => setBio(e.target.value)} />
+                  <textarea
+                    className="edituser-input-field"
+                    style={{ resize: 'none' }}
+                    rows={4}
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)} />
                 </div>
 
                 <div style={{ borderTop: '1px solid #cfcfcf', margin: '4px 0px 8px 0px', padding: '0px' }}></div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px', paddingBottom: '12px', alignItems: 'center' }}>
-                  <div className="cancel-edit-user" style={{ padding: '3px 5px', margin: '0px', color: '#797979' }} onClick={() => { setShowType('info') }}>Cancel</div>
-                  <button className="save-useredit-savebtn" type="submit">Save</button>
+                  <div
+                    className="cancel-edit-user"
+                    style={{ padding: '3px 5px', margin: '0px', color: '#797979' }}
+                    onClick={() => { setShowType('info') }}>
+                      Cancel
+                    </div>
+                  <button
+                    className="save-useredit-savebtn"
+                    type="submit">
+                      Save
+                  </button>
                   <div></div>
                 </div>
-
-
               </form>
             </div>
           </div>
           {/* =================== */}
-
         </div >
-
       </div >
-
-
     </>
-
-
   );
 }
 

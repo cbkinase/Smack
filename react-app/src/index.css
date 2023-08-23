@@ -495,6 +495,19 @@ a:active {
     justify-content: flex-start;
 }
 
+#last-leftside-holder {
+    margin-bottom: 110px; /* Whatever the height of our `about me` section ends up being */
+}
+
+#grid-leftside {
+    overflow-y: hidden;
+    max-height: calc(100vh - 44px - 53px); /* 44 and 53 are the px heights of the navbar/logo */
+}
+
+#grid-leftside:hover {
+    overflow-y: auto;
+}
+
 .leftside-channeldirect-holder div {
     padding: 1px 12px 1px 12px;
 }

@@ -1,7 +1,10 @@
 import ChatEmojiModal from "../../../ChatEmojiModal";
 import OpenModalButton from "../../../OpenModalButton";
 import userObjectToNameList from "../../../../utils/userObjectToNameList";
-import { useState } from "react";
+import TypingUsers from "./TypingUsers";
+import { useState, useEffect,useRef } from "react";
+import { useSelector } from "react-redux";
+import throttle from "../../../../utils/throttle";
 import { isImage, previewFilter } from "../Messages/Attachments/AttachmentFncs";
 import loadingImg from '../../../../misc/Rolling-1s-200px (1).svg';
 
@@ -15,11 +18,73 @@ export default function Editor({ functions, creating, setChatInput, user, attach
             return `Message ${userObjectToNameList(channel.Members, user)}`
         }
         else return `Jot something down`
-
     }
 
     const [hoverAttachId, setHoverAttachId] = useState(0);
     const attachmentBufferArr = Object.values(attachmentBuffer);
+
+    // Typing indicator stuff
+    const socket = useSelector((state) => state.session.socket);
+    const typingTimeoutRef = useRef(null);
+    const [typingUsers, setTypingUsers] = useState({});
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on("type", (data) => {
+            delete data[user.id]
+            setTypingUsers(data);
+        })
+
+        socket.on("stopped_typing", (data) => {
+            delete data[user.id]
+            setTypingUsers(data);
+        })
+
+        return () => {
+            socket.emit("stopped_typing", { channel_id: channelId, user_id: user.id });
+            socket.off("stopped_typing");
+            socket.off("type");
+        }
+    }, [channelId, user.id, socket])
+
+    const handleTyping = () => {
+        // Clear the existing timeout, if it exists
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+
+        socket.emit('type', {
+            channel_id: channelId,
+            user_id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name
+        }, (res) => console.log(res));
+
+        // Set a timeout to emit 'stopped_typing' if no more typing occurs
+        typingTimeoutRef.current = setTimeout(() => {
+            socket.emit('stopped_typing', {
+                channel_id: channelId,
+                user_id: user.id
+            }, (res) => console.log(res));
+        }, 2000);
+    };
+
+    const handleStoppedTyping = () => {
+        socket.emit('stopped_typing', {
+            channel_id: channelId,
+            user_id: user.id,
+        });
+    };
+
+    useEffect(() => {
+        return () => {
+            // Clear the timeout when the component unmounts
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <>
@@ -158,6 +223,7 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                                 }}
                                 value={chatInput}
                                 onChange={updateChatInput}
+                                onKeyDown={throttle(handleTyping, 200)}
                                 placeholder={
                                     currentChannel[channelId]
                                         ? `${determineName(currentChannel[channelId], user)}`
@@ -168,7 +234,10 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                                 Send
                             </button>
                         </form>
-                        <div style={{ height: '20px' }}></div>
+                        {Object.values(typingUsers).length > 0
+                        ? <TypingUsers typingUsers={typingUsers} />
+                        : <div style={{ height: '20px' }}></div>
+                        }
                     </div>
                 </div>
             </div>

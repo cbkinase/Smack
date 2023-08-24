@@ -8,6 +8,13 @@ from .socket_helpers import (
     handle_delete_reaction_helper,
     handle_delete_attachment_helper
     )
+from collections import defaultdict
+from redis import Redis
+
+redis_host = os.environ.get("REDIS_HOST") or "redis"
+redis_port = os.environ.get("REDIS_PORT") or 6379
+
+redis = Redis(host=redis_host, port=redis_port)
 
 
 # Should probably make these .env variables, but it's fine for now...
@@ -111,3 +118,40 @@ def on_leave(data):
 @socketio.on("new_DM_convo")
 def handle_new_dm(data):
     emit("new_DM_convo", data, broadcast=True)
+
+
+@socketio.on("type")
+def handle_typing_event(data):
+    room = data['channel_id']
+    user_id = data['user_id']
+    name = f"{data['first_name']} {data['last_name']}"
+    # Add the user to the room's typing hash in Redis
+    redis.hset(f"room:{room}", user_id, name)
+     # Retrieve all users currently typing in the room
+    typing_users = redis.hgetall(f"room:{room}")
+    typing_users = {k.decode(): v.decode() for k, v in typing_users.items()}
+    print("typing", name)
+    print(typing_users)
+    print(typing_users)
+    print(typing_users)
+    print(typing_users)
+    emit("type", typing_users, to=room, include_self=False)
+    return typing_users
+
+
+@socketio.on('stopped_typing')
+def handle_stop_typing_event(data):
+    room = data['channel_id']
+    user_id = data['user_id']
+    # Remove the user from the room's typing hash in Redis
+    redis.hdel(f"room:{room}", user_id)
+    # Retrieve the remaining users currently typing in the room
+    typing_users = redis.hgetall(f"room:{room}")
+    typing_users = {k.decode(): v.decode() for k, v in typing_users.items()}
+    print("stop typing", user_id )
+    print(typing_users)
+    print(typing_users)
+    print(typing_users)
+    print(typing_users)
+    emit('stopped_typing', typing_users, room=room, include_self=False)
+    return typing_users

@@ -1,11 +1,27 @@
+import "./TypingUsers.css"
+
 export default function TypingUsers({ typingUsers }) {
     const users = Object.values(typingUsers);
+
     if (users.length === 0)
         return null;
-    if (users.length === 1)
-        return <div style={{height: "20px"}}><p>{users[0]} is typing...</p></div>;
-    if (users.length === 2)
-        return <div style={{height: "20px"}}><p>{users[0]} and {users[1]} are typing...</p></div>;
-    if (users.length > 2)
-        return <div style={{height: "20px"}}><p>Several people are typing...</p></div>;
+
+    function renderTypingUsers(users) {
+        if (users.length === 1)
+            return <p className="typing-indicator">
+                <span className="typing-users">{users[0]}</span> is typing</p>
+        if (users.length === 2)
+            return <p className="typing-indicator">
+                <span className="typing-users">{users[0]}</span> and {" "}
+                <span className="typing-users">{users[1]}</span> are typing</p>
+        if (users.length > 2)
+            return <p className="typing-indicator">
+                <span className="typing-users">Several people</span> are typing</p>
+    }
+
+    return (
+        <div id="typing-indicator-container">
+            {renderTypingUsers(users)}
+        </div>
+    )
 }

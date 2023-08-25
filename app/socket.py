@@ -1,3 +1,5 @@
+from gevent import monkey
+monkey.patch_all()
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import os
 from .socket_helpers import (
@@ -8,23 +10,24 @@ from .socket_helpers import (
     handle_delete_reaction_helper,
     handle_delete_attachment_helper
     )
-from collections import defaultdict
 from redis import Redis
 
 redis_host = os.environ.get("REDIS_HOST") or "redis"
-redis_port = os.environ.get("REDIS_PORT") or 6379
-
-redis = Redis(host=redis_host, port=redis_port)
 
 
-# Should probably make these .env variables, but it's fine for now...
 if os.environ.get("FLASK_ENV") == "production":
     origins = [
         "https://cameron-smack.onrender.com",
         "http://cameron-smack.onrender.com"
     ]
+    redis = Redis.from_url(redis_host, decode_responses=True)
 else:
     origins = "*"
+    redis = Redis(
+    host=redis_host,
+    port=6379,
+    decode_responses=True,
+    )
 
 socketio = SocketIO(cors_allowed_origins=origins)
 
@@ -129,12 +132,6 @@ def handle_typing_event(data):
     redis.hset(f"room:{room}", user_id, name)
      # Retrieve all users currently typing in the room
     typing_users = redis.hgetall(f"room:{room}")
-    typing_users = {k.decode(): v.decode() for k, v in typing_users.items()}
-    print("typing", name)
-    print(typing_users)
-    print(typing_users)
-    print(typing_users)
-    print(typing_users)
     emit("type", typing_users, to=room, include_self=False)
     return typing_users
 
@@ -147,11 +144,5 @@ def handle_stop_typing_event(data):
     redis.hdel(f"room:{room}", user_id)
     # Retrieve the remaining users currently typing in the room
     typing_users = redis.hgetall(f"room:{room}")
-    typing_users = {k.decode(): v.decode() for k, v in typing_users.items()}
-    print("stop typing", user_id )
-    print(typing_users)
-    print(typing_users)
-    print(typing_users)
-    print(typing_users)
     emit('stopped_typing', typing_users, room=room, include_self=False)
     return typing_users

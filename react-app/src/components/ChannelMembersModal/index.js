@@ -33,7 +33,7 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
   }
 
   return <>
-    <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="">
+    <div style={{ maxWidth: "600px", width: "85vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="">
       <div className="channels-header">
         <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
         <button style={{top: "18px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>

@@ -2,7 +2,7 @@ import ChatEmojiModal from "../../../ChatEmojiModal";
 import OpenModalButton from "../../../OpenModalButton";
 import userObjectToNameList from "../../../../utils/userObjectToNameList";
 import TypingUsers from "./TypingUsers";
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect,useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import throttle from "../../../../utils/throttle";
 import { isImage, previewFilter } from "../Messages/Attachments/AttachmentFncs";
@@ -67,15 +67,10 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                 channel_id: channelId,
                 user_id: user.id
             }, (res) => console.log(res));
-        }, 2000);
+        }, 4000);
     };
 
-    const handleStoppedTyping = () => {
-        socket.emit('stopped_typing', {
-            channel_id: channelId,
-            user_id: user.id,
-        });
-    };
+    const throttledHandleTyping = useCallback(throttle(handleTyping, 1000), []);
 
     useEffect(() => {
         return () => {
@@ -222,8 +217,12 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                                     width: "100%",
                                 }}
                                 value={chatInput}
-                                onChange={updateChatInput}
-                                onKeyDown={throttle(handleTyping, 200)}
+                                onChange={(e) => {
+                                    updateChatInput(e);
+                                    throttledHandleTyping();
+
+                                }}
+                                // onKeyDown={throttle(handleTyping, 200)}
                                 placeholder={
                                     currentChannel[channelId]
                                         ? `${determineName(currentChannel[channelId], user)}`

@@ -190,6 +190,11 @@ const Messages = ({ scrollContainerRef }) => {
 
         setAttachmentBuffer({});
         setChatInput("");
+
+        socket.emit('stopped_typing', {
+            channel_id: channelId,
+            user_id: user.id
+        }, (res) => console.log(res));
     };
 
     // Attachments

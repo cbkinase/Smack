@@ -183,8 +183,10 @@ const Messages = ({ scrollContainerRef }) => {
             } else {
                 // TODO: handle message send failures
                 // depending on specific failure point
-                console.log("response: ", res);
-                console.log("status: ", res.status);
+                if (process.node.ENV !== "production") {
+                    console.log("response: ", res);
+                    console.log("status: ", res.status);
+                }
             }
         });
 
@@ -238,7 +240,9 @@ const Messages = ({ scrollContainerRef }) => {
                 dispatch(deleteAttachment(attachment));
             }
             else {
-                console.log(res);
+                if (process.env.NODE_ENV !== "production") {
+                    console.log(res);
+                }
             }
 
         });

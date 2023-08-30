@@ -29,7 +29,9 @@ export default function EditMessageButton({
                 dispatch(addMessage(res.message))
             }
             else {
-                console.log(res)
+                if (process.env.NODE_ENV !== "production") {
+                    console.log(res);
+                }
             }
         });
     };

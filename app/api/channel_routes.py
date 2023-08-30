@@ -10,22 +10,31 @@ channel_routes = Blueprint('channels', __name__)
 @channel_routes.route('/all')
 @login_required
 def all_channels():
+    """
+    Get all channels
+    """
     all_channels = Channel.query.options(joinedload(Channel.users)).all()
     return { "all_channels": [channel.to_dict() for channel in all_channels] }, 200
 
-# GET all the channels that the user is in
+
 @channel_routes.route('/user')
 @login_required
 def user_channels():
+    """
+    Get all channels the currently logged in user is part of
+    """
     user = User.query.options(
         joinedload(User.channels).joinedload(Channel.users),
     ).filter(User.id == current_user.id).first()
     return { "user_channels": [channel.to_dict() for channel in user.channels] }, 200
 
-# GET single channel
+
 @channel_routes.route('/<channel_id>')
 @login_required
 def one_channel(channel_id):
+    """
+    Get the details of a single channel by ID
+    """
     channel = Channel.query\
           .options(joinedload(Channel.users))\
           .filter(Channel.id == channel_id)\
@@ -37,10 +46,12 @@ def one_channel(channel_id):
     return {"single_channel": [channel.to_dict()]}, 200
 
 
-
 @channel_routes.route('/', methods=['POST'])
 @login_required
 def create_channel():
+    """
+    Create a new channel
+    """
     try:
         new_channel = Channel(
             name = request.json.get('name'),
@@ -61,9 +72,13 @@ def create_channel():
         }
         return error_obj, 400
 
+
 @channel_routes.route('/<channel_id>', methods=['DELETE'])
 @login_required
 def delete_channel(channel_id):
+    """
+    Delete a channel by ID
+    """
     channel = Channel.query.get(channel_id)
     if not channel:
         return {"errors": "Channel not found."}, 404
@@ -76,9 +91,13 @@ def delete_channel(channel_id):
     db.session.commit()
     return {"message": "Channel successfully deleted."}, 200
 
+
 @channel_routes.route('/<channel_id>', methods=['PUT'])
 @login_required
 def edit_channel(channel_id):
+    """
+    Edit a channel by ID
+    """
     channel = Channel.query\
           .options(joinedload(Channel.users))\
           .filter(Channel.id == channel_id)\
@@ -107,9 +126,15 @@ def edit_channel(channel_id):
 
 
 ### Members-related Routes
+
+
 @channel_routes.route("/<int:channel_id>/users", methods=["POST"])
 @login_required
 def add_channel_member(channel_id):
+    """
+    When an authenticated user hits this route, they
+    will be added to the channel with the given ID
+    """
     channel = Channel.query.get(channel_id)
 
     if not channel or not current_user:
@@ -126,9 +151,13 @@ def add_channel_member(channel_id):
     except:
         return {"message": "Something went wrong..."}, 404
 
+
 @channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["POST"])
 @login_required
 def add_nonself_channel_member(channel_id, user_id):
+    """
+    Have an authenticated user add another user of `user_id` to a channel of `channel_id`
+    """
     channel = Channel.query\
           .options(joinedload(Channel.users))\
           .filter(Channel.id == channel_id)\
@@ -155,10 +184,12 @@ def add_nonself_channel_member(channel_id, user_id):
         return {"message": "Something went wrong..."}, 404
 
 
-# get all members of channel
 @channel_routes.route("/<int:channel_id>/members")
 @login_required
 def get_all_channel_members(channel_id):
+    """
+    Returns all users who are members of the given channel
+    """
     channel = Channel.query\
           .options(joinedload(Channel.users))\
           .filter(Channel.id == channel_id)\
@@ -173,6 +204,9 @@ def get_all_channel_members(channel_id):
 @channel_routes.route("/<int:channel_id>/members/<int:user_id>", methods=["DELETE"])
 @login_required
 def delete_channel_member(channel_id, user_id):
+    """
+    Remove a given user of `user_id` from a channel `channel_id`
+    """
     channel = Channel.query.get(channel_id)
     user_to_delete = User.query.get(user_id)
 
@@ -191,12 +225,15 @@ def delete_channel_member(channel_id, user_id):
         return {"message": "Something went wrong..."}, 404
 
 
-
 ### Message-related Routes
+
 
 @channel_routes.route("/<int:channel_id>/messages")
 @login_required
 def get_all_messages_for_channel(channel_id):
+    """
+    Get the messages for a particular channel
+    """
     channel = Channel.query\
           .options(joinedload(Channel.users))\
           .filter(Channel.id == channel_id)\

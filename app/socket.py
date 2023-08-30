@@ -35,9 +35,10 @@ socketio = SocketIO(cors_allowed_origins="*")
 def handle_chat(data):
     room = str(data.get('channel_id'))
     new_message = handle_chat_helper(data)
+    error = new_message.get("error")
 
-    if new_message.get("error"):
-        return {'status': new_message.error, 'message': new_message.error_message}
+    if error:
+        return {'status': error, 'message': new_message["error_message"]}
 
     try:
         emit("chat", new_message, to=room, include_self=False)
@@ -69,9 +70,10 @@ def handle_delete(data):
 def handle_add_reaction(data):
     room = str(data.get('channel_id'))
     res = handle_add_reaction_helper(data)
+    error = res.get('error')
 
-    if res.get('error'):
-        return {'status': 'invalid_request', 'message': res.error}
+    if error:
+        return {'status': 'invalid_request', 'message': error}
 
     emit("addReaction", res, to=room, include_self=False)
     return {'status': 'success', 'payload': res}
@@ -81,9 +83,10 @@ def handle_add_reaction(data):
 def handle_delete_reaction(data):
     room = str(data.get('channel_id'))
     res = handle_delete_reaction_helper(data)
+    error = res.get('error')
 
-    if res.get('error'):
-        return {'status': 'invalid_request', 'message': res.error}
+    if error:
+        return {'status': 'invalid_request', 'message': error}
 
     emit("deleteReaction", res, to=room, include_self=False)
     return {'status': 'success', 'payload': res}

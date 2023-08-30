@@ -8,6 +8,10 @@ def handle_delete_reaction_helper(data):
     if not reaction:
         return { "error": "Reaction not found" }
 
-    db.session.delete(reaction)
-    db.session.commit()
+    try:
+        db.session.delete(reaction)
+        db.session.commit()
+    except Exception as e:
+        return { "error": f"Failed to delete reaction: {e}" }
+
     return data

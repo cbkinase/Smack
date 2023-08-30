@@ -8,6 +8,9 @@ message_routes = Blueprint('messages', __name__)
 @message_routes.route("/attachments/<content_name>", methods=["GET"])
 @login_required
 def download_attachment(content_name):
+    """
+    Return a URL from which AWS S3 bucket content can be downloaded
+    """
     try:
         aws_url = download_file_from_s3(content_name)
         return {"url": aws_url}, 200
@@ -18,6 +21,9 @@ def download_attachment(content_name):
 @message_routes.route("/attachments/upload", methods=["POST"])
 @login_required
 def upload_attachments_and_get_links():
+    """
+    Upload attachments to AWS S3 and return the URL where it is stored
+    """
     incoming_attachments_arr = request.files
     outgoing_attachments = {}
 

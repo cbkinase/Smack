@@ -1,4 +1,4 @@
-from app.models import db, Message, Channel, User, Attachment
+from app.models import db, Message, Attachment
 from flask_login import current_user
 
 
@@ -8,17 +8,7 @@ def handle_chat_helper(data):
     attachments = data.get('attachments')
 
     try:
-        this_channel = Channel.query.get(channel_id)
-        this_user = User.query.get(current_user.id)
-    except Exception as e:
-        print(e)
-        return {
-            "error": "db_write_error",
-            "error_message": "Failed to get either the channel or the user"
-        }
-
-    try:
-        new_message = Message(content=msg_content, users=this_user, channels=this_channel)
+        new_message = Message(content=msg_content, users=current_user, channel_id=channel_id)
         db.session.add(new_message)
     except Exception as e:
         print(e)
@@ -30,7 +20,7 @@ def handle_chat_helper(data):
     if attachments:
         for id, url in attachments.items():
             try:
-                new_attachment = Attachment(user=this_user, message=new_message, content=url)
+                new_attachment = Attachment(user=current_user, message=new_message, content=url)
                 db.session.add(new_attachment)
             except Exception as e:
                 return {

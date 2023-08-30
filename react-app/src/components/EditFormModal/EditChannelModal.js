@@ -60,9 +60,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
     };
 
     if (currChannel.length) {
-        const ownerId = currChannel[0].owner_id;
-        const memList = currChannel[0].Members;
-        owner = memList[ownerId];
+        owner = Object.values(currChannel[0].Members).filter((user) => (user.id === currChannel[0].owner_id));
     }
     function determineName(channel, user) {
         // The name displayed must be different depending on whether it's a DM or not.
@@ -192,7 +190,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 
                         {!currChannel[0].is_direct ? <div className="edit-modal-form-box">
                             <div style={{paddingLeft: "7px", fontWeight: "bold"}}>Created by</div>
-                            <div id="edit-owner-name">{`${owner.first_name} ${owner.last_name}`}</div>
+                            <div id="edit-owner-name">{`${owner[0].first_name} ${owner[0].last_name}`}</div>
                         </div> : null}
 
 

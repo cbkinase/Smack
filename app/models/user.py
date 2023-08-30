@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
-    channels = db.relationship(
+    channel = db.relationship(
         "Channel",
         secondary='channel_users',
         back_populates="users")

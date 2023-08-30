@@ -194,7 +194,7 @@ const Messages = ({ scrollContainerRef }) => {
         socket.emit('stopped_typing', {
             channel_id: channelId,
             user_id: user.id
-        }, (res) => console.log(res));
+        });
     };
 
     // Attachments
@@ -246,7 +246,6 @@ const Messages = ({ scrollContainerRef }) => {
 
     const messageFunctions = {
         sendChat,
-        chatInput,
         updateChatInput,
         currentChannel,
         channelId,
@@ -280,6 +279,7 @@ const Messages = ({ scrollContainerRef }) => {
                         user={user}
                         attachmentBuffer={attachmentBuffer}
                         attachmentIsLoading={attachmentIsLoading}
+                        chatInput={chatInput}
                 />
             </div>
         </>

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from app.models import Channel, User, db, Message
 from flask_login import login_required, current_user
 from ..socket import socketio
@@ -10,51 +10,49 @@ channel_routes = Blueprint('channels', __name__)
 @channel_routes.route('/all')
 @login_required
 def all_channels():
-    all_channels = Channel.query.all()
-    return {"all_channels": [channel.to_dict() for channel in all_channels]}, 200
+    all_channels = Channel.query.options(joinedload(Channel.users)).all()
+    return { "all_channels": [channel.to_dict() for channel in all_channels] }, 200
 
 # GET all the channels that the user is in
 @channel_routes.route('/user')
 @login_required
 def user_channels():
-    user = User.query.get(current_user.id)
-    user_channels = user.channel
-    return {"user_channels":[channel.to_dict() for channel in user_channels]}, 200
+    user = User.query.options(
+        joinedload(User.channels).joinedload(Channel.users),
+    ).filter(User.id == current_user.id).first()
+    return { "user_channels": [channel.to_dict() for channel in user.channels] }, 200
 
 # GET single channel
 @channel_routes.route('/<channel_id>')
 @login_required
 def one_channel(channel_id):
-    channel = Channel.query.get(channel_id)
+    channel = Channel.query\
+          .options(joinedload(Channel.users))\
+          .filter(Channel.id == channel_id)\
+          .first()
 
     if not channel:
-        error_obj = {"errors": "Channel with the specified id could not be found."}
-        return error_obj, 404
+        return {"errors": "Channel not found."}, 404
 
-    channel_data = channel.to_dict()
-    channel_data['Members'] = {user.id:user.to_dict() for user in channel.users}
-    return {"single_channel": [channel_data]}, 200
+    return {"single_channel": [channel.to_dict()]}, 200
 
 
 
 @channel_routes.route('/', methods=['POST'])
 @login_required
 def create_channel():
-    this_user = User.query.get(current_user.id)
     try:
         new_channel = Channel(
             name = request.json.get('name'),
             subject = request.json.get('subject'),
             is_private = request.json.get('is_private'),
             is_direct = request.json.get('is_direct'),
-            owner = this_user
+            owner = current_user
         )
         db.session.add(new_channel)
-        new_channel.users.append(this_user)
+        new_channel.users.append(current_user)
         db.session.commit()
-        new_channel_data = new_channel.to_dict()
-        return new_channel_data, 201
-
+        return new_channel.to_dict(), 201
 
     except:
         error_obj = {
@@ -67,42 +65,39 @@ def create_channel():
 @login_required
 def delete_channel(channel_id):
     channel = Channel.query.get(channel_id)
-    user = User.query.get(current_user.id)
     if not channel:
-        error_obj = {"errors": "Channel with the specified id could not be found."}
-        return error_obj, 404
+        return {"errors": "Channel not found."}, 404
 
     if channel.owner_id != current_user.id:
-        error_obj = {"errors": "User does not own this channel"}
-        return error_obj, 403
+        return {"errors": "User does not own this channel"}, 403
 
 
     db.session.delete(channel)
     db.session.commit()
-    resp_obj = {"message": "Channel successfully deleted."}
-    return resp_obj, 200
+    return {"message": "Channel successfully deleted."}, 200
 
 @channel_routes.route('/<channel_id>', methods=['PUT'])
 @login_required
 def edit_channel(channel_id):
-    user_id = current_user.id
-    channel_exist = Channel.query.get(channel_id)
-    if not channel_exist:
-        error_obj = {"errors": "Channel with the specified id could not be found."}
-        return error_obj, 404
-    this_user = User.query.get(user_id)
-    if user_id not in [channel.id for channel in channel_exist.users]:
-        error_obj = {"errors": "Current user does not belong to the specified channel."}
-        return error_obj, 403
+    channel = Channel.query\
+          .options(joinedload(Channel.users))\
+          .filter(Channel.id == channel_id)\
+          .first()
+
+    if not channel:
+        return {"errors": "Channel not found."}, 404
+
+    if current_user.id != channel.owner_id:
+        return {"errors": "Must own channel."}, 403
+
     try:
-        edited_channel = Channel.query.get(channel_id)
-        edited_channel.name = request.json.get('name')
-        edited_channel.subject = request.json.get('subject')
-        edited_channel.is_private = request.json.get('is_private')
-        edited_channel.is_direct = request.json.get('is_direct')
-        edited_channel.updated_at = db.func.now()
+        channel.name = request.json.get('name')
+        channel.subject = request.json.get('subject')
+        channel.is_private = request.json.get('is_private')
+        channel.is_direct = request.json.get('is_direct')
+        channel.updated_at = db.func.now()
         db.session.commit()
-        return edited_channel.to_dict()
+        return channel.to_dict()
     except:
         error_obj = {
             "message": "Validation Error",
@@ -116,13 +111,12 @@ def edit_channel(channel_id):
 @login_required
 def add_channel_member(channel_id):
     channel = Channel.query.get(channel_id)
-    user = User.query.get(current_user.id)
 
-    if not channel or not user:
+    if not channel or not current_user:
         return {"message": "Resource not found"}, 404
 
     try:
-        user.channel.append(channel)
+        current_user.channels.append(channel)
         db.session.commit()
         try:
             socketio.emit("new_DM_convo", channel_id)
@@ -135,19 +129,21 @@ def add_channel_member(channel_id):
 @channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["POST"])
 @login_required
 def add_nonself_channel_member(channel_id, user_id):
-    curr_user = User.query.get(current_user.id)
-    channel = Channel.query.get(channel_id)
+    channel = Channel.query\
+          .options(joinedload(Channel.users))\
+          .filter(Channel.id == channel_id)\
+          .first()
     other_user = User.query.get(user_id)
 
-    if not channel or not curr_user or not other_user:
+    if not channel or not current_user or not other_user:
         return {"message": "Resource not found"}, 404
 
-    if curr_user not in channel.users:
-        return {"message": "Forbidden: must own Channel"}, 403
+    if current_user not in channel.users:
+        return {"message": "Forbidden: must be member of Channel"}, 403
 
 
     try:
-        other_user.channel.append(channel)
+        other_user.channels.append(channel)
         db.session.commit()
         try:
             socketio.emit("new_DM_convo", channel_id)
@@ -163,7 +159,10 @@ def add_nonself_channel_member(channel_id, user_id):
 @channel_routes.route("/<int:channel_id>/members")
 @login_required
 def get_all_channel_members(channel_id):
-    channel = Channel.query.get(channel_id)
+    channel = Channel.query\
+          .options(joinedload(Channel.users))\
+          .filter(Channel.id == channel_id)\
+          .first()
 
     if not channel:
         return {"message": "Resource not found"}, 404
@@ -174,12 +173,16 @@ def get_all_channel_members(channel_id):
 @channel_routes.route("/<int:channel_id>/members/<int:user_id>", methods=["DELETE"])
 @login_required
 def delete_channel_member(channel_id, user_id):
-    # Need to check to make sure the deleter is the channel owner
     channel = Channel.query.get(channel_id)
     user_to_delete = User.query.get(user_id)
 
     if not channel or not user_to_delete:
         return {"message": "Resource not found"}, 404
+
+    if current_user.id != user_id:
+        if current_user.id != channel.owner_id:
+            return {"message": "Must either own the channel or be removing self"}, 403
+
     try:
         channel.users.remove(user_to_delete)
         db.session.commit()
@@ -194,7 +197,10 @@ def delete_channel_member(channel_id, user_id):
 @channel_routes.route("/<int:channel_id>/messages")
 @login_required
 def get_all_messages_for_channel(channel_id):
-    channel = Channel.query.get(channel_id)
+    channel = Channel.query\
+          .options(joinedload(Channel.users))\
+          .filter(Channel.id == channel_id)\
+          .first()
 
     if current_user not in channel.users:
         return {"error": "Forbidden"}, 403
@@ -214,10 +220,5 @@ def get_all_messages_for_channel(channel_id):
                 channel_messages = channel_messages.paginate(page=page, per_page=per_page).items
             except:
                 return { "errors": "No more records" }, 418
-    channel_messages_data = []
 
-    for msg in channel_messages:
-        msg_data = msg.to_dict()
-        channel_messages_data.append(msg_data)
-
-    return jsonify(channel_messages_data)
+    return [msg.to_dict() for msg in channel_messages]

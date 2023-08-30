@@ -14,7 +14,6 @@ from redis import Redis
 
 redis_host = os.environ.get("REDIS_HOST") or "redis"
 
-
 if os.environ.get("FLASK_ENV") == "production":
     origins = [
         "https://cameron-smack.onrender.com",
@@ -71,8 +70,8 @@ def handle_add_reaction(data):
     room = str(data.get('channel_id'))
     res = handle_add_reaction_helper(data)
 
-    if res.get('errors'):
-        return {'status': 'invalid_request', 'message': res.errors}
+    if res.get('error'):
+        return {'status': 'invalid_request', 'message': res.error}
 
     emit("addReaction", res, to=room, include_self=False)
     return {'status': 'success', 'payload': res}
@@ -82,6 +81,10 @@ def handle_add_reaction(data):
 def handle_delete_reaction(data):
     room = str(data.get('channel_id'))
     res = handle_delete_reaction_helper(data)
+
+    if res.get('error'):
+        return {'status': 'invalid_request', 'message': res.error}
+
     emit("deleteReaction", res, to=room, include_self=False)
     return {'status': 'success', 'payload': res}
 

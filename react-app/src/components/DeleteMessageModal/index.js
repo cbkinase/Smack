@@ -13,7 +13,9 @@ export default function DeleteMessageModal({ user, msg, socket }) {
                 dispatch(deleteMessage(msg.id))
             }
             else {
-                console.log(res);
+                if (process.env.NODE_ENV !== "production") {
+                    console.log(res);
+                }
             }
         });
         closeModal();

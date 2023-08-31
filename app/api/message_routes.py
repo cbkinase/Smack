@@ -1,8 +1,6 @@
 from flask import Blueprint, request
-from flask_login import current_user, login_required
-from app.models import db, Attachment
-
-from app.s3_helpers import (get_unique_filename, upload_file_to_s3, remove_file_from_s3, download_file_from_s3)
+from flask_login import login_required
+from app.s3_helpers import (get_unique_filename, upload_file_to_s3, download_file_from_s3)
 
 message_routes = Blueprint('messages', __name__)
 
@@ -10,6 +8,9 @@ message_routes = Blueprint('messages', __name__)
 @message_routes.route("/attachments/<content_name>", methods=["GET"])
 @login_required
 def download_attachment(content_name):
+    """
+    Return a URL from which AWS S3 bucket content can be downloaded
+    """
     try:
         aws_url = download_file_from_s3(content_name)
         return {"url": aws_url}, 200
@@ -20,6 +21,9 @@ def download_attachment(content_name):
 @message_routes.route("/attachments/upload", methods=["POST"])
 @login_required
 def upload_attachments_and_get_links():
+    """
+    Upload attachments to AWS S3 and return the URL where it is stored
+    """
     incoming_attachments_arr = request.files
     outgoing_attachments = {}
 

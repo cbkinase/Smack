@@ -19,7 +19,9 @@ export default function ReactionModal({ socket, msg, dispatch }) {
                 dispatch(createReaction(res.payload));
             }
             else {
-                console.log(res);
+                if (process.env.NODE_ENV !== "production") {
+                    console.log(res);
+                }
             }
         });
     }

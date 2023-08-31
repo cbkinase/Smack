@@ -24,7 +24,7 @@ class Channel(db.Model):
     users = db.relationship(
         "User",
         secondary='channel_users',
-        back_populates="channel")
+        back_populates="channels")
 
     def to_dict(self):
         base_dict = {
@@ -35,15 +35,15 @@ class Channel(db.Model):
             'is_private': self.is_private,
             'is_direct': self.is_direct,
         }
-        if self.is_direct:
-            base_dict["Members"] = {
-                user.id : {
-                "avatar": user.avatar,
-                "first_name": user.first_name,
-                "last_name": user.last_name
-                }
-                for user in self.users
+        base_dict["Members"] = {
+            user.id : {
+            "avatar": user.avatar,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "id": user.id
             }
+            for user in self.users
+        }
         return base_dict
 
 

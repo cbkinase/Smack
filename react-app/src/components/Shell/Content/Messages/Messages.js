@@ -81,8 +81,8 @@ const Messages = ({ scrollContainerRef }) => {
             setPage(1);
         }
         alterChannelMessages().then(() => {
-            scrollToBottomOfGrid();
             setIsLoaded(true);
+            scrollToBottomOfGrid();
         });
     }, [dispatch, channelId, setPage]);
 

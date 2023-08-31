@@ -157,6 +157,7 @@ const Messages = ({ scrollContainerRef }) => {
                 channel_id: channelId,
                 user_id: user.id,
             });
+            setIsLoaded(false);
         }
     }, [channelId, user.id, socket])
 

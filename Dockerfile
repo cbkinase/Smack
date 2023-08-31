@@ -1,17 +1,11 @@
 # Use an official Python runtime as a parent image
-
-# Using alpine to minimize image size, though note
-# that in production, since we use psycopg2, we'll
-# have to either use a different image (slim-buster)
-# or install deps for psycopg2
-# (https://stackoverflow.com/questions/42424108/installing-psycopg2-in-an-alpine-docker-container)
-FROM python:3.9-alpine
+FROM python:3.9-slim-buster
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Create a new user 'appuser'
-RUN adduser -D appuser
+RUN useradd -m appuser
 
 # Switch to 'appuser'
 USER appuser

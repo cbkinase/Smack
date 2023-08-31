@@ -15,6 +15,7 @@ import useInfiniteScrollingTop from "../../../../hooks/useInfiniteScrollingTop";
 import scrollToBottomOfGrid from "../../../../utils/scrollToBottomOfGrid";
 import useViewportWidth from "../../../../hooks/useViewportWidth";
 import { toggleLeftPane } from "../../../../utils/togglePaneFunctions";
+import LoadingSpinner from "../../../LoadingSpinner";
 
 const Messages = ({ scrollContainerRef }) => {
     const { channelId } = useParams();
@@ -24,11 +25,14 @@ const Messages = ({ scrollContainerRef }) => {
     const allMessages = useSelector((state) => state.messages.allMessages);
     const currentChannel = useSelector((state) => state.channels.single_channel);
     const socket = useSelector((state) => state.session.socket);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // For improved responsiveness - particularly on load
     const viewportWidth = useViewportWidth();
     useEffect(() => {
-        toggleLeftPane();
+        if (isLoaded) {
+            toggleLeftPane();
+        }
     }, [viewportWidth])
 
     // buffer for actual attachments to be uploaded
@@ -52,6 +56,7 @@ const Messages = ({ scrollContainerRef }) => {
             if (!hasMoreToLoad) return;
             const res = await dispatch(getChannelMessages(channelId, page, perPage));
             setLoadedMore(true);
+            setIsLoaded(true);
             if (res.errors) {
                 setHasMoreToLoad(false);
             }
@@ -81,11 +86,6 @@ const Messages = ({ scrollContainerRef }) => {
 
     useEffect(() => {
         if (!socket) return;
-
-        socket.emit("join", {
-            channel_id: channelId,
-            user_id: user.id,
-        });
 
         socket.on("chat", async (chat) => {
             // Ensure UI updates before trying to scroll
@@ -132,19 +132,20 @@ const Messages = ({ scrollContainerRef }) => {
             socket.off("edit");
             socket.off("delete");
             socket.off("chat");
-            socket.emit("leave", {
-                channel_id: channelId,
-                user_id: user.id,
-            });
-            socket.off("leave");
         }
-    }, [socket, channelId, dispatch, allMessages, user.id]);
+    }, [socket, dispatch, allMessages]);
 
-    // Typing indicator stuff
-
+    // Joining and type indicator stuff
     const [typingUsers, setTypingUsers] = useState({});
 
     useEffect(() => {
+        if (!socket) return null;
+
+        socket.emit("join", {
+            channel_id: channelId,
+            user_id: user.id,
+        });
+
         // If the user switches channels, stop the typing indicator on their current channel
         return () => {
             socket.emit('stopped_typing', {
@@ -152,6 +153,10 @@ const Messages = ({ scrollContainerRef }) => {
                 user_id: user.id
             });
             setTypingUsers({});
+            socket.emit("leave", {
+                channel_id: channelId,
+                user_id: user.id,
+            });
         }
     }, [channelId, user.id, socket])
 
@@ -275,8 +280,8 @@ const Messages = ({ scrollContainerRef }) => {
         handleDeleteAttachment,
     };
 
-    if (!user || !currentChannel || !allMessages) {
-        return null;
+    if (!isLoaded) {
+        return <LoadingSpinner />
     }
 
     return (

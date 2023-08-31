@@ -56,7 +56,6 @@ const Messages = ({ scrollContainerRef }) => {
             if (!hasMoreToLoad) return;
             const res = await dispatch(getChannelMessages(channelId, page, perPage));
             setLoadedMore(true);
-            setIsLoaded(true);
             if (res.errors) {
                 setHasMoreToLoad(false);
             }
@@ -81,7 +80,10 @@ const Messages = ({ scrollContainerRef }) => {
             setHasMoreToLoad(true);
             setPage(1);
         }
-        alterChannelMessages().then(() => scrollToBottomOfGrid());
+        alterChannelMessages().then(() => {
+            scrollToBottomOfGrid();
+            setIsLoaded(true);
+        });
     }, [dispatch, channelId, setPage]);
 
     useEffect(() => {

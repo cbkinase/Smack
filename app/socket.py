@@ -28,7 +28,7 @@ else:
     decode_responses=True,
     )
 
-socketio = SocketIO(cors_allowed_origins="*")
+socketio = SocketIO(cors_allowed_origins=origins)
 
 
 @socketio.on("chat")

@@ -70,10 +70,6 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
               await fetch(`/api/channels/${currentChannel[0].id}/users/${member.id}`, {
                 method: "POST",
               });
-              /*
-              There's probably a better way to do this, but for now this is how I'm getting the components that depend on the above fetch to re-render, since it doesn't go through Redux at all.
-               */
-              await dispatch(UserChannelThunk());
               closeModal();
             }}
             key={member.id} className="channels-list-item" style={{ display: "flex", alignItems: "center", border: "none" }}>

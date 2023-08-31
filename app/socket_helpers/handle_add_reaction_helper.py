@@ -8,10 +8,14 @@ def handle_add_reaction_helper(data):
     try:
         message = db.session.query(Message).get(message_id)
 
-        curr_reactions = db.session.query(Reaction).filter(Reaction.message_id == message_id).all()
-        for reaction in curr_reactions:
-            if reaction.user_id == current_user.id and reaction.reaction == rxn:
-                return {"error": "user already has reacted with this reaction"}
+        existing_reaction = db.session.query(Reaction).filter(
+            Reaction.message_id == message_id,
+            Reaction.user_id == current_user.id,
+            Reaction.reaction == rxn
+        ).first()
+
+        if existing_reaction:
+            return {"error": "User already has reacted with this reaction"}
 
         new_reaction = Reaction(user=current_user, messages=message, reaction=rxn)
         db.session.add(new_reaction)

@@ -1,6 +1,6 @@
 import { useModal } from "../../context/Modal/Modal";
 
-export default function ChatEmojiModal({ setChatInput, chatInput }) {
+export default function ChatEmojiModal({ setChatInput }) {
     const { closeModal } = useModal();
 
 
@@ -38,7 +38,7 @@ export default function ChatEmojiModal({ setChatInput, chatInput }) {
                 {emojis.map((emoji) => (
                     <button key={emoji} className="reaction-icon"
                         onClick={(e) => {
-                            setChatInput(chatInput + emoji + " ")
+                            setChatInput((prev) => prev + emoji + " ")
                             document.getElementsByClassName("editor-focus")[0].focus()
                             closeModal();
                         }}

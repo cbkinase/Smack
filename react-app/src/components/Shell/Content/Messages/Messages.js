@@ -84,6 +84,7 @@ const Messages = ({ scrollContainerRef }) => {
 
         socket.emit("join", {
             channel_id: channelId,
+            user_id: user.id,
         });
 
         socket.on("chat", async (chat) => {
@@ -133,10 +134,26 @@ const Messages = ({ scrollContainerRef }) => {
             socket.off("chat");
             socket.emit("leave", {
                 channel_id: channelId,
+                user_id: user.id,
             });
             socket.off("leave");
         }
-    }, [socket, channelId, dispatch, allMessages]);
+    }, [socket, channelId, dispatch, allMessages, user.id]);
+
+    // Typing indicator stuff
+
+    const [typingUsers, setTypingUsers] = useState({});
+
+    useEffect(() => {
+        // If the user switches channels, stop the typing indicator on their current channel
+        return () => {
+            socket.emit('stopped_typing', {
+                channel_id: channelId,
+                user_id: user.id
+            });
+            setTypingUsers({});
+        }
+    }, [channelId, user.id, socket])
 
     const updateChatInput = (e) => {
         setChatInput(e.target.value);
@@ -183,8 +200,10 @@ const Messages = ({ scrollContainerRef }) => {
             } else {
                 // TODO: handle message send failures
                 // depending on specific failure point
-                console.log("response: ", res);
-                console.log("status: ", res.status);
+                if (process.node.ENV !== "production") {
+                    console.log("response: ", res);
+                    console.log("status: ", res.status);
+                }
             }
         });
 
@@ -194,7 +213,7 @@ const Messages = ({ scrollContainerRef }) => {
         socket.emit('stopped_typing', {
             channel_id: channelId,
             user_id: user.id
-        }, (res) => console.log(res));
+        });
     };
 
     // Attachments
@@ -238,7 +257,9 @@ const Messages = ({ scrollContainerRef }) => {
                 dispatch(deleteAttachment(attachment));
             }
             else {
-                console.log(res);
+                if (process.env.NODE_ENV !== "production") {
+                    console.log(res);
+                }
             }
 
         });
@@ -246,7 +267,6 @@ const Messages = ({ scrollContainerRef }) => {
 
     const messageFunctions = {
         sendChat,
-        chatInput,
         updateChatInput,
         currentChannel,
         channelId,
@@ -280,6 +300,9 @@ const Messages = ({ scrollContainerRef }) => {
                         user={user}
                         attachmentBuffer={attachmentBuffer}
                         attachmentIsLoading={attachmentIsLoading}
+                        chatInput={chatInput}
+                        typingUsers={typingUsers}
+                        setTypingUsers={setTypingUsers}
                 />
             </div>
         </>

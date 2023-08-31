@@ -12,7 +12,9 @@ function handleDeleteReaction(e, reaction, dispatch, socket, msg) {
             dispatch(deleteReaction(res.payload));
         }
         else {
-            console.log(res);
+            if (process.env.NODE_ENV !== "production") {
+                console.log(res);
+            }
         }
     });
 }
@@ -32,7 +34,9 @@ function handleAddReaction(e, msg, rxn, dispatch, socket) {
             dispatch(createReaction(res.payload));
         }
         else {
-            console.log(res);
+            if (process.env.NODE_ENV !== "production") {
+                console.log(res);
+            }
         }
     });
 }

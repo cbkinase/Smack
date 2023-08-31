@@ -8,8 +8,8 @@ import throttle from "../../../../utils/throttle";
 import { isImage, previewFilter } from "../Messages/Attachments/AttachmentFncs";
 import loadingImg from '../../../../misc/Rolling-1s-200px (1).svg';
 
-export default function Editor({ functions, creating, setChatInput, user, attachmentBuffer, attachmentIsLoading }) {
-    const { sendChat, chatInput, updateChatInput, currentChannel, channelId, addAttachBuffer, removeAttachBuffer } = functions;
+export default function Editor({ functions, creating, setChatInput, chatInput, user, attachmentBuffer, attachmentIsLoading, typingUsers, setTypingUsers }) {
+    const { sendChat, updateChatInput, currentChannel, channelId, addAttachBuffer, removeAttachBuffer } = functions;
 
     function determineName(channel, user) {
         // The name displayed must be different depending on whether it's a DM or not.
@@ -26,7 +26,6 @@ export default function Editor({ functions, creating, setChatInput, user, attach
     // Typing indicator stuff
     const socket = useSelector((state) => state.session.socket);
     const typingTimeoutRef = useRef(null);
-    const [typingUsers, setTypingUsers] = useState({});
 
     useEffect(() => {
         if (!socket) return;
@@ -48,29 +47,30 @@ export default function Editor({ functions, creating, setChatInput, user, attach
         }
     }, [channelId, user.id, socket])
 
-    const handleTyping = () => {
-        // Clear the existing timeout, if it exists
-        if (typingTimeoutRef.current) {
-            clearTimeout(typingTimeoutRef.current);
-        }
+    const throttledHandleTyping = useCallback(
+        throttle(() => {
+            // Clear the existing timeout, if it exists
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
+            }
 
-        socket.emit('type', {
-            channel_id: channelId,
-            user_id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name
-        }, (res) => console.log(res));
-
-        // Set a timeout to emit 'stopped_typing' if no more typing occurs
-        typingTimeoutRef.current = setTimeout(() => {
-            socket.emit('stopped_typing', {
+            socket.emit('type', {
                 channel_id: channelId,
-                user_id: user.id
-            }, (res) => console.log(res));
-        }, 4000);
-    };
+                user_id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name
+            });
 
-    const throttledHandleTyping = useCallback(throttle(handleTyping, 1000), []);
+             // Set a timeout to emit 'stopped_typing' if no more typing occurs
+            typingTimeoutRef.current = setTimeout(() => {
+                socket.emit('stopped_typing', {
+                    channel_id: channelId,
+                    user_id: user.id
+                });
+            }, 4000);
+        }, 1000),
+        [channelId, user.id, user.first_name, user.last_name, socket]
+    );
 
     useEffect(() => {
         return () => {
@@ -183,7 +183,6 @@ export default function Editor({ functions, creating, setChatInput, user, attach
                                 modalComponent={
                                     <ChatEmojiModal
                                         setChatInput={setChatInput}
-                                        chatInput={chatInput}
                                     />
                                 }
                                 className="far fa-smile"

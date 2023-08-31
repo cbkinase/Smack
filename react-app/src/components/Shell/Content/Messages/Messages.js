@@ -84,6 +84,7 @@ const Messages = ({ scrollContainerRef }) => {
 
         socket.emit("join", {
             channel_id: channelId,
+            user_id: user.id,
         });
 
         socket.on("chat", async (chat) => {
@@ -133,10 +134,26 @@ const Messages = ({ scrollContainerRef }) => {
             socket.off("chat");
             socket.emit("leave", {
                 channel_id: channelId,
+                user_id: user.id,
             });
             socket.off("leave");
         }
-    }, [socket, channelId, dispatch, allMessages]);
+    }, [socket, channelId, dispatch, allMessages, user.id]);
+
+    // Typing indicator stuff
+
+    const [typingUsers, setTypingUsers] = useState({});
+
+    useEffect(() => {
+        // If the user switches channels, stop the typing indicator on their current channel
+        return () => {
+            socket.emit('stopped_typing', {
+                channel_id: channelId,
+                user_id: user.id
+            });
+            setTypingUsers({});
+        }
+    }, [channelId, user.id, socket])
 
     const updateChatInput = (e) => {
         setChatInput(e.target.value);
@@ -284,6 +301,8 @@ const Messages = ({ scrollContainerRef }) => {
                         attachmentBuffer={attachmentBuffer}
                         attachmentIsLoading={attachmentIsLoading}
                         chatInput={chatInput}
+                        typingUsers={typingUsers}
+                        setTypingUsers={setTypingUsers}
                 />
             </div>
         </>

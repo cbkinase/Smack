@@ -113,15 +113,21 @@ def handle_disconnect():
 @socketio.on('join')
 def on_join(data):
     room = data['channel_id']
+    user_id = data['user_id']
     join_room(room)
-    print(f"Client joined room {room}")
+    print(f"Client {user_id} joined room {room}")
 
 
 @socketio.on('leave')
 def on_leave(data):
     room = data['channel_id']
+    user_id = data['user_id']
     leave_room(room)
-    print(f"Client left room {room}")
+    print(f"Client {user_id} left room {room}")
+    # Indicate that the user has stopped typing
+    redis.hdel(f"room:{room}", user_id)
+    typing_users = redis.hgetall(f"room:{room}")
+    emit('stopped_typing', typing_users, room=room, include_self=False)
 
 
 @socketio.on("new_DM_convo")

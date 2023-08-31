@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate, disconnectWebSocket } from "./store/session";
 import Shell from "./components/Shell";
 import LoginSignupPage from "./components/LoginSignupPage";
 import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 import LoadingSpinner from "./components/LoadingSpinner";
+import LandingPage from "./components/LandingPage/index"
 
 function App() {
     const dispatch = useDispatch();
@@ -36,7 +38,13 @@ function App() {
                     <Shell isLoaded={isLoaded} />
               </RouteIdProvider>
 
-            : <LoginSignupPage />}</>
+            : 
+                <Routes>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/login" element={<LoginSignupPage />} />
+                </Routes>
+            }
+        </>
     );
 }
 

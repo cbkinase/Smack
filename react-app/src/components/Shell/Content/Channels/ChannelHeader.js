@@ -32,10 +32,11 @@ function ChannelHeader() {
             })
         return () => {
             document.title = "Smack";
+            currentChannel = null;
         };
     }, [dispatch, channelId, navigate, user])
 
-    const currentChannel = Object.values(singleChannel);
+    let currentChannel = Object.values(singleChannel);
 
     if (currentChannel.length) {
         userList = Object.values(currentChannel[0].Members);
@@ -55,6 +56,8 @@ function ChannelHeader() {
 
     }
 
+    if (!currentChannel.length) return null;
+
     return (
 
         <div className="content-heading-holder">
@@ -65,9 +68,8 @@ function ChannelHeader() {
                         <EditChannelModal
                             channelId={channelId}
                             user={user}
-                            currChannel={currentChannel}
+                            currChannel={currentChannel}/>}
 
-                        />}
                     buttonText={currentChannel.length ? determineName(currentChannel[0], user) : ""}
                     className="content-header-channelname"
                  />
@@ -75,7 +77,19 @@ function ChannelHeader() {
                     {currentChannel.length ? currentChannel[0].subject : ""}
                 </div>
             </div>
-            <OpenModalButton modalComponent={<ChannelMembersModal currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user}></ChannelMembersModal>} className="content-header-right" userList={userList} numMemb={numMemb} currUser={user}></OpenModalButton>
+            <OpenModalButton
+                modalComponent={
+                    <ChannelMembersModal
+                        currentChannel={currentChannel}
+                        numMemb={numMemb}
+                        userList={userList}
+                        user={user}>
+                    </ChannelMembersModal>}
+                className="content-header-right"
+                userList={userList}
+                numMemb={numMemb}
+                currUser={user}>
+            </OpenModalButton>
         </div>
 
     )

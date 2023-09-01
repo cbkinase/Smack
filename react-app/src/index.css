@@ -496,7 +496,8 @@ a:active {
 }
 
 #last-leftside-holder {
-    margin-bottom: 110px; /* Whatever the height of our `about me` section ends up being */
+    margin-bottom: 110px;
+    /* Whatever the height of our `about me` section ends up being */
 }
 
 #grid-leftside {
@@ -1077,8 +1078,19 @@ input[type="file"] {
 
 @media screen and (max-width: 768px) {
     .grid-container {
-        grid-template-columns: 294px 1fr 1fr;
+            grid-template-columns: 294px 1fr 1fr;
+        }
+
+    select:active,
+    input:active,
+    textarea:active {
+        font-size: 16px;
     }
+
+    .login-signup {
+        max-width: 95vw;
+    }
+
 }
 
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */

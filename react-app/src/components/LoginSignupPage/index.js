@@ -116,8 +116,23 @@ function LoginSignupPage() {
                     <form onSubmit={handleSubmitLogin}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingTop: '26px' }}>
 
-                            <input className="login-input-field" type="text" value={email} placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-                            <input className="login-input-field" type="password" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
+                            <input
+                                className="login-input-field"
+                                type="email"
+                                name="email"
+                                autoComplete="username"
+                                value={email}
+                                placeholder="Email"
+                                onChange={(e) => setEmail(e.target.value)}
+                                required />
+                            <input
+                                className="login-input-field"
+                                type="password"
+                                name="password"
+                                autoComplete="current-password"
+                                value={password}
+                                placeholder="Password"
+                                onChange={(e) => setPassword(e.target.value)} required />
                             <button className="login-input-submit" type="submit">Sign In</button>
 
                         </div>
@@ -163,18 +178,59 @@ function LoginSignupPage() {
 
                     <form onSubmit={handleSubmitSignup}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingTop: '26px' }}>
-                            <input className="login-input-field" type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@work-email.com"
+                            <input
+                                className="login-input-field"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)} placeholder="name@work-email.com"
+                                name="email"
+                                autoComplete="username"
                                 required />
-                            <input className="login-input-field" type="text" value={first_name} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name"
+                            <input
+                                className="login-input-field"
+                                type="text"
+                                name="first-name"
+                                autoComplete="on"
+                                value={first_name}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                placeholder="First Name"
                                 required />
-                            <input className="login-input-field" type="text" value={last_name} onChange={(e) => setLastName(e.target.value)} placeholder="Last Name"
+                            <input
+                                className="login-input-field"
+                                type="text"
+                                name="last-name"
+                                autoComplete="on"
+                                value={last_name}
+                                onChange={(e) => setLastName(e.target.value)}
+                                placeholder="Last Name"
                                 required />
-                            <input className="login-input-field" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"
+                            <input
+                                className="login-input-field"
+                                type="text"
+                                name="username"
+                                autoComplete="on"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Username"
                                 required />
-                            <input className="login-input-field" type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Create Password" required />
-                            <input className="login-input-field" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="Confirm Password" required />
+                            <input
+                                className="login-input-field"
+                                type="password"
+                                name="new-password"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Create Password"
+                                required />
+                            <input
+                                className="login-input-field"
+                                type="password"
+                                name="password"
+                                autoComplete="off"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder="Confirm Password"
+                                required />
                             <button className="login-input-submit" type="submit">Sign Up</button>
                         </div>
                     </form>

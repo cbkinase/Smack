@@ -15,6 +15,7 @@ import useInfiniteScrollingTop from "../../../../hooks/useInfiniteScrollingTop";
 import scrollToBottomOfGrid from "../../../../utils/scrollToBottomOfGrid";
 import useViewportWidth from "../../../../hooks/useViewportWidth";
 import { toggleLeftPane } from "../../../../utils/togglePaneFunctions";
+import LoadingSpinner from "../../../LoadingSpinner";
 
 const Messages = ({ scrollContainerRef }) => {
     const { channelId } = useParams();
@@ -24,12 +25,15 @@ const Messages = ({ scrollContainerRef }) => {
     const allMessages = useSelector((state) => state.messages.allMessages);
     const currentChannel = useSelector((state) => state.channels.single_channel);
     const socket = useSelector((state) => state.session.socket);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // For improved responsiveness - particularly on load
     const viewportWidth = useViewportWidth();
     useEffect(() => {
-        toggleLeftPane();
-    }, [viewportWidth])
+        if (isLoaded) {
+            toggleLeftPane();
+        }
+    }, [viewportWidth, isLoaded])
 
     // buffer for actual attachments to be uploaded
     const [attachmentBuffer, setAttachmentBuffer] = useState({});
@@ -44,6 +48,8 @@ const Messages = ({ scrollContainerRef }) => {
 
     // Effect for infinite scrolling
     useEffect(() => {
+        if (!isLoaded || page === 1) return;
+
         // Keep track of scroll height before getting new data
         const currentScrollHeight = scrollContainerRef.current.scrollHeight;
         setPrevScrollHeight(currentScrollHeight);
@@ -56,7 +62,7 @@ const Messages = ({ scrollContainerRef }) => {
                 setHasMoreToLoad(false);
             }
         })()
-    }, [dispatch, page, scrollContainerRef, hasMoreToLoad, channelId])
+    }, [dispatch, page, scrollContainerRef, hasMoreToLoad, channelId, isLoaded])
 
     // Handle adjusting the scroll position after the data has been fetched and rendered
     useEffect(() => {
@@ -71,21 +77,20 @@ const Messages = ({ scrollContainerRef }) => {
 
     // Load new channel messages on changing channel
     useEffect(() => {
-        async function alterChannelMessages() {
+        async function loadInitialChannelMessages() {
             await dispatch(getChannelMessages(channelId, 1, perPage));
             setHasMoreToLoad(true);
-            setPage(1);
+            setIsLoaded(true);
         }
-        alterChannelMessages().then(() => scrollToBottomOfGrid());
+        loadInitialChannelMessages();
     }, [dispatch, channelId, setPage]);
 
     useEffect(() => {
-        if (!socket) return;
+        scrollToBottomOfGrid();
+    }, [isLoaded])
 
-        socket.emit("join", {
-            channel_id: channelId,
-            user_id: user.id,
-        });
+    useEffect(() => {
+        if (!socket) return;
 
         socket.on("chat", async (chat) => {
             // Ensure UI updates before trying to scroll
@@ -132,19 +137,20 @@ const Messages = ({ scrollContainerRef }) => {
             socket.off("edit");
             socket.off("delete");
             socket.off("chat");
-            socket.emit("leave", {
-                channel_id: channelId,
-                user_id: user.id,
-            });
-            socket.off("leave");
         }
-    }, [socket, channelId, dispatch, allMessages, user.id]);
+    }, [socket, dispatch, allMessages]);
 
-    // Typing indicator stuff
-
+    // Joining and type indicator stuff
     const [typingUsers, setTypingUsers] = useState({});
 
     useEffect(() => {
+        if (!socket) return null;
+
+        socket.emit("join", {
+            channel_id: channelId,
+            user_id: user.id,
+        });
+
         // If the user switches channels, stop the typing indicator on their current channel
         return () => {
             socket.emit('stopped_typing', {
@@ -152,6 +158,11 @@ const Messages = ({ scrollContainerRef }) => {
                 user_id: user.id
             });
             setTypingUsers({});
+            socket.emit("leave", {
+                channel_id: channelId,
+                user_id: user.id,
+            });
+            setIsLoaded(false);
         }
     }, [channelId, user.id, socket])
 
@@ -275,8 +286,8 @@ const Messages = ({ scrollContainerRef }) => {
         handleDeleteAttachment,
     };
 
-    if (!user || !currentChannel || !allMessages) {
-        return null;
+    if (!isLoaded) {
+        return <LoadingSpinner />
     }
 
     return (

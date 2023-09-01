@@ -33,7 +33,7 @@ const Messages = ({ scrollContainerRef }) => {
         if (isLoaded) {
             toggleLeftPane();
         }
-    }, [viewportWidth])
+    }, [viewportWidth, isLoaded])
 
     // buffer for actual attachments to be uploaded
     const [attachmentBuffer, setAttachmentBuffer] = useState({});
@@ -48,6 +48,8 @@ const Messages = ({ scrollContainerRef }) => {
 
     // Effect for infinite scrolling
     useEffect(() => {
+        if (!isLoaded || page === 1) return;
+
         // Keep track of scroll height before getting new data
         const currentScrollHeight = scrollContainerRef.current.scrollHeight;
         setPrevScrollHeight(currentScrollHeight);
@@ -60,7 +62,7 @@ const Messages = ({ scrollContainerRef }) => {
                 setHasMoreToLoad(false);
             }
         })()
-    }, [dispatch, page, scrollContainerRef, hasMoreToLoad, channelId])
+    }, [dispatch, page, scrollContainerRef, hasMoreToLoad, channelId, isLoaded])
 
     // Handle adjusting the scroll position after the data has been fetched and rendered
     useEffect(() => {
@@ -75,17 +77,12 @@ const Messages = ({ scrollContainerRef }) => {
 
     // Load new channel messages on changing channel
     useEffect(() => {
-        async function alterChannelMessages() {
+        async function loadInitialChannelMessages() {
             await dispatch(getChannelMessages(channelId, 1, perPage));
             setHasMoreToLoad(true);
-            setPage(1);
             setIsLoaded(true);
         }
-        // .then() clause might be unnecessary since adding the
-        // isLoaded useEffect to scroll.
-        alterChannelMessages().then(() => {
-            scrollToBottomOfGrid();
-        });
+        loadInitialChannelMessages();
     }, [dispatch, channelId, setPage]);
 
     useEffect(() => {

@@ -2,7 +2,7 @@ import ChatEmojiModal from "../../../ChatEmojiModal";
 import OpenModalButton from "../../../OpenModalButton";
 import userObjectToNameList from "../../../../utils/userObjectToNameList";
 import TypingUsers from "./TypingUsers";
-import { useState, useEffect,useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import throttle from "../../../../utils/throttle";
 import { isImage, previewFilter } from "../Messages/Attachments/AttachmentFncs";
@@ -45,7 +45,7 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
             socket.off("stopped_typing");
             socket.off("type");
         }
-    }, [channelId, user.id, socket])
+    }, [channelId, user.id, socket, setTypingUsers])
 
     const throttledHandleTyping = useCallback(
         throttle(() => {
@@ -107,7 +107,7 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
                             >
                                 {hoverAttachId === file.id ?
                                 <div className="attachment-name">
-                                    {`${file.name.split(".")[0].substring(0,10)}...${file.name.split(".")[1]}`}
+                                    {`${file.name.split(".")[0].substring(0,10)}...${file.name.split(".")[1] ?? ""}`}
                                 </div>
                                 : null}
 

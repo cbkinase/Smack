@@ -496,7 +496,8 @@ a:active {
 }
 
 #last-leftside-holder {
-    margin-bottom: 110px; /* Whatever the height of our `about me` section ends up being */
+    /* margin-bottom: 110px; */
+    /* Whatever the height of our `about me` section ends up being */
 }
 
 #grid-leftside {

@@ -79,12 +79,18 @@ const Messages = ({ scrollContainerRef }) => {
             await dispatch(getChannelMessages(channelId, 1, perPage));
             setHasMoreToLoad(true);
             setPage(1);
-        }
-        alterChannelMessages().then(() => {
             setIsLoaded(true);
+        }
+        // .then() clause might be unnecessary since adding the
+        // isLoaded useEffect to scroll.
+        alterChannelMessages().then(() => {
             scrollToBottomOfGrid();
         });
     }, [dispatch, channelId, setPage]);
+
+    useEffect(() => {
+        scrollToBottomOfGrid();
+    }, [isLoaded])
 
     useEffect(() => {
         if (!socket) return;

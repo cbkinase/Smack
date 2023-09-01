@@ -215,6 +215,8 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
                                     borderBottomRightRadius: "12px",
                                     width: "100%",
                                 }}
+                                name="main-text"
+                                autoComplete="off"
                                 value={chatInput}
                                 onChange={(e) => {
                                     updateChatInput(e);

@@ -150,6 +150,8 @@ function ProfileButton({ user }) {
                     className="edituser-input-field"
                     type="text"
                     value={avatar}
+                    name="avatar"
+                    autoComplete="off"
                     onChange={(e) => setAvatar(e.target.value)}
                     placeholder="Avatar URL" />
                 </div>
@@ -161,6 +163,8 @@ function ProfileButton({ user }) {
                     className="edituser-input-field"
                     type="text"
                     value={first_name}
+                    name="first-name"
+                    autoComplete="off"
                     onChange={(e) => setFirstName(e.target.value)}
                     required />
                 </div>
@@ -170,7 +174,10 @@ function ProfileButton({ user }) {
                 <div>
                   <input
                     className="edituser-input-field"
-                    type="text" value={last_name}
+                    type="text"
+                    name="last-name"
+                    autoComplete="off"
+                    value={last_name}
                     onChange={(e) => setLastName(e.target.value)}
                     required />
                 </div>
@@ -181,8 +188,10 @@ function ProfileButton({ user }) {
                   <textarea
                     className="edituser-input-field"
                     style={{ resize: 'none' }}
+                    name="about-me"
+                    autoComplete="off"
                     rows={4}
-                    value={bio}
+                    value={bio ?? ""}
                     onChange={(e) => setBio(e.target.value)} />
                 </div>
 

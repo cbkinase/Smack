@@ -37,7 +37,9 @@ function SignupFormPage() {
         <label>
           Email
           <input
-            type="text"
+            type="email"
+            name="email"
+            autoComplete="on"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -47,6 +49,8 @@ function SignupFormPage() {
           Username
           <input
             type="text"
+            name="username"
+            autoComplete="on"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -56,6 +60,8 @@ function SignupFormPage() {
           Password
           <input
             type="password"
+            name="password"
+            autoComplete="off"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -65,6 +71,8 @@ function SignupFormPage() {
           Confirm Password
           <input
             type="password"
+            name="confirm-password"
+            autoComplete="off"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required

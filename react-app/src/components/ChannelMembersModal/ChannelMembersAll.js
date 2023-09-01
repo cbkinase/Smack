@@ -1,13 +1,10 @@
 import { useModal } from "../../context/Modal/Modal";
 import { useState, useEffect } from "react";
 import userObjectToNameList from "../../utils/userObjectToNameList";
-import { useDispatch } from "react-redux";
-import { UserChannelThunk } from "../../store/channel";
 import LoadingSpinner from "../LoadingSpinner";
 
 export default function ChannelMembersAll({ currentChannel, numMemb, userList, user }) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const dispatch = useDispatch();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [allUsers, setAllUsers] = useState([]);

@@ -53,7 +53,7 @@ function LoginSignupPage() {
 
     const handleDemo = () => {
         setEmail('demo@aa.io');
-        setPassword('password');
+        setPassword('verysecurepassword');
     };
 
     const handleSubmitLogin = async (e) => {

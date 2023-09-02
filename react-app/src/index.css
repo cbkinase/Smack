@@ -1,5 +1,13 @@
 /* TODO Add site wide styles */
 
+:root {
+    --desktop-width: 1440px;
+    --desktop-height: 1024px;
+    --content-width: calc(12*80px + 11*20px);
+    --smack-purple: #350D36;
+    --smack-light-purple: #5c1f5d;
+}
+
 .far.fa-trash-alt {
     border: none;
 }

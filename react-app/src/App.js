@@ -31,21 +31,24 @@ function App() {
 
     const sessionUser = useSelector((state) => state.session.user);
 
-    return (
-        <>{!isLoaded ?
-            <LoadingSpinner /> : sessionUser
-            ? <RouteIdProvider>
-                    <Shell isLoaded={isLoaded} />
-              </RouteIdProvider>
+    if (!isLoaded) return <LoadingSpinner />;
 
-            : 
-                <Routes>
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/login" element={<LoginSignupPage />} />
-                </Routes>
-            }
-        </>
-    );
+    if (!sessionUser) {
+        return (
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginSignupPage />} />
+            </Routes >
+        )
+    }
+
+    return (
+        <RouteIdProvider>
+            <Shell isLoaded={isLoaded} />
+        </RouteIdProvider>
+    )
+
+
 }
 
 export default App;

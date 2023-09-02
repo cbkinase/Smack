@@ -1,5 +1,5 @@
-import smackLogo from '../Shell/LeftSide/smack-logo-white.svg';
-import './landing.css'
+import smackLogo from '../../Shell/LeftSide/smack-logo-white.svg';
+import './Nav.css';
 
 function Nav () {
     return (

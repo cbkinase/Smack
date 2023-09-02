@@ -2,7 +2,7 @@ import sidebar from '../../../assets/landing-1-smack-sidebar.png'
 import chat from '../../../assets/landing-1-smack-chat.png'
 import './SectionOne.css';
 
-function SectionOne () {
+export default function SectionOne () {
     return (
         <div className="landing-1">
             <div className="landing-one-text slide-up">
@@ -31,5 +31,3 @@ function SectionOne () {
 
     )
 }
-
-export default SectionOne

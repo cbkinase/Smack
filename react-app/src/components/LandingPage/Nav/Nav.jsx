@@ -1,7 +1,7 @@
 import smackLogo from '../../Shell/LeftSide/smack-logo-white.svg';
 import './Nav.css';
 
-function Nav () {
+export default function Nav () {
     return (
         <nav className="landing-nav">
             <div className="landing-nav-content">
@@ -12,5 +12,3 @@ function Nav () {
         </nav>
     )
 }
-
-export default Nav;

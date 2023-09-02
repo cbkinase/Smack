@@ -5,7 +5,7 @@ import dave from '../../../assets/dave.png';
 import github from '../../../assets/github-mark.png';
 import './authors.css'
 
-function Authors() {
+export default function Authors() {
     return (
         <div className="landing-authors">
             <a href="https://www.linkedin.com/in/cameron-beck-4a9a44274/"
@@ -43,5 +43,3 @@ function Authors() {
         </div>
     )
 }
-
-export default Authors;

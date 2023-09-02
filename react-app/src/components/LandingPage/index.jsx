@@ -3,7 +3,7 @@ import SectionOne from "./Section1/SectionOne";
 import Authors from "./Authors/Authors";
 
 
-function LandingPage () {
+export default function LandingPage () {
     return (
         <>
             <Nav />
@@ -14,4 +14,3 @@ function LandingPage () {
     )
 }
 
-export default LandingPage;

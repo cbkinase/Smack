@@ -82,6 +82,9 @@ function Shell({ isLoaded }) {
                     <Content />
                 </>}>
                 </Route>
+                
+                <Route path="/login" element={<></>}>
+                </Route>
 
             </Routes>
 

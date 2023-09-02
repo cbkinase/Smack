@@ -39,7 +39,36 @@ export default function LeftSidebarAboutMe() {
                     </span>
                 </div>
             </div >
-            <div className="footer-link" style={{ fontSize: '11px' }}>Additional Contributors:<br />Dave Titus,&nbsp;&nbsp;Brian Hitchin,&nbsp;&nbsp;Cynthia Liang</div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '5px', textAlign: 'left' }}>
+
+                <div>
+                    <span style={{ color: '#969696' }}>Cynthia Liang:</span>
+                </div>
+
+
+                <div className="footer-link">
+                    <span>
+                        <a className="footer-button" href="https://github.com/cbkinase/Smack" target="_blank" rel="noreferrer">
+                            <button className="copyright-button2">
+                                <i className="fa fa-github" style={{ fontSize: '14px' }}></i>
+                            </button>
+                        </a>
+                    </span>
+                </div>
+
+                <div className="footer-link">
+                    <span>
+                        <a className="footer-button" href="https://www.linkedin.com/in/cynthia-liang-1ab860243/" target="_blank" rel="noreferrer">
+                            <button className="copyright-button2">
+                                <i className="fa fa-linkedin-square" style={{ fontSize: '14px' }}></i>
+                            </button>
+                        </a>
+                    </span>
+                </div>
+            </div >
+
+            <div className="footer-link" style={{ fontSize: '11px' }}>Additional Contributors:<br />Dave Titus,&nbsp;&nbsp;Brian Hitchin</div>
         </div >
     </div>
     )

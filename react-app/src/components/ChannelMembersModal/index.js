@@ -33,28 +33,64 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
   }
 
   return <>
-    <div style={{ maxWidth: "600px", width: "85vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="">
+    <div
+      style={{
+        maxWidth: "600px",
+        width: "85vw",
+        maxHeight: '70vh',
+        padding: "0px 8px 8px 8px",
+        display: 'flex',
+        flexDirection: 'column' }}
+      className="">
       <div className="channels-header">
-        <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
+        <h2 style={{ marginTop: "-10px" }}>
+          {determineName(currentChannel[0], user)}
+        </h2>
         <button style={{top: "18px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
           <i className="fa-solid fa-x"></i>
         </button>
       </div>
-      <input id="channel-search" type="text" placeholder="Find members" value={searchTerm} onChange={handleSearchChange} />
-      <div className="channels-list" style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+      <input
+        id="channel-search"
+        type="text"
+        placeholder="Find members"
+        value={searchTerm}
+        onChange={handleSearchChange} />
+      <div
+        className="channels-list"
+        style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
         {filteredMembers.map((member, index) => {
-          return <div onClick={(e) => {
-            setSelectedUserRightBar(member);
-            toggleRightPane();
-            closeModal();
-          }} key={member.id} className="channels-list-item" style={{ display: "flex", alignItems: "center", border: "none" }}>
-            <img style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }} src={member.avatar} alt=''></img>
+          return <div
+            onClick={(e) => {
+              setSelectedUserRightBar(member);
+              toggleRightPane();
+              closeModal();
+            }}
+              key={member.id}
+              className="channels-list-item"
+              style={{ display: "flex", alignItems: "center", border: "none" }}>
+            <img
+              style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }}
+              src={member.avatar}
+              alt=''>
+            </img>
             <p>{member.first_name} {member.last_name}</p>
           </div>
         })}
-        {!isSelfDM(currentChannel[0], user)  ? <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
-          {<OpenModalButton className="login-input-submit-alt" modalComponent={<ChannelMembersAll currentChannel={currentChannel} numMemb={numMemb} userList={userList} user={user} />} buttonText="Add members" />}
-        </div> : null}
+        {!isSelfDM(currentChannel[0], user)  ?
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
+          {<OpenModalButton
+            className="login-input-submit-alt"
+            modalComponent={
+              <ChannelMembersAll
+                currentChannel={currentChannel}
+                numMemb={numMemb}
+                userList={userList}
+                user={user} />}
+            buttonText="Add members" />
+          }
+        </div>
+        : null}
       </div>
     </div>
   </>

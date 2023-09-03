@@ -144,7 +144,7 @@ const Messages = ({ scrollContainerRef }) => {
     const [typingUsers, setTypingUsers] = useState({});
 
     useEffect(() => {
-        if (!socket) return null;
+        if (!socket) return;
 
         socket.emit("join", {
             channel_id: channelId,

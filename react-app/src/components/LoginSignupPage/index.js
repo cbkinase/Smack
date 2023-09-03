@@ -104,7 +104,7 @@ function LoginSignupPage() {
                     < div style={{
                         textAlign: 'center', fontSize: '18px', color: '#454245'
                     }}>
-                        Already a member ?&nbsp;&nbsp;&nbsp;<b>Sign in below</b>.
+                        Already a member?&nbsp;&nbsp;&nbsp;<b>Sign in below</b>.
                     </div >
 
                     {errors.length > 0 &&
@@ -156,7 +156,7 @@ function LoginSignupPage() {
                     </div >
 
                     <div style={{ textAlign: 'center', fontSize: '18px', color: '#454245' }}>
-                        Ready to talk some smack ?&nbsp;&nbsp;&nbsp;<b>Sign up now!</b><br />
+                        Ready to talk some smack?&nbsp;&nbsp;&nbsp;<b>Sign up now!</b><br />
                         <button className="create-account" onClick={() => { setFormType('signup') }}>Create an account</button>
                     </div>
 
@@ -244,7 +244,7 @@ function LoginSignupPage() {
                     </div>
 
                     <div style={{ textAlign: 'center', fontSize: '18px', color: '#454245' }}>
-                        Already a member ?&nbsp;&nbsp;&nbsp;<b>Sign in!</b><br />
+                        Already a member?&nbsp;&nbsp;&nbsp;<b>Sign in!</b><br />
                         <button className="create-account" onClick={() => { setFormType('login') }}>Member sign in</button>
                     </div>
 
@@ -261,7 +261,7 @@ function LoginSignupPage() {
 
                     <div className="footer-link">
                         <span>
-                            <a className="footer-button" href="https://github.com/brianhitchin/wack" target="_blank" rel="noreferrer">
+                            <a className="footer-button" href="https://github.com/cbkinase/Smack" target="_blank" rel="noreferrer">
                                 <span>GitHub Repo</span>
                                 <button className="footer-button"><i className="fa fa-github"
                                     style={{ fontSize: '14px' }}></i></button>

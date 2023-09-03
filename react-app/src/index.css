@@ -72,7 +72,9 @@ a:active {
 }
 
 .tooltip .tooltiptext {
-    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.05s ease-in-out;
+    pointer-events: none;
     width: 120px;
     background-color: black;
     color: #fff;
@@ -80,11 +82,21 @@ a:active {
     border-radius: 6px;
     position: absolute;
     z-index: 1;
-    bottom: 125%;
+    bottom: 130%;
     left: 50%;
     margin-left: -70px;
     font-size: 12px;
     padding: 7px 10px;
+}
+
+.tooltip-higher .tooltiptext-higher {
+    bottom: 170%;
+}
+
+.tooltiptext-higher {
+    font-size: 14px !important;
+    font-weight: 600;
+    width: max-content !important;
 }
 
 .tooltip .tooltiptext::after {
@@ -99,7 +111,9 @@ a:active {
 }
 
 .tooltip:hover .tooltiptext {
+    opacity: 1;
     visibility: visible;
+    transition: opacity 0.2s ease-in-out 0.5s;
 }
 
 /* %%%%%%%%%% SCROLLBAR STYLING %%%%%%%%%%% */
@@ -793,6 +807,8 @@ a:active {
     padding: 3px;
     border: none;
     border-radius: 8px;
+    width: 33px;
+    height: 33px;
 }
 
 .reaction-icon:hover {
@@ -833,7 +849,7 @@ a:active {
     margin-right: 10px;
 }
 
-.message-card-name:hover {
+.message-card-name:hover, .message-card-time:hover {
     cursor: pointer;
     text-decoration: underline;
 }

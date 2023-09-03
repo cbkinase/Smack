@@ -1,4 +1,3 @@
-import ChatEmojiModal from "../../../ChatEmojiModal";
 import OpenModalButton from "../../../OpenModalButton";
 import userObjectToNameList from "../../../../utils/userObjectToNameList";
 import TypingUsers from "./TypingUsers";
@@ -7,9 +6,12 @@ import { useSelector } from "react-redux";
 import throttle from "../../../../utils/throttle";
 import { isImage, previewFilter } from "../Messages/Attachments/AttachmentFncs";
 import loadingImg from '../../../../misc/Rolling-1s-200px (1).svg';
+import { useModal } from "../../../../context/Modal/Modal";
+import EmojiModal from "../../../EmojiModal";
 
 export default function Editor({ functions, creating, setChatInput, chatInput, user, attachmentBuffer, attachmentIsLoading, typingUsers, setTypingUsers }) {
     const { sendChat, updateChatInput, currentChannel, channelId, addAttachBuffer, removeAttachBuffer } = functions;
+    const { closeModal } = useModal();
 
     function determineName(channel, user) {
         // The name displayed must be different depending on whether it's a DM or not.
@@ -80,6 +82,13 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
             }
         };
     }, []);
+
+    // Function for emoji modal
+    function handleEmojiClick(e) {
+        setChatInput((prev) => prev + e.target.innerText + " ")
+        document.getElementsByClassName("editor-focus")[0].focus()
+        closeModal();
+    }
 
     return (
         <>
@@ -180,11 +189,7 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
                             className="message-adjust-reaction"
                         >
                             <OpenModalButton
-                                modalComponent={
-                                    <ChatEmojiModal
-                                        setChatInput={setChatInput}
-                                    />
-                                }
+                                modalComponent={<EmojiModal onClickFunction={handleEmojiClick} />}
                                 className="far fa-smile"
                             />
                         </span>

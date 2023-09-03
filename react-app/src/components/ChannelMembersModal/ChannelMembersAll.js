@@ -56,7 +56,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
       <div
         style={{
           maxWidth: "600px",
-          width: "60vw",
+          width: "85vw",
           maxHeight: '70vh',
           padding: "0px 8px 8px 8px",
           display: 'flex',

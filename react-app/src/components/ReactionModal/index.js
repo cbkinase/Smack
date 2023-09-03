@@ -1,5 +1,6 @@
 import { useModal } from "../../context/Modal/Modal";
 import { createReaction } from "../../store/messages";
+import { emojis } from "../../utils/Emoji";
 
 export default function ReactionModal({ socket, msg, dispatch }) {
     const { closeModal } = useModal();
@@ -25,26 +26,7 @@ export default function ReactionModal({ socket, msg, dispatch }) {
             }
         });
     }
-    const emojis = [
-        "👍",
-        "👎",
-        "😀",
-        "🤣",
-        "😇",
-        "🥰",
-        "😛",
-        "🤭",
-        "😑",
-        "🍆",
-        "🙄",
-        "😴",
-        "💖",
-        "💔",
-        "💯",
-        "👋",
-        "😨", "😧", "😦", "😱", "😫", "😩", "👀",
-        "😮", "😯", "😲", "😺", "😸", "🐱", "😳", "😞", "😖", "😈", "😬", "🤨", "😉", "😜", "😣", "🤒", "😷", "🤢", "😎", "😪", "🙂", "😊", "😁", "🦀", "💵", "😔"
-    ];
+
     return (
         <>
             <div

@@ -51,42 +51,94 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
 
   }
 
-  return isLoaded ? <>
-    <div style={{ maxWidth: "600px", width: "85vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="">
+  if (!isLoaded) {
+    return (
+      <div
+        style={{
+          maxWidth: "600px",
+          width: "60vw",
+          maxHeight: '70vh',
+          padding: "0px 8px 8px 8px",
+          display: 'flex',
+          flexDirection: 'column' }}
+        className="view-all-channels">
+        <div className="channels-header">
+          <h2 style={{ marginTop: "-10px" }}>
+            {determineName(currentChannel[0], user)}
+          </h2>
+          <button
+              style={{ top: "18px" }}
+              className="edit-modal-close-btn"
+              onClick={() => closeModal()}
+          >
+            <i className="fa-solid fa-x"></i>
+          </button>
+        </div>
+        <LoadingSpinner offset={true} />
+      </div>
+    )
+  }
+
+  return <>
+    <div
+      style={{
+          maxWidth: "600px",
+          width: "85vw",
+          maxHeight: '70vh',
+          padding: "0px 8px 8px 8px",
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      className="">
       <div className="channels-header">
-        <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
-        <button style={{top: "18px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
+        <h2 style={{ marginTop: "-10px" }}>
+          {determineName(currentChannel[0], user)}
+        </h2>
+        <button
+          style={{ top: "18px" }}
+          className="edit-modal-close-btn"
+          onClick={() => closeModal()}
+        >
           <i className="fa-solid fa-x"></i>
         </button>
       </div>
-      {allUsers.length ? <input id="channel-search" type="text" placeholder="Find members" value={searchTerm} onChange={handleSearchChange} /> : null}
-      <div className="channels-list" style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+      {allUsers.length ?
+        <input
+          id="channel-search"
+          type="text"
+          placeholder="Find members"
+          value={searchTerm}
+          onChange={handleSearchChange} />
+          : null}
+      <div
+        className="channels-list"
+        style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}
+      >
         {filteredMembers.length ? filteredMembers.map((member, index) => {
           return <div
-            onClick={async (e) => {
-              await fetch(`/api/channels/${currentChannel[0].id}/users/${member.id}`, {
-                method: "POST",
-              });
-              closeModal();
-            }}
-            key={member.id} className="channels-list-item" style={{ display: "flex", alignItems: "center", border: "none" }}>
-            <img style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }} src={member.avatar} alt=''></img>
-            <p>{member.first_name} {member.last_name}</p>
-          </div>
-        }) : <p style={{ alignItems: "center", padding: "16px 16px 5px 16px", marginTop: "5px", display: "block",
-        fontWeight: "bold",
-        color: "black",
-        textDecoration: "none" }}>Sorry, no members found. Invite your friends to join Smack!</p>}
+                    onClick={async (e) => {
+                      await fetch(`/api/channels/${currentChannel[0].id}/users/${member.id}`, {
+                        method: "POST",
+                      });
+                      closeModal();
+                    }}
+                    key={member.id}
+                    className="channels-list-item"
+                    style={{ display: "flex", alignItems: "center", border: "none" }}>
+                      <img
+                        style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }}
+                        src={member.avatar}
+                        alt=''></img>
+                      <p>{member.first_name} {member.last_name}</p>
+                  </div>
+        })
+        : <p style={{
+          alignItems: "center", padding: "16px 16px 5px 16px", marginTop: "5px", display: "block",
+          fontWeight: "bold",
+          color: "black",
+          textDecoration: "none"
+        }}>Sorry, no members found. Invite your friends to join Smack!</p>}
       </div>
     </div>
-  </> :
-  <div style={{ maxWidth: "600px", width: "60vw", maxHeight: '70vh', padding: "0px 8px 8px 8px", display: 'flex', flexDirection: 'column' }} className="view-all-channels">
-          <div className="channels-header">
-        <h2 style={{ marginTop: "-10px" }}>{determineName(currentChannel[0], user)}</h2>
-        <button style={{top: "18px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
-          <i className="fa-solid fa-x"></i>
-        </button>
-      </div>
-  <LoadingSpinner offset={true} />
-  </div>
+  </>
 }

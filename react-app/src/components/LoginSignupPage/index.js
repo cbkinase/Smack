@@ -261,7 +261,7 @@ function LoginSignupPage() {
 
                     <div className="footer-link">
                         <span>
-                            <a className="footer-button" href="https://github.com/brianhitchin/wack" target="_blank" rel="noreferrer">
+                            <a className="footer-button" href="https://github.com/cbkinase/Smack" target="_blank" rel="noreferrer">
                                 <span>GitHub Repo</span>
                                 <button className="footer-button"><i className="fa fa-github"
                                     style={{ fontSize: '14px' }}></i></button>

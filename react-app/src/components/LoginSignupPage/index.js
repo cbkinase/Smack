@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { login, signUp } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, NavLink } from "react-router-dom";
 import signinupLogo from './smack-logo-black.svg'
 
 function LoginSignupPage() {
@@ -89,7 +89,9 @@ function LoginSignupPage() {
             <div className="login-signup" style={{ height: '100%' }}>
 
                 <div style={{ textAlign: 'center' }}>
-                    <img src={`${signinupLogo}`} alt="Smack" style={{ width: '145px ' }} />
+                    <NavLink to="/">
+                        <img src={`${signinupLogo}`} alt="Smack" style={{ width: '145px ' }} />
+                    </NavLink>
                 </div>
 
                 <div ref={formTitle}

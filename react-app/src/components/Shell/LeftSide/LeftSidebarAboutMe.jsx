@@ -3,6 +3,8 @@ export default function LeftSidebarAboutMe() {
         <div style={{ position: 'absolute', bottom: '0px' }}>
         <div className="footer" style={{ padding: '20px', justifyContent: 'flex-start', alignItems: "flex-start", backgroundColor: '#3f0e40', width: "294px" }}>
 
+            <div style={{borderTop: "1px solid #4e3752", width: "294px", marginLeft: "-20px"}}></div>
+
             <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '5px', textAlign: 'left' }}>
 
                 <div>
@@ -46,6 +48,10 @@ export default function LeftSidebarAboutMe() {
                     <span style={{ color: '#969696' }}>Cynthia Liang:</span>
                 </div>
 
+                <div className="footer-link">
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </div>
+
 
                 <div className="footer-link">
                     <span>
@@ -68,7 +74,9 @@ export default function LeftSidebarAboutMe() {
                 </div>
             </div >
 
-            <div className="footer-link" style={{ fontSize: '11px' }}>Additional Contributors:<br />Dave Titus,&nbsp;&nbsp;Brian Hitchin</div>
+            <div style={{borderBottom: "1px solid #4e3752", width: "294px", marginLeft: "-20px", height: "8px"}}></div>
+
+            <div className="footer-link" style={{ fontSize: '11px', marginTop: "5px" }}>Additional Contributors:<br />Dave Titus,&nbsp;&nbsp;Brian Hitchin</div>
         </div >
     </div>
     )

@@ -18,7 +18,6 @@ export default function SectionOne () {
                         </i>
                     </button>
                 </NavLink>
-
             </div>
             <div className="landing-one-figures fade-in">
                 <div id="landing-one-figure-1">

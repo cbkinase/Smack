@@ -1,6 +1,7 @@
 import sidebar from '../../../assets/landing-1-smack-sidebar.png'
 import chat from '../../../assets/landing-1-smack-chat.png'
 import './SectionOne.css';
+import { NavLink } from "react-router-dom";
 
 export default function SectionOne () {
     return (
@@ -8,7 +9,7 @@ export default function SectionOne () {
             <div className="landing-one-text slide-up">
                 <div>Are you ready to talk some Smack?</div>
                 <div>Talk about your coworkers, with your coworkers. Facilitate group smack rooms.</div>
-                <a href='/login'>
+                <NavLink to='/login'>
                     <button className="login-input-submit">
                         Talk smack {` `}
                         <i className="fa-solid fa-angle-right"
@@ -16,8 +17,8 @@ export default function SectionOne () {
                         >
                         </i>
                     </button>
-                </a>
-                
+                </NavLink>
+
             </div>
             <div className="landing-one-figures fade-in">
                 <div id="landing-one-figure-1">

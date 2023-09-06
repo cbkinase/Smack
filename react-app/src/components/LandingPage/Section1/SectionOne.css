@@ -1,8 +1,6 @@
-
-
-
-
-
+.landing-background {
+    background: linear-gradient(#E0B6E1, white 20%);
+}
 /* Section 1 */
 .landing-1 {
     display: flex;

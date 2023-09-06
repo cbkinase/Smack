@@ -7,12 +7,12 @@ import LoginSignupPage from "./components/LoginSignupPage";
 import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./components/LandingPage/index"
-import { getHasVisited, setHasVisited } from "./utils/cookieFunctions";
+import { getHasVisitedCookie, setHasVisitedCookie } from "./utils/cookieFunctions";
 
 function App() {
     const dispatch = useDispatch();
     const [isLoaded, setIsLoaded] = useState(false);
-    const hasVisited = getHasVisited();
+    const hasVisited = getHasVisitedCookie();
 
     useEffect(() => {
         dispatch(authenticate()).then(() => setIsLoaded(true));
@@ -50,7 +50,7 @@ function App() {
         )
     }
 
-    setHasVisited();
+    setHasVisitedCookie();
 
     return (
         <RouteIdProvider>

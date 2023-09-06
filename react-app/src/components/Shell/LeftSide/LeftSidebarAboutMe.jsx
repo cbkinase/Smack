@@ -76,7 +76,7 @@ export default function LeftSidebarAboutMe() {
 
             <div style={{borderBottom: "1px solid #4e3752", width: "294px", marginLeft: "-20px", height: "8px"}}></div>
 
-            <div className="footer-link" style={{ fontSize: '11px', marginTop: "5px" }}>Additional Contributors:<br />Dave Titus,&nbsp;&nbsp;Brian Hitchin</div>
+            <div className="footer-link" style={{ fontSize: '12px', marginTop: "5px" }}>Additional Contributors:<br />Dave Titus,&nbsp;&nbsp;Brian Hitchin</div>
         </div >
     </div>
     )

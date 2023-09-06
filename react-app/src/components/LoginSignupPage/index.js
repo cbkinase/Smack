@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { login, signUp } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate, NavLink } from "react-router-dom";
-import signinupLogo from './smack-logo-black.svg'
+import signinupLogo from './smack-logo-black.svg';
+import { deleteCookie, setCookie } from "../../utils/cookieFunctions";
 
-function LoginSignupPage() {
+function LoginSignupPage({ setHasVisited }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const sessionUser = useSelector((state) => state.session.user);
@@ -63,6 +64,8 @@ function LoginSignupPage() {
             setErrors(data);
             return
         }
+        setHasVisited(true);
+        setCookie("hasVisited", "true");
         navigate("/channels/explore");
     };
 
@@ -78,8 +81,15 @@ function LoginSignupPage() {
             setErrors(['Password does not match confirmation password.']);
             return
         }
+        setHasVisited(true);
+        setCookie("hasVisited", "true");
         navigate("/channels/explore");
     };
+
+    const handleLogoClick = (e) => {
+        deleteCookie("hasVisited");
+        setHasVisited(false);
+    }
 
 
     return (
@@ -89,7 +99,7 @@ function LoginSignupPage() {
             <div className="login-signup" style={{ height: '100%' }}>
 
                 <div style={{ textAlign: 'center' }}>
-                    <NavLink to="/">
+                    <NavLink onClick={handleLogoClick} to="/">
                         <img src={`${signinupLogo}`} alt="Smack" style={{ width: '145px ' }} />
                     </NavLink>
                 </div>

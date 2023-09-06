@@ -7,12 +7,14 @@ import LoginSignupPage from "./components/LoginSignupPage";
 import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./components/LandingPage/index"
-import { getHasVisitedCookie, setHasVisitedCookie } from "./utils/cookieFunctions";
+import { getCookie } from "./utils/cookieFunctions";
 
 function App() {
     const dispatch = useDispatch();
     const [isLoaded, setIsLoaded] = useState(false);
-    const hasVisited = getHasVisitedCookie();
+    let previouslyVisited = getCookie("hasVisited");
+    previouslyVisited = previouslyVisited ? true : false;
+    const [hasVisited, setHasVisited] = useState(previouslyVisited);
 
     useEffect(() => {
         dispatch(authenticate()).then(() => setIsLoaded(true));
@@ -39,18 +41,16 @@ function App() {
         return (
             <Routes>
                 <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginSignupPage />} />
+                <Route path="/login" element={<LoginSignupPage setHasVisited={setHasVisited} />} />
             </Routes >
         )
     }
 
     if (!sessionUser) {
         return (
-            <LoginSignupPage />
+            <LoginSignupPage setHasVisited={setHasVisited} />
         )
     }
-
-    setHasVisitedCookie();
 
     return (
         <RouteIdProvider>

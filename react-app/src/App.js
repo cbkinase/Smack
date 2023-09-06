@@ -44,7 +44,7 @@ function App() {
         )
     }
 
-    if (!sessionUser && hasVisited) {
+    if (!sessionUser) {
         return (
             <LoginSignupPage />
         )

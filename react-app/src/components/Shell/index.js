@@ -17,6 +17,7 @@ function Shell({ isLoaded }) {
     const socket = useSelector(state => state.session.socket);
     const [routeId,] = useContext(RouteIdContext);
 
+
     useEffect(() => {
 
         if (!socket) return;
@@ -81,6 +82,9 @@ function Shell({ isLoaded }) {
                     <RightSide />
                     <Content />
                 </>}>
+                </Route>
+                
+                <Route path="/login" element={<></>}>
                 </Route>
 
             </Routes>

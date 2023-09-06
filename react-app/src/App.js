@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate, disconnectWebSocket } from "./store/session";
 import Shell from "./components/Shell";
 import LoginSignupPage from "./components/LoginSignupPage";
 import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 import LoadingSpinner from "./components/LoadingSpinner";
+import LandingPage from "./components/LandingPage/index"
+import { getCookie } from "./utils/cookieFunctions";
 
 function App() {
     const dispatch = useDispatch();
     const [isLoaded, setIsLoaded] = useState(false);
+    let previouslyVisited = getCookie("hasVisited");
+    previouslyVisited = previouslyVisited ? true : false;
+    const [hasVisited, setHasVisited] = useState(previouslyVisited);
 
     useEffect(() => {
         dispatch(authenticate()).then(() => setIsLoaded(true));
@@ -29,15 +35,30 @@ function App() {
 
     const sessionUser = useSelector((state) => state.session.user);
 
-    return (
-        <>{!isLoaded ?
-            <LoadingSpinner /> : sessionUser
-            ? <RouteIdProvider>
-                    <Shell isLoaded={isLoaded} />
-              </RouteIdProvider>
+    if (!isLoaded) return <LoadingSpinner />;
 
-            : <LoginSignupPage />}</>
-    );
+    if (!sessionUser && !hasVisited) {
+        return (
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginSignupPage setHasVisited={setHasVisited} />} />
+            </Routes >
+        )
+    }
+
+    if (!sessionUser) {
+        return (
+            <LoginSignupPage setHasVisited={setHasVisited} />
+        )
+    }
+
+    return (
+        <RouteIdProvider>
+            <Shell isLoaded={isLoaded} />
+        </RouteIdProvider>
+    )
+
+
 }
 
 export default App;

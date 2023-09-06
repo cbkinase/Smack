@@ -1,0 +1,30 @@
+/* Nav  */
+
+.landing-nav {
+    width: 100vw;
+    height: 70px;
+    background-color: var(--smack-purple);
+}
+
+.landing-nav-content {
+    margin: 0 auto;
+    max-width: var(--content-width);
+    padding-top: 17px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.landing-nav-content img {
+    width: 147px;
+    height: 37px;
+}
+
+.landing-nav-content a {
+    text-decoration: none;
+    align-self: center;
+    color: white;
+    font-size: 1rem;
+    flex-basis: 70px;
+    text-align: center;
+}

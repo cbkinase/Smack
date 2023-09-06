@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { login, signUp } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
-import signinupLogo from './smack-logo-black.svg'
+import { Navigate, useNavigate, NavLink } from "react-router-dom";
+import signinupLogo from './smack-logo-black.svg';
+import { deleteCookie, setCookie } from "../../utils/cookieFunctions";
 
-function LoginSignupPage() {
+function LoginSignupPage({ setHasVisited }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const sessionUser = useSelector((state) => state.session.user);
@@ -53,7 +54,7 @@ function LoginSignupPage() {
 
     const handleDemo = () => {
         setEmail('demo@aa.io');
-        setPassword('password');
+        setPassword('verysecurepassword');
     };
 
     const handleSubmitLogin = async (e) => {
@@ -63,6 +64,8 @@ function LoginSignupPage() {
             setErrors(data);
             return
         }
+        setHasVisited(true);
+        setCookie("hasVisited", "true");
         navigate("/channels/explore");
     };
 
@@ -78,8 +81,15 @@ function LoginSignupPage() {
             setErrors(['Password does not match confirmation password.']);
             return
         }
+        setHasVisited(true);
+        setCookie("hasVisited", "true");
         navigate("/channels/explore");
     };
+
+    const handleLogoClick = (e) => {
+        deleteCookie("hasVisited");
+        setHasVisited(false);
+    }
 
 
     return (
@@ -89,7 +99,9 @@ function LoginSignupPage() {
             <div className="login-signup" style={{ height: '100%' }}>
 
                 <div style={{ textAlign: 'center' }}>
-                    <img src={`${signinupLogo}`} alt="Smack" style={{ width: '145px ' }} />
+                    <NavLink onClick={handleLogoClick} to="/">
+                        <img src={`${signinupLogo}`} alt="Smack" style={{ width: '145px ' }} />
+                    </NavLink>
                 </div>
 
                 <div ref={formTitle}
@@ -104,7 +116,7 @@ function LoginSignupPage() {
                     < div style={{
                         textAlign: 'center', fontSize: '18px', color: '#454245'
                     }}>
-                        Already a member ?&nbsp;&nbsp;&nbsp;<b>Sign in below</b>.
+                        Already a member?&nbsp;&nbsp;&nbsp;<b>Sign in below</b>.
                     </div >
 
                     {errors.length > 0 &&
@@ -156,7 +168,7 @@ function LoginSignupPage() {
                     </div >
 
                     <div style={{ textAlign: 'center', fontSize: '18px', color: '#454245' }}>
-                        Ready to talk some smack ?&nbsp;&nbsp;&nbsp;<b>Sign up now!</b><br />
+                        Ready to talk some smack?&nbsp;&nbsp;&nbsp;<b>Sign up now!</b><br />
                         <button className="create-account" onClick={() => { setFormType('signup') }}>Create an account</button>
                     </div>
 
@@ -244,7 +256,7 @@ function LoginSignupPage() {
                     </div>
 
                     <div style={{ textAlign: 'center', fontSize: '18px', color: '#454245' }}>
-                        Already a member ?&nbsp;&nbsp;&nbsp;<b>Sign in!</b><br />
+                        Already a member?&nbsp;&nbsp;&nbsp;<b>Sign in!</b><br />
                         <button className="create-account" onClick={() => { setFormType('login') }}>Member sign in</button>
                     </div>
 
@@ -261,7 +273,7 @@ function LoginSignupPage() {
 
                     <div className="footer-link">
                         <span>
-                            <a className="footer-button" href="https://github.com/brianhitchin/wack" target="_blank" rel="noreferrer">
+                            <a className="footer-button" href="https://github.com/cbkinase/Smack" target="_blank" rel="noreferrer">
                                 <span>GitHub Repo</span>
                                 <button className="footer-button"><i className="fa fa-github"
                                     style={{ fontSize: '14px' }}></i></button>

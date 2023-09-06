@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import LeftSideBarDMSection from './LeftSidebarDMSection';
 import LeftSidebarAboutMe from './LeftSidebarAboutMe';
-
 import * as ChlActions from "../../../store/channel"
-
 import OpenModalButton from '../../OpenModalButton';
 import CreateChannelModal from '../../CreateFormModal/CreateChannelModal';
+import { toggleRightPane } from '../../../utils/togglePaneFunctions';
+
 function LeftSideLinks() {
 
     const { channelId } = useParams();
@@ -44,6 +44,12 @@ function LeftSideLinks() {
 
     const userChannelList = Object.values(userChannels);
 
+    const closeRightPane = (e) => {
+        if (document.getElementsByClassName("grid-rightside-heading")[0]) {
+            toggleRightPane("close");
+        }
+    }
+
 
     return (
         <div id="grid-leftside" className="grid-leftside-threecolumn">
@@ -51,7 +57,7 @@ function LeftSideLinks() {
 
                 <div className="leftside-channeldirect-holder">
 
-                    <NavLink to={`/channels/explore`}>
+                    <NavLink onClick={closeRightPane} to={`/channels/explore`}>
                         <div>
 
                             {/explore/.test(window.location.href) ? (
@@ -71,6 +77,7 @@ function LeftSideLinks() {
                     </NavLink>
 
                     <NavLink
+                    onClick={closeRightPane}
                          to={`/channels/direct`}
                     >
                         <div>

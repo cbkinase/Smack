@@ -16,6 +16,7 @@ import scrollToBottomOfGrid from "../../../../utils/scrollToBottomOfGrid";
 import useViewportWidth from "../../../../hooks/useViewportWidth";
 import { toggleLeftPane } from "../../../../utils/togglePaneFunctions";
 import LoadingSpinner from "../../../LoadingSpinner";
+import MessageBeginning from "./MessageIntro/MessageBeginning";
 
 const Messages = ({ scrollContainerRef }) => {
     const { channelId } = useParams();
@@ -78,9 +79,10 @@ const Messages = ({ scrollContainerRef }) => {
     // Load new channel messages on changing channel
     useEffect(() => {
         async function loadInitialChannelMessages() {
-            await dispatch(getChannelMessages(channelId, 1, perPage));
+            const msgs = await dispatch(getChannelMessages(channelId, 1, perPage));
             setHasMoreToLoad(true);
             setIsLoaded(true);
+            if (msgs.length < perPage) setHasMoreToLoad(false);
         }
         loadInitialChannelMessages();
     }, [dispatch, channelId, setPage]);
@@ -293,6 +295,15 @@ const Messages = ({ scrollContainerRef }) => {
     return (
         <>
             <div style={{ marginBottom: '10px' }}>
+
+                {hasMoreToLoad
+                    ? null
+                    : <MessageBeginning
+                        channel={currentChannel[channelId]}
+                        user={user}
+                    />
+                }
+
                 {Object.values(allMessages).map((message, ind) => (
                     <MessageCard key={message.id}
                                  message={message}

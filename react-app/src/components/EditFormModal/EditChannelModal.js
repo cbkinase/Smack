@@ -133,6 +133,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                             <div style={{height: "10px"}}></div>
                             <p style={{marginLeft: "7px", overflowWrap: "break-word"}}>Type "<span style={{color: "#631965", fontWeight: "bold"}}>{currChannel[0].name}</span>" below to confirm the deletion of the channel</p>
                             <input
+                                autoComplete="off"
                                 type="text"
                                 id="confirm-delete"
                                 value={confirmDeleteName}

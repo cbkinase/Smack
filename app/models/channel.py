@@ -34,13 +34,15 @@ class Channel(db.Model):
             'subject': self.subject,
             'is_private': self.is_private,
             'is_direct': self.is_direct,
+            'created_at': self.created_at,
         }
         base_dict["Members"] = {
             user.id : {
             "avatar": user.avatar,
             "first_name": user.first_name,
             "last_name": user.last_name,
-            "id": user.id
+            "id": user.id,
+            "bio": user.bio,
             }
             for user in self.users
         }

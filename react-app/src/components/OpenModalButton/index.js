@@ -11,7 +11,9 @@ function OpenModalButton({
     userList,
     numMemb,
     renderDownArrow,
-    currUser
+    currUser,
+    renderPencil,
+    renderPersonPlus
 }) {
     if (userList && userList.length > 1) {
         userList = JSON.parse(JSON.stringify(userList));
@@ -58,6 +60,13 @@ function OpenModalButton({
                     src={userList && userList[0].avatar} alt=''></img>
                 <span style={{ padding: "0px 5px" }}>{numMemb}</span>
             </div> : null}
+
+            {renderPersonPlus &&
+                <span style={{paddingRight: "8px"}}>
+                    <i className="fa-solid fa-user-plus"></i>
+                </span>}
+
+            {renderPencil && <span style={{paddingRight: "8px"}}><i className="fa fa-pencil"></i></span>}
 
             {buttonText}
 

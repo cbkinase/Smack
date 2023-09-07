@@ -55,7 +55,7 @@ export default function DirectMessageIntro({ channel, user }) {
                                     onClick={e => handleNameClick(member)}
                                 />)}
                     </div>
-
+        const diff = usersArray.length - firstMembers.length
         channelIntroAbout = <p style={{
                                         paddingTop: "13px",
                                         marginBottom: "-25px", // Get rid of this if we add back buttons
@@ -69,7 +69,7 @@ export default function DirectMessageIntro({ channel, user }) {
                     </span>
                 )}
                 {usersArray.length > firstMembers.length
-                    && `, and ${usersArray.length - firstMembers.length} others`}
+                    && `, and ${diff} other${diff > 1  ? "s" : ""}`}
                 .
             </p>
     }

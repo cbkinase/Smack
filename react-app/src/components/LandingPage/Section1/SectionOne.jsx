@@ -2,6 +2,7 @@ import sidebar from '../../../assets/landing-1-smack-sidebar.png'
 import chat from '../../../assets/landing-1-smack-chat.png'
 import './SectionOne.css';
 import { NavLink } from "react-router-dom";
+import smackFig1 from "../../../assets/Smack-layered-prev.svg";
 
 export default function SectionOne () {
     return (
@@ -20,12 +21,11 @@ export default function SectionOne () {
                 </NavLink>
             </div>
             <div className="landing-one-figures fade-in">
-                <div id="landing-one-figure-1">
-                    <img src={sidebar} alt="smack-figure-sidebar"></img>
-                </div>
-                <div id="landing-one-figure-2">
-                    <img src={chat} alt="smack-figure-chat"></img>
-                </div>
+                <img id="smack-figure-1"
+                    src={smackFig1} 
+                    alt="smack-figure-preview"
+                >
+                </img>
             </div>
         </div>
 

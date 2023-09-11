@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate, disconnectWebSocket } from "./store/session";
 import Shell from "./components/Shell";
@@ -42,6 +42,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginSignupPage setHasVisited={setHasVisited} />} />
+                <Route path="*" element={<Navigate to="/" />} />
             </Routes >
         )
     }

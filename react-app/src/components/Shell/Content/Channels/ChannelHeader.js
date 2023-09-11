@@ -22,7 +22,10 @@ function ChannelHeader() {
     useEffect(() => {
         dispatch(ChlActions.OneChannelThunk(channelId))
             .then(res => {
-                if (res.errors) navigate('/channels/explore');
+                if (res.errors) {
+                    navigate('/channels/explore');
+                    return;
+                }
                 let channel = res.single_channel[0]
                 document.title = `${determineChannelName(res.single_channel[0], user)} - Smack`
 

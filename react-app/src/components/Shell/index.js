@@ -4,7 +4,7 @@ import Header from "./Header";
 import LeftSide from "./LeftSide";
 import Content from "./Content";
 import RightSide from "./RightSide/RightSide";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
@@ -46,49 +46,34 @@ function Shell({ isLoaded }) {
     return (
         <div id="grid-container" className="grid-container-hiderightside">
             <Header isLoaded={isLoaded} />
-
             <Routes>
                 <Route path="/" element={<>
                     <LeftSide />
                     <RightSide />
                     <AllChannels />
-                    </>
-                }>
-
-                </Route>
+                </>} />
                 <Route path="/channels/explore" element={<>
                     <LeftSide />
                     <RightSide />
                     <AllChannels />
-                </>
-            }>
-
-                </Route>
+                </>} />
                 <Route path="/channels/new" element={<>
                     <LeftSide />
                     <RightSide />
                     <CreateChannel />
-                </>}>
-                </Route>
+                </>} />
                 <Route path="/channels/direct" element={<>
                     <LeftSide />
                     <RightSide />
                     <DMChannels />
-                </>}>
-                </Route>
-
+                </>} />
                 <Route path="/channels/:channelId" element={<>
                     <LeftSide />
                     <RightSide />
                     <Content />
-                </>}>
-                </Route>
-                
-                <Route path="/login" element={<></>}>
-                </Route>
-
+                </>} />
+                <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-
         </div>
     );
 }

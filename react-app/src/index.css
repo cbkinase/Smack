@@ -299,7 +299,9 @@ a:active {
 
 .grid-container {
     width: 100vw;
-    height: calc(100vh - 44px);
+    height: 100vh;
+    height: 100cqh;
+    height: 100svh;
     display: grid;
     grid-template-columns: 294px 1fr 345px;
     grid-template-rows: 44px 55px 1fr 0px;

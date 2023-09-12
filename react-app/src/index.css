@@ -1099,6 +1099,11 @@ input[type="file"] {
     color: #ffffff;
 }
 
+#editor-container {
+    position: sticky;
+    bottom: env(safe-area-inset-bottom, 0);
+}
+
 
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
 

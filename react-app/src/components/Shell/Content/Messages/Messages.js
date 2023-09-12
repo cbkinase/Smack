@@ -315,7 +315,7 @@ const Messages = ({ scrollContainerRef }) => {
                 ))}
             </div>
 
-            <div style={{ position: 'sticky', bottom: 0 }} >
+            <div id="editor-container">
                 <Editor functions={messageFunctions}
                         creating={true}
                         setChatInput={setChatInput}

@@ -1,6 +1,6 @@
 export default function LeftSidebarAboutMe() {
     return (
-        <div style={{ position: 'absolute', bottom: '0px' }}>
+        <div className="leftsidebar-about-me" style={{ position: 'absolute', bottom: '0px' }}>
         <div className="footer" style={{ padding: '20px', justifyContent: 'flex-start', alignItems: "flex-start", backgroundColor: '#3f0e40', width: "294px" }}>
 
             <div style={{borderTop: "1px solid #4e3752", width: "294px", marginLeft: "-20px"}}></div>

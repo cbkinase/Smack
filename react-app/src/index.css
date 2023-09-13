@@ -1118,4 +1118,14 @@ input[type="file"] {
 
 }
 
+@media screen and (max-height: 800px) {
+    .leftsidebar-about-me {
+        display: none;
+    }
+    #last-leftside-holder {
+        margin-bottom: 0px;
+    }
+
+}
+
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */

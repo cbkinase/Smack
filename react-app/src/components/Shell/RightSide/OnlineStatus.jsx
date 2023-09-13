@@ -6,6 +6,6 @@ export default function OnlineStatus() {
     return (
     <span style={{display: "flex"}}>
         <span style={{color: "#007a5a", paddingRight: "5px"}}>{online}</span>
-        Online
+        Active
     </span>)
 }

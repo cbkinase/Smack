@@ -6,6 +6,9 @@ const REMOVE_USER = "session/REMOVE_USER";
 const ADJUST_USER = "session/ADJUST_USER";
 const SET_SOCKET = "session/SET_SOCKET";
 const REMOVE_SOCKET = "session/REMOVE_SOCKET";
+const SET_ONLINE_USERS = "session/SET_ONLINE_USERS";
+const REMOVE_ONLINE_USER = "session/REMOVE_ONLINE_USERS";
+const ADD_ONLINE_USER = "session/ADD_ONLINE_USER";
 
 const setUser = (user) => ({
 	type: SET_USER,
@@ -30,7 +33,22 @@ const removeSocket = () => ({
 	type: REMOVE_SOCKET,
 })
 
-const initialState = { user: null, socket: null };
+export const setOnlineUsers = (userIds) => ({
+	type: SET_ONLINE_USERS,
+	payload: userIds,
+})
+
+export const addOnlineUser = (id) => ({
+	type: ADD_ONLINE_USER,
+	payload: id,
+})
+
+export const removeOnlineUser = (id) => ({
+	type: REMOVE_ONLINE_USER,
+	payload: id,
+})
+
+const initialState = { user: null, socket: null, onlineUsers: null };
 
 
 export const disconnectWebSocket = () => async (dispatch) => {
@@ -70,7 +88,6 @@ export const login = (email, password) => async (dispatch) => {
 	if (response.ok) {
 		const data = await response.json();
 		dispatch(setUser(data));
-		dispatch(setSocket());
 		return null;
 	} else if (response.status < 500) {
 		const data = await response.json();
@@ -173,6 +190,19 @@ export default function reducer(state = initialState, action) {
 			return { ...state, socket: null }
 		case SET_SOCKET: {
 			return { ...state, socket: action.payload}
+		}
+		case SET_ONLINE_USERS:
+			return { ...state, onlineUsers: action.payload }
+		case ADD_ONLINE_USER: {
+			return { ...state,
+				onlineUsers: { ...state.onlineUsers, [action.payload]: "true" } }
+		}
+		case REMOVE_ONLINE_USER: {
+			const newState = {
+				...state, onlineUsers: { ...state.onlineUsers }
+			}
+			delete newState.onlineUsers[action.payload];
+			return newState;
 		}
 		default:
 			return state;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { logout, editUser } from "../../../store/session";
+import { logout, editUser, disconnectWebSocket } from "../../../store/session";
 import { useNavigate } from "react-router-dom";
 
 function ProfileButton({ user }) {
@@ -14,8 +14,9 @@ function ProfileButton({ user }) {
     setShowMenu((prev) => !prev);
   };
 
-  const handleLogout = (e) => {
+  const handleLogout = async (e) => {
     e.preventDefault();
+    await dispatch(disconnectWebSocket());
     dispatch(logout());
     navigate("/")
   };

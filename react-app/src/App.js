@@ -19,17 +19,18 @@ function App() {
     useEffect(() => {
         dispatch(authenticate()).then(() => setIsLoaded(true));
 
-        // Disconnect the socket when the window is about to be closed
-        const handleBeforeUnload = () => {
+        // Disconnect the socket as the window is closing
+        // (Yes, we might need a better solution long-term)
+        const handleDisconnection = () => {
             dispatch(disconnectWebSocket());
         };
 
         // Add the event listener
-        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('unload', handleDisconnection);
 
         // Cleanup the event listener on App unmount
         return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('unload', handleDisconnection);
         };
     }, [dispatch]);
 

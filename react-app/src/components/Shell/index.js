@@ -15,6 +15,7 @@ import RouteIdContext from "../../context/RouteId/RouteIdContext";
 function Shell({ isLoaded }) {
     const dispatch = useDispatch();
     const socket = useSelector(state => state.session.socket);
+    const user = useSelector(state => state.session.user);
     const [routeId,] = useContext(RouteIdContext);
 
 
@@ -29,7 +30,7 @@ function Shell({ isLoaded }) {
             // ONLY if convoId === routeId
             if (+routeId === +convoId)
                 dispatch(OneChannelThunk(convoId));
-
+        })
             /*
 
             It's worth noting that we only need to do some of this stuff because we don't really (consistently) include channel member info in the store.
@@ -40,8 +41,22 @@ function Shell({ isLoaded }) {
             return () => {
                 socket.off("new_DM_convo");
             }
-        });
-    }, [socket, dispatch, routeId])
+        }, [socket, dispatch, routeId, user]);
+
+    useEffect(() => {
+
+        const cancelOutgoingTypingIndicator = () => {
+            if (!routeId || !socket || !user) return;
+            socket.emit("stopped_typing", { channel_id: routeId, user_id: user.id });
+          };
+
+        window.addEventListener('beforeunload', cancelOutgoingTypingIndicator);
+
+        return () => {
+          window.removeEventListener('beforeunload', cancelOutgoingTypingIndicator);
+        };
+
+      }, [routeId, user, socket]);
 
     return (
         <div id="grid-container" className="grid-container-hiderightside">

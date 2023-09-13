@@ -151,8 +151,6 @@ def handle_connect(data):
     # Should probably do some filtering based on relevance
     online_users = redis.hgetall("online-users")
     emit("after_connecting", online_users, room=sid)
-    print("online users", online_users)
-    print(redis.hgetall(user_hash_key))
 
 
 @socketio.on('disconnect')
@@ -164,7 +162,6 @@ def handle_disconnect():
     print(f'Client {client_id} disconnected with sid {sid}')
     redis.hdel(user_hash_key, sid)
 
-    print(redis.hlen(user_hash_key))
 
     if not redis.hlen(user_hash_key):
         redis.delete(user_hash_key)
@@ -177,9 +174,6 @@ def handle_disconnect():
         for room in rooms:
             print("Emitting exit to room", room)
             emit('user_offline', client_id, room=room)
-
-    print("online users", redis.hgetall("online-users"))
-    print(redis.hgetall(user_hash_key))
 
 
 @socketio.on('join')

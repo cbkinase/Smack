@@ -135,7 +135,7 @@ def handle_delete_attachment(data):
 
 
 @socketio.on('connect')
-# @authenticated_only
+@authenticated_only
 def handle_connect():
     sid = request.sid
     client_id = current_user.id
@@ -153,7 +153,7 @@ def handle_connect():
 
 
 @socketio.on('disconnect')
-# @authenticated_only
+@authenticated_only
 def handle_disconnect():
     sid = request.sid
     client_id = current_user.id
@@ -220,6 +220,7 @@ def handle_typing_event(data):
 
 
 @socketio.on('stopped_typing')
+@authenticated_only
 def handle_stop_typing_event(data):
     room = data['channel_id']
     user_id = data['user_id']

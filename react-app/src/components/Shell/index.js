@@ -9,6 +9,7 @@ import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
 import { UserChannelThunk, OneChannelThunk } from "../../store/channel";
+import { disconnectWebSocket } from "../../store/session";
 import { useEffect } from "react";
 import RouteIdContext from "../../context/RouteId/RouteIdContext";
 
@@ -18,6 +19,21 @@ function Shell({ isLoaded }) {
     const user = useSelector(state => state.session.user);
     const [routeId,] = useContext(RouteIdContext);
 
+    useEffect(() => {
+        // Disconnect the socket as the window is closing
+        const handleDisconnection = () => {
+            socket.emit("stopped_typing", { channel_id: routeId, user_id: user.id });
+            dispatch(disconnectWebSocket());
+        };
+
+        // Add the event listener
+        window.addEventListener('beforeunload', handleDisconnection);
+
+        // Cleanup the event listener on Shell unmount
+        return () => {
+            window.removeEventListener('beforeunload', handleDisconnection);
+        };
+    }, [dispatch, routeId, user, socket]);
 
     useEffect(() => {
 
@@ -32,31 +48,12 @@ function Shell({ isLoaded }) {
                 dispatch(OneChannelThunk(convoId));
         })
             /*
-
-            It's worth noting that we only need to do some of this stuff because we don't really (consistently) include channel member info in the store.
-
             There is almost certainly a better way to do this than performing additional queries, but it's an OK band-aid solution for now.
-
             */
             return () => {
                 socket.off("new_DM_convo");
             }
         }, [socket, dispatch, routeId, user]);
-
-    useEffect(() => {
-
-        const cancelOutgoingTypingIndicator = () => {
-            if (!routeId || !socket || !user) return;
-            socket.emit("stopped_typing", { channel_id: routeId, user_id: user.id });
-          };
-
-        window.addEventListener('beforeunload', cancelOutgoingTypingIndicator);
-
-        return () => {
-          window.removeEventListener('beforeunload', cancelOutgoingTypingIndicator);
-        };
-
-      }, [routeId, user, socket]);
 
     return (
         <div id="grid-container" className="grid-container-hiderightside">

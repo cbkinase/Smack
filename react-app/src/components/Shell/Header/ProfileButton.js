@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { logout, editUser, disconnectWebSocket } from "../../../store/session";
 import { useNavigate } from "react-router-dom";
+import RouteIdContext from "../../../context/RouteId/RouteIdContext";
+import ActivityStatus from "../../ActivityStatus";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -9,6 +11,9 @@ function ProfileButton({ user }) {
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
   const mainRef = useRef();
+  const [routeId,] = useContext(RouteIdContext);
+  const socket = useSelector(state => state.session.socket);
+  const activityStyles = { position: "fixed", marginLeft: "-8px", marginTop: "-16px" };
 
   const toggleMenu = () => {
     setShowMenu((prev) => !prev);
@@ -16,6 +21,7 @@ function ProfileButton({ user }) {
 
   const handleLogout = async (e) => {
     e.preventDefault();
+    socket.emit("stopped_typing", { "channel_id": routeId, user_id: user.id });
     await dispatch(disconnectWebSocket());
     dispatch(logout());
     navigate("/")
@@ -85,6 +91,7 @@ function ProfileButton({ user }) {
           onClick={toggleMenu}
           >
           <img style={{ borderRadius: '4px', width: '26px', height: '26px' }} src={user.avatar} alt={user.first_name + " " + user.last_name} />
+          <ActivityStatus user={user} iconOnly={"avatar"} styles={activityStyles} />
         </button>
 
         <div className={ulClassName} ref={ulRef} style={{ padding: '0px', margin: '0px' }}>

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import SelectedUserRightBarContext from "../../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 import { toggleRightPane } from "../../../../../utils/togglePaneFunctions";
+import ActivityStatus from "../../../../ActivityStatus";
 
 export default function SelfDMIntro({ user }) {
     const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
@@ -14,6 +15,7 @@ export default function SelfDMIntro({ user }) {
             <div className="dm-intro-title-container">
                 <img alt="" className="dm-intro-picture" src={user.avatar}></img>
                 <h3 onClick={e => handleNameClick(user)} id="dm-intro-title">{user.first_name} {user.last_name} (you)</h3>
+                <ActivityStatus user={user} iconOnly={true} styles={{paddingTop: "5px"}} />
             </div>
 
     const channelIntroAbout =

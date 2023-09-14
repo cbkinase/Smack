@@ -38,9 +38,9 @@ export const setOnlineUsers = (userIds) => ({
 	payload: userIds,
 })
 
-export const addOnlineUser = (id) => ({
+export const addOnlineUser = (usr) => ({
 	type: ADD_ONLINE_USER,
-	payload: id,
+	payload: usr,
 })
 
 export const removeOnlineUser = (id) => ({
@@ -195,7 +195,7 @@ export default function reducer(state = initialState, action) {
 			return { ...state, onlineUsers: action.payload }
 		case ADD_ONLINE_USER: {
 			return { ...state,
-				onlineUsers: { ...state.onlineUsers, [action.payload]: "true" } }
+				onlineUsers: { ...state.onlineUsers, [action.payload.id]: action.payload.status } }
 		}
 		case REMOVE_ONLINE_USER: {
 			const newState = {

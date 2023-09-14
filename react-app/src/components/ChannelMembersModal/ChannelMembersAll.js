@@ -2,6 +2,7 @@ import { useModal } from "../../context/Modal/Modal";
 import { useState, useEffect } from "react";
 import userObjectToNameList from "../../utils/userObjectToNameList";
 import LoadingSpinner from "../LoadingSpinner";
+import ActivityStatus from "../ActivityStatus";
 
 export default function ChannelMembersAll({ currentChannel, numMemb, userList, user }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -130,6 +131,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
                         src={member.avatar}
                         alt=''></img>
                       <p>{member.first_name} {member.last_name}</p>
+                      <ActivityStatus user={member} iconOnly={true} styles={{marginLeft: "5px", paddingTop: "5px"}} />
                   </div>
         })
         : <p style={{

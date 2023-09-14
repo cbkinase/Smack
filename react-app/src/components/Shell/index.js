@@ -67,8 +67,8 @@ function Shell({ isLoaded }) {
             dispatch(setOnlineUsers(onlineUsers));
         })
 
-        socket.on("user_online", (id) => {
-            dispatch(addOnlineUser(id));
+        socket.on("user_online", (usr) => {
+            dispatch(addOnlineUser(usr));
         })
 
         socket.on("user_offline", (id) => {

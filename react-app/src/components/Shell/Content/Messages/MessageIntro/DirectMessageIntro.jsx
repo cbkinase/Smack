@@ -2,6 +2,7 @@ import { useContext } from "react";
 import determineChannelName from "../../../../../utils/determineChannelName";
 import SelectedUserRightBarContext from "../../../../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 import { toggleRightPane } from "../../../../../utils/togglePaneFunctions";
+import ActivityStatus from "../../../../ActivityStatus";
 
 export default function DirectMessageIntro({ channel, user }) {
     const channelName = determineChannelName(channel, user);
@@ -28,6 +29,7 @@ export default function DirectMessageIntro({ channel, user }) {
         introTitle = <div className="dm-intro-title-container">
                         <img alt="" className="dm-intro-picture" src={member.avatar}></img>
                         <h3 onClick={nameClickFn} id="dm-intro-title">{channelName}</h3>
+                        <ActivityStatus user={member} iconOnly={true} styles={{paddingTop: "5px"}} />
                     </div>
 
         channelIntroAbout = <p style={{paddingTop: "13px"}}>

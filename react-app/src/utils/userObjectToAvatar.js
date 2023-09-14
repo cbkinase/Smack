@@ -1,3 +1,5 @@
+import ActivityStatus from "../components/ActivityStatus";
+
 export default function userObjectToAvatar(obj, currUser, bgColor, textColor, bdrColor) {
     /*
 
@@ -13,22 +15,29 @@ export default function userObjectToAvatar(obj, currUser, bgColor, textColor, bd
 
     */
     let new_obj = JSON.parse(JSON.stringify(obj));
-    delete new_obj[currUser.id]
+    delete new_obj[currUser.id];
 
-    let obj_arr = Object.values(new_obj)
+    let obj_arr = Object.values(new_obj);
+    let activityStyles = { display: "inline", position: "absolute", marginLeft: "-25px", marginTop: "9px" };
 
     // This is the avatar we will render when a DM has only 1 other participant
 
     if (obj_arr.length === 1) {
         return (
-            <span><img src={obj_arr[0].avatar} alt="DM" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
+            <span>
+                <img src={obj_arr[0].avatar} alt="DM" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img>
+                <ActivityStatus user={obj_arr[0]} iconOnly={"avatar"} styles={activityStyles} />
+            </span>
         )
     }
 
     if (obj_arr.length === 0) {
         // In this case, this is a "self" DM.
         return (
-            <span><img src={currUser.avatar} alt="DM" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img></span>
+            <span>
+                <img src={currUser.avatar} alt="DM" style={{ borderRadius: "5px", width: "20px", height: "20px", marginTop: "4px" }}></img>
+                <ActivityStatus user={currUser} iconOnly={"avatar"} styles={activityStyles} />
+            </span>
         )
 
     }

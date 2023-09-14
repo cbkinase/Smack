@@ -138,14 +138,14 @@ def handle_connect(data):
     redis.hset(user_hash_key, sid, "online")
 
     if redis.hlen(user_hash_key) == 1:
-        redis.hset("online-users", client_id, "true")
+        redis.hset("online-users", client_id, "active")
         # Notify relevant users
         # TODO: optimize...
         rooms = get_relevant_sids(current_user, redis)
 
         for room in rooms:
             print("Emitting entry to room", room)
-            emit('user_online', client_id, room=room, include_self=False)
+            emit('user_online', {"id": client_id, "status": "active"}, room=room, include_self=False)
 
     # Inform the user who just logged in of who is online.
     # Should probably do some filtering based on relevance

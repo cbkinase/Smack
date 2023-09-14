@@ -1,21 +1,21 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import userChannelDMSearch from '../../../utils/userChannelDMSearch';
 import { useNavigate } from 'react-router-dom';
 import { AddChannelThunk, UserChannelThunk } from '../../../store/channel';
 import toggleRightPane from './toggleRightPane';
 import SelectedUserRightBarContext from '../../../context/SelectedUserRightBar/SelectedUserRightBarContext';
-import OnlineStatus from './OnlineStatus';
-import OfflineStatus from './OfflineStatus';
+import ActivityStatus from '../../ActivityStatus';
 
 
 function RightSideInfo() {
     const [selectedUserRightBar, ] = useContext(SelectedUserRightBarContext);
     const user_channels = useSelector(state => state.channels.user_channels);
-    const onlineUsers = useSelector(state => state.session.onlineUsers);
     const currUser = useSelector(state => state.session.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const activityStyles = { textAlign: "left", width: "100%", marginBottom: "20px", display: "block" };
 
     return (
         <div id="grid-rightside" className="grid-rightside-hide">
@@ -32,13 +32,7 @@ function RightSideInfo() {
                     {selectedUserRightBar?.first_name} {selectedUserRightBar?.last_name}
                 </div>
 
-                {/* Activity status */}
-                <div style={{ textAlign: "left", width: "100%", marginBottom: "20px", display: "block" }}>
-                    {onlineUsers && onlineUsers[selectedUserRightBar?.id] ?
-                    <OnlineStatus /> :
-                    <OfflineStatus />
-                    }
-                </div>
+                <ActivityStatus styles={activityStyles} user={selectedUserRightBar} />
 
                 <div style={{ textAlign: "left", width: "100%" }}>
                     {selectedUserRightBar?.bio}

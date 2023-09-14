@@ -6,6 +6,7 @@ import ChannelMembersAll from "./ChannelMembersAll";
 import isSelfDM from "../../utils/isSelfDM";
 import SelectedUserRightBarContext from "../../context/SelectedUserRightBar/SelectedUserRightBarContext";
 import { toggleRightPane } from "../../utils/togglePaneFunctions";
+import ActivityStatus from "../ActivityStatus";
 
 export default function ChannelMembersModal({ currentChannel, numMemb, userList, user }) {
   const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
@@ -75,6 +76,7 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
               alt=''>
             </img>
             <p>{member.first_name} {member.last_name}</p>
+            <ActivityStatus user={member} iconOnly={true} styles={{marginLeft: "5px", paddingTop: "5px"}} />
           </div>
         })}
         {!isSelfDM(currentChannel[0], user)  ?

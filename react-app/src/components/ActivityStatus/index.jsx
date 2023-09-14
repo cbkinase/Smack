@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import OnlineStatus from './OnlineStatus';
 import OfflineStatus from './OfflineStatus';
+import IdleStatus from './IdleStatus';
 
 export default function ActivityStatus({ styles, user, iconOnly }) {
     const onlineUsers = useSelector(state => state.session.onlineUsers);
@@ -15,7 +16,7 @@ export default function ActivityStatus({ styles, user, iconOnly }) {
         content = <OnlineStatus iconOnly={iconOnly} />
     }
     else if (status === "idle") {
-        // TODO: make this component + ability to switch status
+        content = <IdleStatus iconOnly={iconOnly} />
     }
     else {
         content = <OfflineStatus iconOnly={iconOnly} />

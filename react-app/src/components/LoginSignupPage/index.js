@@ -19,7 +19,7 @@ function LoginSignupPage({ setHasVisited }) {
 
     const [errors, setErrors] = useState([]);
 
-    const [formType, setFormType] = useState('login')
+    const [formType, setFormType] = useState('login');
 
     let signInForm = useRef(null);
     let signUpForm = useRef(null);
@@ -54,14 +54,14 @@ function LoginSignupPage({ setHasVisited }) {
 
     const handleDemo = () => {
         setEmail('demo@aa.io');
-        setPassword('verysecurepassword');
+        setPassword('verysecurepassword??xd');
     };
 
     const handleSubmitLogin = async (e) => {
         e.preventDefault();
         const data = await dispatch(login(email, password));
         if (data) {
-            setErrors(data);
+            setErrors([data]);
             return
         }
         setHasVisited(true);
@@ -74,7 +74,7 @@ function LoginSignupPage({ setHasVisited }) {
         if (password === confirmPassword) {
             const data = await dispatch(signUp(username, email, password, first_name, last_name));
             if (data) {
-                setErrors(data)
+                setErrors(data);
                 return
             }
         } else {

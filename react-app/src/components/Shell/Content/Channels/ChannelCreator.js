@@ -18,7 +18,7 @@ const CreateChannel = () => {
         setErrors([]);
         created = dispatch(AddChannelThunk({ name: name, subject: subject, is_private: false, is_direct: false }))
         // should be to specific channel id of newly created channel
-        if (!created.errors) { (navigate(`/channels/explore`)) }
+        if (!created.error) { (navigate(`/channels/explore`)) }
     }
 
     return (

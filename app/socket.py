@@ -11,11 +11,16 @@ from .socket_helpers import (
     handle_add_reaction_helper,
     handle_delete_reaction_helper,
     handle_delete_attachment_helper,
-    get_relevant_sids
+    get_relevant_sids,
+    construct_response,
+    parse_error_from_message
     )
 from redis import Redis
 from functools import wraps
 
+SUCCESS = "success"
+GENERIC_ERROR = "error"
+GENERIC_SOCKET_ERROR = "socket_error"
 redis_host = os.environ.get("REDIS_HOST") or "redis"
 
 if os.environ.get("FLASK_ENV") == "production":
@@ -54,26 +59,25 @@ def authenticated_only(f):
 def handle_chat(data):
     room = str(data.get('channel_id'))
     new_message = handle_chat_helper(data)
-    error = new_message.get("error")
 
-    if error:
-        return {'status': error, 'message': new_message["error_message"]}
+    if "error" in new_message:
+        error_status, error_message = parse_error_from_message(new_message)
+        return construct_response(error_status, error_message)
 
     try:
         emit("chat", new_message, room=room, include_self=False)
-        return {'status': 'success', 'message': new_message}
+        return construct_response(SUCCESS, new_message)
     except Exception as e:
-        print(e)
-        return {'status': 'socket_error', 'message': 'Something went wrong with sockets.'}
+        return construct_response(GENERIC_SOCKET_ERROR, 'There was a problem with the socket communication.')
 
 
-# TODO: proper error handling for the remaining routes
+# TODO: more proper error handling for the remaining routes
 @socketio.on("edit")
 def handle_edit(data):
     room = str(data.get('channel_id'))
     edited_message = handle_edit_message_helper(data)
     emit("edit", edited_message, room=room, include_self=False)
-    return {'status': 'success', 'message': edited_message}
+    return construct_response(SUCCESS, edited_message)
 
 
 @socketio.on("delete")
@@ -82,7 +86,7 @@ def handle_delete(data):
     message_id = str(data.get('message_id'))
     handle_delete_message_helper(data)
     emit("delete", message_id, room=room, include_self=False)
-    return {'status': 'success', 'message': message_id}
+    return construct_response(SUCCESS, message_id)
 
 
 ############################ REACTIONS ############################
@@ -92,26 +96,24 @@ def handle_delete(data):
 def handle_add_reaction(data):
     room = str(data.get('channel_id'))
     res = handle_add_reaction_helper(data)
-    error = res.get('error')
 
-    if error:
-        return {'status': 'invalid_request', 'message': error}
+    if 'error' in res:
+        return construct_response('invalid_request', res.get('error'))
 
     emit("addReaction", res, room=room, include_self=False)
-    return {'status': 'success', 'payload': res}
+    return construct_response(SUCCESS, res, override_key='payload')
 
 
 @socketio.on("deleteReaction")
 def handle_delete_reaction(data):
     room = str(data.get('channel_id'))
     res = handle_delete_reaction_helper(data)
-    error = res.get('error')
 
-    if error:
-        return {'status': 'invalid_request', 'message': error}
+    if 'error' in res:
+        return construct_response('invalid_request', res.get('error'))
 
     emit("deleteReaction", res, room=room, include_self=False)
-    return {'status': 'success', 'payload': res}
+    return construct_response(SUCCESS, res, override_key='payload')
 
 
 ############################ ATTACHMENTS ############################
@@ -122,7 +124,7 @@ def handle_delete_attachment(data):
     room = str(data.get('channel_id'))
     res = handle_delete_attachment_helper(data)
     emit("deleteAttachment", res, room=room, include_self=False)
-    return {'status': 'success', 'payload': res}
+    return construct_response(SUCCESS, res, override_key='payload')
 
 
 ############################ CONNECTION EVENTS ############################
@@ -144,7 +146,6 @@ def handle_connect(data):
         rooms = get_relevant_sids(current_user, redis)
 
         for room in rooms:
-            print("Emitting entry to room", room)
             emit('user_online', {"id": client_id, "status": "active"}, room=room, include_self=False)
 
     # Inform the user who just logged in of who is online.
@@ -172,7 +173,6 @@ def handle_disconnect():
         rooms = get_relevant_sids(current_user, redis)
 
         for room in rooms:
-            print("Emitting exit to room", room)
             emit('user_offline', client_id, room=room)
 
 

@@ -6,7 +6,7 @@ def handle_edit_message_helper(data):
     new_content = data["content"]
     new_pinned = data["is_pinned"]
     message_id = data["message_id"]
-    message = db.session.query(Message).get(message_id)
+    message = Message.query.get(message_id)
     current_timestamp = datetime.utcnow()
 
     if new_content:

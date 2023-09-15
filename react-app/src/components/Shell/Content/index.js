@@ -19,7 +19,7 @@ function Content() {
                 ref={scrollContainerRef}
                 id="grid-content"
                 className="grid-content-threecolumn"
-                style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+                style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '116px' }}
             >
                 <Messages scrollContainerRef={scrollContainerRef} />
             </div>

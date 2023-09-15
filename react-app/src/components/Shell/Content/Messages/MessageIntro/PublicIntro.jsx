@@ -42,7 +42,7 @@ export default function PublicIntro({ channel, user }) {
     return (
         <div className="channel-intro-container">
 
-            <h3 id="channel-intro-title">{channelName}</h3>
+            <h3 id="channel-intro-title" className="ellipsis-if-long">{channelName}</h3>
 
             <p className="channel-intro-about">
                 <span id="intro-owner-name" onClick={handleNameClick}>

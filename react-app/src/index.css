@@ -432,6 +432,7 @@ a:active {
     overflow: auto;
     z-index: 1;
     grid-column: 1 / 3;
+    margin-bottom: 116px; /* Height of Editor */
 }
 
 .grid-editor-threecolumn {
@@ -1104,7 +1105,8 @@ input[type="file"] {
 }
 
 #editor-container {
-    position: sticky;
+    position: fixed;
+    width: 100%;
     bottom: env(safe-area-inset-bottom, 0);
 }
 

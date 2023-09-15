@@ -1,4 +1,6 @@
 from app.models import db, Reaction
+from .write_error_message import write_error_message
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def handle_delete_reaction_helper(data):
@@ -6,12 +8,12 @@ def handle_delete_reaction_helper(data):
     reaction = Reaction.query.get(reaction_id)
 
     if not reaction:
-        return { "error": "Reaction not found" }
+        return write_error_message("Reaction not found")
 
     try:
         db.session.delete(reaction)
         db.session.commit()
-    except Exception as e:
-        return { "error": f"Failed to delete reaction: {e}" }
+    except SQLAlchemyError as e:
+        return write_error_message("Failed to delete reaction")
 
     return data

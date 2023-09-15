@@ -1,7 +1,7 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from faker import Faker
 from random import choice, randint
-from datetime import datetime
+from sqlalchemy.orm import joinedload
 
 
 class Message(db.Model):
@@ -63,3 +63,14 @@ class Message(db.Model):
                 channels=choice(channels),
                 content=fake.sentence(nb_words = randint(3, 100)))
             for _ in range(qty)]
+
+
+    @classmethod
+    def get_everything_for_channel_query(cls, channel_id):
+        channel_messages_query = Message.query.options(
+        joinedload(Message.reactions),
+        joinedload(Message.attachments),
+        joinedload(Message.users),
+        ).filter(Message.channel_id == channel_id)\
+        .order_by(Message.id.desc())
+        return channel_messages_query

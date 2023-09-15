@@ -50,24 +50,14 @@ export const removeOnlineUser = (id) => ({
 
 const initialState = { user: null, socket: null, onlineUsers: null };
 
-
 export const disconnectWebSocket = () => async (dispatch) => {
 	dispatch(removeSocket());
 }
 
-
 export const authenticate = () => async (dispatch) => {
-	const response = await fetch("/api/auth/", {
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
+	const response = await fetch("/api/auth/");
 	if (response.ok) {
 		const data = await response.json();
-		if (data.errors) {
-			return;
-		}
-
 		dispatch(setUser(data));
 		return data;
 	}
@@ -91,8 +81,8 @@ export const login = (email, password) => async (dispatch) => {
 		return null;
 	} else if (response.status < 500) {
 		const data = await response.json();
-		if (data.errors) {
-			return data.errors;
+		if (data.error) {
+			return data.message;
 		}
 	} else {
 		return ["An error occurred. Please try again."];
@@ -133,8 +123,8 @@ export const signUp = (username, email, password, first_name, last_name) => asyn
 		return null;
 	} else if (response.status < 500) {
 		const data = await response.json();
-		if (data.errors) {
-			return data.errors;
+		if (data.error) {
+			return data.message;
 		}
 	} else {
 		return ["An error occurred. Please try again."];
@@ -164,8 +154,8 @@ export const editUser = (first_name, last_name, avatar, bio, id) => async (dispa
 		return null;
 	} else if (response.status < 500) {
 		const data = await response.json();
-		if (data.errors) {
-			return data.errors;
+		if (data.error) {
+			return data.message;
 		}
 	} else {
 		return ["An error occurred. Please try again."];

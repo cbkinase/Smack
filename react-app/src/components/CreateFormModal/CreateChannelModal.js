@@ -38,9 +38,9 @@ const CreateChannelModal = ({ user }) => {
         const created = dispatch(AddChannelThunk({ name: name, subject: subject, is_private: false, is_direct: false }))
         const channelInfo = await created;
 
-        if (channelInfo.errors) return alert(`Oops, something went wrong with creating the channel. Please try again.`);
+        if (channelInfo.error) return alert(`Oops, something went wrong with creating the channel. Please try again.`);
 
-        if (!Object.values(errors).length && !created.errors) {
+        if (!Object.values(errors).length && !created.error) {
             navigate(`/channels/${channelInfo.id}`)
             closeModal()
 

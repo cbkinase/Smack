@@ -2,6 +2,7 @@ from .db import db, environment, SCHEMA
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from faker import Faker
+from sqlalchemy.orm import joinedload
 
 
 class User(db.Model, UserMixin):
@@ -88,7 +89,24 @@ class User(db.Model, UserMixin):
             "first_name": form.data['first_name'],
             "last_name": form.data['last_name']
         }
-        return cls(**user_info)
+        user = cls(**user_info)
+        db.session.add(user)
+        db.session.commit()
+        return user
+
+
+    @classmethod
+    def find_by_email(cls, email):
+        user = User.query.filter(User.email == email).first()
+        return user
+
+
+    @classmethod
+    def get_all_channels_for_user(cls, user, Channel):
+        user = User.query.options(
+        joinedload(User.channels).joinedload(Channel.users),
+    ).filter(User.id == user.id).first()
+        return user
 
 
     def edit_from_form(self, form):
@@ -96,3 +114,9 @@ class User(db.Model, UserMixin):
         self.last_name = form.data['last_name']
         self.avatar = form.data['avatar']
         self.bio = form.data['bio']
+        db.session.commit()
+
+
+    def join_channel(self, channel):
+        self.channels.append(channel)
+        db.session.commit()

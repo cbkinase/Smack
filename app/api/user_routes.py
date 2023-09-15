@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
-from app.models import User, db
+from app.models import User
 from app.forms import EditUserForm
 from .errors import (bad_request,
                      forbidden,
@@ -27,8 +27,10 @@ def user(id):
     Query for a user by id and returns that user in a dictionary
     """
     user = User.query.get(id)
+
     if user:
         return user.to_dict()
+
     return not_found("User not found")
 
 
@@ -38,7 +40,6 @@ def user_edit(id):
     """
     Query for a user by id, edit that users information, and return that user in a dictionary
     """
-
     user = User.query.get(id)
 
     if not user:
@@ -49,9 +50,9 @@ def user_edit(id):
 
     form = EditUserForm()
     form['csrf_token'].data = request.cookies['csrf_token']
+
     if form.validate_on_submit():
         user.edit_from_form(form)
-        db.session.add(user)
-        db.session.commit()
         return user.to_dict()
+
     return bad_request(validation_errors_to_error_messages(form.errors))

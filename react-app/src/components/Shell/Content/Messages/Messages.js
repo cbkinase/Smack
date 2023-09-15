@@ -235,16 +235,24 @@ const Messages = ({ scrollContainerRef }) => {
     const addAttachBuffer = (e) => {
         if (e.target.files[0]) {
             const curBuffer = { ...attachmentBuffer };
+            const file = e.target.files[0];
             let currId = 0;
+            const CUTOFF_NUMBER = 20;
+            const FILE_CUTOFF_SIZE = CUTOFF_NUMBER * 1024 * 1024; // Expressed in MB
+
+            if (file.size >= FILE_CUTOFF_SIZE) {
+                alert(`Sorry, the maximum attachment size is currently ${CUTOFF_NUMBER} MB.`);
+                return;
+            }
 
             if (!Object.values(curBuffer).length) {
                 currId = 1;
             }
+
             else {
                 currId = Object.values(curBuffer).pop().id + 1;
             }
 
-            const file = e.target.files[0];
             file["id"] = currId;
 
             curBuffer[currId] = file;

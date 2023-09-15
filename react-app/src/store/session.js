@@ -50,24 +50,14 @@ export const removeOnlineUser = (id) => ({
 
 const initialState = { user: null, socket: null, onlineUsers: null };
 
-
 export const disconnectWebSocket = () => async (dispatch) => {
 	dispatch(removeSocket());
 }
 
-
 export const authenticate = () => async (dispatch) => {
-	const response = await fetch("/api/auth/", {
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
+	const response = await fetch("/api/auth/");
 	if (response.ok) {
 		const data = await response.json();
-		if (data.error) {
-			return;
-		}
-
 		dispatch(setUser(data));
 		return data;
 	}

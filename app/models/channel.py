@@ -56,3 +56,15 @@ class Channel(db.Model):
                     name=f"{fake.word().lower()}-{fake.word().lower()}",
                     owner=choice(users))
                     for _ in range(qty)]
+
+
+    @classmethod
+    def from_request(cls, owner, req):
+        channel_info = {
+            "name": req.json.get('name'),
+            "subject": req.json.get('subject'),
+            "is_private": req.json.get('is_private'),
+            "is_direct": req.json.get('is_direct'),
+            "owner": owner
+        }
+        return cls(**channel_info)

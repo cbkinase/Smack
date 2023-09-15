@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask_login import login_required
 from app.s3_helpers import (get_unique_filename, upload_file_to_s3, download_file_from_s3)
+from .errors import bad_request
 
 message_routes = Blueprint('messages', __name__)
 
@@ -15,7 +16,7 @@ def download_attachment(content_name):
         aws_url = download_file_from_s3(content_name)
         return {"url": aws_url}, 200
     except:
-        return {"errors": "Failed to get aws url"}, 400
+        return bad_request("Failed to get AWS URL")
 
 
 @message_routes.route("/attachments/upload", methods=["POST"])
@@ -33,7 +34,7 @@ def upload_attachments_and_get_links():
 
         if "url" not in upload_attachment:
             print('Failed to upload to AWS')
-            return {'errors': ['Failed to upload to AWS']}, 400
+            return bad_request("Failed to upload to AWS")
         else:
             outgoing_attachments[id] = upload_attachment["url"]
 

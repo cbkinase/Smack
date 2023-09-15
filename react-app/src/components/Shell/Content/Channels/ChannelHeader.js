@@ -22,7 +22,7 @@ function ChannelHeader() {
     useEffect(() => {
         dispatch(ChlActions.OneChannelThunk(channelId))
             .then(res => {
-                if (res.errors) {
+                if (res.error) {
                     navigate('/channels/explore');
                     return;
                 }

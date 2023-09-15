@@ -72,7 +72,7 @@ export const createChannelMessage = (message, channel_id) => async (dispatch) =>
     if (resMessage.ok) {
         const data = await resMessage.json();
 
-        if (data.errors) {
+        if (data.error) {
             return data;
         }
 
@@ -97,7 +97,7 @@ export const thunkCreateReaction =
 
         if(response.ok) {
         const data = await response.json();
-            if(data.errors) return data;
+            if(data.error) return data;
         dispatch(createReaction(data));
         return response;
         }

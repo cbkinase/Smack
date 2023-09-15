@@ -59,7 +59,7 @@ const Messages = ({ scrollContainerRef }) => {
             if (!hasMoreToLoad) return;
             const res = await dispatch(getChannelMessages(channelId, page, perPage));
             setLoadedMore(true);
-            if (res.errors) {
+            if (res.error) {
                 setHasMoreToLoad(false);
             }
         })()
@@ -187,8 +187,8 @@ const Messages = ({ scrollContainerRef }) => {
 
         const uploadData = await uploadResponse.json();
 
-        if (uploadData.errors) {
-            alert(uploadData.errors);
+        if (uploadData.error) {
+            alert(uploadData.error);
             return null;
         } else {
             return uploadData;

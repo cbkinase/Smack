@@ -77,3 +77,22 @@ class User(db.Model, UserMixin):
             for user in profiles]
 
         return new_users
+
+
+    @classmethod
+    def from_form(cls, form):
+        user_info = {
+            "username": form.data['username'],
+            "email": form.data['email'],
+            "password": form.data['password'],
+            "first_name": form.data['first_name'],
+            "last_name": form.data['last_name']
+        }
+        return cls(**user_info)
+
+
+    def edit_from_form(self, form):
+        self.first_name = form.data['first_name']
+        self.last_name = form.data['last_name']
+        self.avatar = form.data['avatar']
+        self.bio = form.data['bio']

@@ -3,6 +3,7 @@ from app.models import db, Channel, channel_user
 
 def get_relevant_user_ids(user):
     # Current criteria: has a shared DM channel.
+    # Should probably do some sort of caching
     users_in_direct_channels = db.session.query(channel_user.c.users_id)\
     .join(Channel, channel_user.c.channels_id == Channel.id)\
     .filter(

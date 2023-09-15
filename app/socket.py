@@ -68,7 +68,6 @@ def handle_chat(data):
         emit("chat", new_message, room=room, include_self=False)
         return construct_response(SUCCESS, new_message)
     except Exception as e:
-        print(e)
         return construct_response(GENERIC_SOCKET_ERROR, 'There was a problem with the socket communication.')
 
 
@@ -137,7 +136,7 @@ def handle_connect(data):
     sid = request.sid
     client_id = str(current_user.id)
     user_hash_key = f"user:{client_id}"
-    print(f'Client {client_id} connected with sid {sid}')
+    # print(f'Client {client_id} connected with sid {sid}')
     redis.hset(user_hash_key, sid, "online")
 
     if redis.hlen(user_hash_key) == 1:
@@ -147,7 +146,7 @@ def handle_connect(data):
         rooms = get_relevant_sids(current_user, redis)
 
         for room in rooms:
-            print("Emitting entry to room", room)
+            # print("Emitting entry to room", room)
             emit('user_online', {"id": client_id, "status": "active"}, room=room, include_self=False)
 
     # Inform the user who just logged in of who is online.
@@ -162,7 +161,7 @@ def handle_disconnect():
     sid = request.sid
     client_id = str(current_user.id)
     user_hash_key = f"user:{client_id}"
-    print(f'Client {client_id} disconnected with sid {sid}')
+    # print(f'Client {client_id} disconnected with sid {sid}')
     redis.hdel(user_hash_key, sid)
 
 
@@ -175,7 +174,7 @@ def handle_disconnect():
         rooms = get_relevant_sids(current_user, redis)
 
         for room in rooms:
-            print("Emitting exit to room", room)
+            # print("Emitting exit to room", room)
             emit('user_offline', client_id, room=room)
 
 
@@ -184,7 +183,7 @@ def on_join(data):
     room = data['channel_id']
     user_id = data['user_id']
     join_room(room)
-    print(f"Client {user_id} joined room {room}")
+    # print(f"Client {user_id} joined room {room}")
 
 
 @socketio.on('leave')
@@ -192,7 +191,7 @@ def on_leave(data):
     room = data['channel_id']
     user_id = data['user_id']
     leave_room(room)
-    print(f"Client {user_id} left room {room}")
+    # print(f"Client {user_id} left room {room}")
 
     # Indicate that the user has stopped typing
     redis.hdel(f"room:{room}", user_id)

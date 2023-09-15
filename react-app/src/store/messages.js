@@ -59,7 +59,7 @@ export const getChannelMessages = (id, page, perPage) => async (dispatch) => {
     }
     else {
         // Refine this for more specific errors later
-        return { errors: "Failed to fetch" }
+        return { error: "Failed to fetch" }
     }
 };
 

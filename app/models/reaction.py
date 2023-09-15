@@ -31,3 +31,12 @@ class Reaction(db.Model):
                     messages=choice(messages),
                     reaction=choice(emoji_choices))
                     for _ in range(qty)]
+
+
+    @classmethod
+    def find_existing_reaction(cls, message_id, user, rxn):
+        return cls.query.filter(
+            cls.message_id == message_id,
+            cls.user_id == user.id,
+            cls.reaction == rxn
+        ).first()

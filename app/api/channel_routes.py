@@ -243,6 +243,6 @@ def get_all_messages_for_channel(channel_id):
             try:
                 channel_messages = channel_messages.paginate(page=page, per_page=per_page).items
             except:
-                return { "errors": "No more records" }, 418
+                return { "error": "No more records" }, 418
 
     return [msg.to_dict() for msg in channel_messages]

@@ -1105,9 +1105,9 @@ input[type="file"] {
 }
 
 #editor-container {
-    position: fixed;
-    width: 100%;
-    bottom: env(safe-area-inset-bottom, 0);
+    position: sticky;
+    bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 

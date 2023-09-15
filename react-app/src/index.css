@@ -1104,9 +1104,8 @@ input[type="file"] {
 }
 
 #editor-container {
-    position: absolute;
+    position: sticky;
     bottom: 0;
-    width: calc(100vw - 294px);
 }
 
 
@@ -1119,14 +1118,6 @@ input[type="file"] {
 
     .login-signup {
         max-width: 95vw;
-    }
-
-    .editor-focus {
-        font-size: 16px;
-    }
-
-    #editor-container {
-        width: 100vw;
     }
 
 }

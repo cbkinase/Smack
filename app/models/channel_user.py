@@ -1,4 +1,3 @@
-from email.policy import default
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 import enum
 

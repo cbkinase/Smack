@@ -1,8 +1,9 @@
 import { useModal } from "../../context/Modal/Modal";
 import { useState, useEffect } from "react";
-import userObjectToNameList from "../../utils/userObjectToNameList";
+import normalizeData from "../../utils/normalizeData";
 import LoadingSpinner from "../LoadingSpinner";
-import ActivityStatus from "../ActivityStatus";
+import ChannelMember from "./Subcomponents/ChannelMember";
+import MemberModalHeader from "./Subcomponents/MemberModalHeader";
 
 export default function ChannelMembersAll({ currentChannel, numMemb, userList, user }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -11,13 +12,6 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
   const [allUsers, setAllUsers] = useState([]);
   const { closeModal } = useModal();
 
-  function normalizeData(data, keyName = "id") {
-    const res = {};
-    data.forEach((entry) => {
-      res[entry[keyName]] = { ...entry };
-    });
-    return res;
-  }
   useEffect(() => {
     (async function () {
       // Get and display all users except those already in channel
@@ -41,106 +35,42 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
     return fullName.includes(searchTerm.toLowerCase());
   });
 
-  function determineName(channel, user) {
-    // The name displayed must be different depending on whether it's a DM or not.
-    if (!channel.is_direct) return `# ${channel.name}`
-    else if (channel.is_direct && Object.values(channel.Members).length > 1) {
-      let res = userObjectToNameList(channel.Members, user)
-      return res.length <= 60 ? res : res.slice(0, 60) + "..."
-    }
-    else return `${user.first_name} ${user.last_name}`
-
+  async function onMemberClick(member, currentChannel) {
+      await fetch(`/api/channels/${currentChannel.id}/users/${member.id}`, {
+        method: "POST",
+      });
+      closeModal();
   }
 
   if (!isLoaded) {
     return (
-      <div
-        style={{
-          maxWidth: "600px",
-          width: "85vw",
-          maxHeight: '70vh',
-          padding: "0px 8px 8px 8px",
-          display: 'flex',
-          flexDirection: 'column' }}
-        className="view-all-channels">
-        <div className="channels-header">
-          <h2 style={{ marginTop: "-10px" }}>
-            {determineName(currentChannel, user)}
-          </h2>
-          <button
-              style={{ top: "18px" }}
-              className="edit-modal-close-btn"
-              onClick={() => closeModal()}
-          >
-            <i className="fa-solid fa-x"></i>
-          </button>
-        </div>
+      <div className="view-all-channels channel-member-modal-container">
+        <MemberModalHeader user={user} channel={currentChannel} />
         <LoadingSpinner offset={true} />
       </div>
-    )
+    );
   }
 
-  return <>
-    <div
-      style={{
-          maxWidth: "600px",
-          width: "85vw",
-          maxHeight: '70vh',
-          padding: "0px 8px 8px 8px",
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      className="">
-      <div className="channels-header">
-        <h2 style={{ marginTop: "-10px" }}>
-          {determineName(currentChannel, user)}
-        </h2>
-        <button
-          style={{ top: "18px" }}
-          className="edit-modal-close-btn"
-          onClick={() => closeModal()}
-        >
-          <i className="fa-solid fa-x"></i>
-        </button>
-      </div>
-      {allUsers.length ?
+  return (
+    <div className="channel-member-modal-container">
+      <MemberModalHeader user={user} channel={currentChannel} />
+      {allUsers.length &&
         <input
           id="channel-search"
           type="text"
           placeholder="Find members"
           value={searchTerm}
-          onChange={handleSearchChange} />
-          : null}
-      <div
-        className="channels-list"
-        style={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}
-      >
-        {filteredMembers.length ? filteredMembers.map((member, index) => {
-          return <div
-                    onClick={async (e) => {
-                      await fetch(`/api/channels/${currentChannel.id}/users/${member.id}`, {
-                        method: "POST",
-                      });
-                      closeModal();
-                    }}
-                    key={member.id}
-                    className="channels-list-item"
-                    style={{ display: "flex", alignItems: "center", border: "none" }}>
-                      <img
-                        style={{ borderRadius: "5px", width: "36px", height: "36px", marginRight: "10px" }}
-                        src={member.avatar}
-                        alt=''></img>
-                      <p>{member.first_name} {member.last_name}</p>
-                      <ActivityStatus user={member} iconOnly={true} styles={{marginLeft: "5px", paddingTop: "5px"}} />
-                  </div>
-        })
-        : <p style={{
-          alignItems: "center", padding: "16px 16px 5px 16px", marginTop: "5px", display: "block",
-          fontWeight: "bold",
-          color: "black",
-          textDecoration: "none"
-        }}>Sorry, no members found. Invite your friends to join Smack!</p>}
+          onChange={handleSearchChange}
+        />
+      }
+      <div className="channels-list">
+        {filteredMembers.length
+          ? filteredMembers.map(member => (
+            <ChannelMember key={member.id} member={member} channel={currentChannel} onClickFn={onMemberClick} />
+          ))
+          : <p className="no-members-found">Sorry, no members found. Invite your friends to join Smack!</p>
+        }
       </div>
     </div>
-  </>
+  );
 }

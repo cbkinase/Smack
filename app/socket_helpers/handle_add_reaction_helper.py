@@ -22,7 +22,7 @@ def handle_add_reaction_helper(data):
         if not message:
             return write_error_message("Not found", "Message not found")
 
-        new_reaction = Reaction(user=current_user, messages=message, reaction=rxn)
+        new_reaction = Reaction(user=current_user, message=message, reaction=rxn)
         db.session.add(new_reaction)
         db.session.commit()
         return new_reaction.to_dict()

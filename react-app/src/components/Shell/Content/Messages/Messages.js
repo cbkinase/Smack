@@ -307,7 +307,7 @@ const Messages = ({ scrollContainerRef }) => {
                 {hasMoreToLoad
                     ? null
                     : <MessageBeginning
-                        channel={currentChannel[channelId]}
+                        channel={currentChannel}
                         user={user}
                     />
                 }

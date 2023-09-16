@@ -1,10 +1,10 @@
 export function toggleLeftPane() {
 
     if (document.getElementById("grid-container")) {
+        let clientWidth = document.documentElement.clientWidth;
+        let isGridContainerHidingRight = document.getElementById("grid-container").className === 'grid-container-hiderightside';
 
-      if ((document.documentElement.clientWidth > 1027) ||
-        (document.documentElement.clientWidth >= 768) && document.getElementById("grid-container").className === 'grid-container-hiderightside'
-      ) {
+        if ((clientWidth > 1027) || (clientWidth >= 768 && isGridContainerHidingRight)) {
         document.getElementById("grid-leftside-heading").className = "grid-leftside-heading-threecolumn";
         document.getElementById("grid-leftside").className = "grid-leftside-threecolumn";
         document.getElementById("grid-content-heading").className = "grid-content-heading-threecolumn";

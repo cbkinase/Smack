@@ -17,7 +17,7 @@ export default function PublicIntro({ channel, user }) {
             renderPersonPlus={true}
             modalComponent={
               <ChannelMembersAll
-                currentChannel={[channel]}
+                currentChannel={channel}
                 userList={Object.values(channel.Members)}
                 user={user} />}
             buttonText="Add people" />
@@ -29,7 +29,7 @@ export default function PublicIntro({ channel, user }) {
                 <EditChannelModal
                     channelId={channel.id}
                     user={user}
-                    currChannel={[channel]} />}
+                    currChannel={channel} />}
             buttonText="Edit channel" />
 
     const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
@@ -42,7 +42,7 @@ export default function PublicIntro({ channel, user }) {
     return (
         <div className="channel-intro-container">
 
-            <h3 id="channel-intro-title">{channelName}</h3>
+            <h3 id="channel-intro-title" className="ellipsis-if-long">{channelName}</h3>
 
             <p className="channel-intro-about">
                 <span id="intro-owner-name" onClick={handleNameClick}>

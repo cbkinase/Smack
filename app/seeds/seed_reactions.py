@@ -14,22 +14,22 @@ def seed_reactions(users, messages):
 
     rctions = []
     reaction_marnie_demo_message_2 = Reaction(
-        user=marnie, messages=demo_message_2, reaction="👍"
+        user=marnie, message=demo_message_2, reaction="👍"
     )
     rctions.append(reaction_marnie_demo_message_2)
 
     reaction_bobbie_demo_message_2 = Reaction(
-        user=bobbie, messages=demo_message_2, reaction="👍"
+        user=bobbie, message=demo_message_2, reaction="👍"
     )
     rctions.append(reaction_bobbie_demo_message_2)
 
     reaction_bobbie_marnie_message_2 = Reaction(
-        user=bobbie, messages=marnie_message_2, reaction="👍"
+        user=bobbie, message=marnie_message_2, reaction="👍"
     )
     rctions.append(reaction_bobbie_marnie_message_2)
 
     reaction_demo_bobbie_message_1 = Reaction(
-        user=demo, messages=bob_message_1, reaction="👍"
+        user=demo, message=bob_message_1, reaction="👍"
     )
     rctions.append(reaction_demo_bobbie_message_1)
 

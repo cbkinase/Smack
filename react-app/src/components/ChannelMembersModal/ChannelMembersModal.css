@@ -1,0 +1,18 @@
+.channel-member-modal-container {
+    max-width: 600px;
+    width: 85vw;
+    max-height: 70vh;
+    padding: 0px 8px 8px 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.no-members-found {
+    align-items: center;
+    padding: 16px;
+    margin-top: 5px;
+    display: block;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+}

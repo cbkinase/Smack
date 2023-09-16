@@ -21,7 +21,7 @@ class Channel(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")),
                          nullable=True)
 
-    owner = db.relationship("User", back_populates="owns_channel")
+    owner = db.relationship("User", back_populates="channels_owned")
     messages = db.relationship("Message", back_populates="channels", cascade="all, delete, delete-orphan")
     users = db.relationship(
         "User",

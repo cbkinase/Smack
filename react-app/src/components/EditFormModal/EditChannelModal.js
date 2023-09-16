@@ -8,12 +8,12 @@ import './EditChannelModalStyling.css'
 import userObjectToNameList from "../../utils/userObjectToNameList";
 
 const EditChannelModal = ({ channelId, currChannel, user }) => {
-    const [name, setName] = useState(currChannel[0]?.name || "");
-    const [subject, setSubject] = useState(currChannel[0]?.subject || "");
+    const [name, setName] = useState(currChannel?.name || "");
+    const [subject, setSubject] = useState(currChannel?.subject || "");
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const [confirmDeleteName, setConfirmDeleteName] = useState("");
-    // const [is_private, setIsPrivate] = useState(currChannel[0]?.is_private);
-    // const [is_direct, setIsDirect] = useState(currChannel[0]?.is_direct);
+    // const [is_private, setIsPrivate] = useState(currChannel?.is_private);
+    // const [is_direct, setIsDirect] = useState(currChannel?.is_direct);
 
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
@@ -32,6 +32,8 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
         setErrors(err)
     }, [name, subject])
 
+    if (!currChannel) return null;
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -43,8 +45,8 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
             EditChannelThunk(channelId, {
                 name: name,
                 subject: subject,
-                is_private: currChannel[0].is_private,
-                is_direct: currChannel[0].is_direct,
+                is_private: currChannel.is_private,
+                is_direct: currChannel.is_direct,
             })
         );
         if (!Object.values(errors).length) {
@@ -59,11 +61,12 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
         closeModal();
     };
 
-    if (currChannel.length) {
-        const ownerId = currChannel[0].owner_id;
-        const memList = currChannel[0].Members;
+    if (currChannel) {
+        const ownerId = currChannel.owner_id;
+        const memList = currChannel.Members;
         owner = memList[ownerId];
     }
+
     function determineName(channel, user) {
         // The name displayed must be different depending on whether it's a DM or not.
         if (!channel.is_direct) return `# ${channel.name}`
@@ -75,12 +78,12 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
     }
 
     return (
-        currChannel.length && user.id === currChannel[0].owner_id ?
+        user.id === currChannel.owner_id ?
             (
                 <div className="edit-modal-container">
                     <div style={{ paddingLeft: "17px" }} className='edit-modal-header'>
                         {/* <div>&nbsp;</div> */}
-                        <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
+                        <div className='edit-modal-title'>{determineName(currChannel, user)}</div>
 
                         <button style={{top: "24px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
@@ -118,7 +121,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 
                             <button
                                 className="decorated-button-edit-channel"
-                                disabled={(name === currChannel[0].name && subject === currChannel[0].subject) ||
+                                disabled={(name === currChannel.name && subject === currChannel.subject) ||
                                     Object.values(errors).length}
                                 onClick={handleSubmit}
                             >
@@ -126,19 +129,19 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
                             </button>
                         </div>
 
-                        {!currChannel[0].is_direct ?
+                        {!currChannel.is_direct ?
                         <div className="edit-modal-form-box">
                             <div style={{height: "5px"}}></div>
                             <label style={{marginLeft: "7px"}} htmlFor="confirm-delete">Channel deletion</label>
                             <div style={{height: "10px"}}></div>
-                            <p style={{marginLeft: "7px", overflowWrap: "break-word"}}>Type "<span style={{color: "#631965", fontWeight: "bold"}}>{currChannel[0].name}</span>" below to confirm the deletion of the channel</p>
+                            <p style={{marginLeft: "7px", overflowWrap: "break-word", whiteSpace: "pre-wrap"}}>Type "<span style={{color: "#631965", fontWeight: "bold"}}>{currChannel.name}</span>" below to confirm the deletion of the channel</p>
                             <input
                                 autoComplete="off"
                                 type="text"
                                 id="confirm-delete"
                                 value={confirmDeleteName}
                                 onChange={(e) => setConfirmDeleteName(e.target.value)} />
-                            <button disabled={confirmDeleteName !== currChannel[0].name} className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
+                            <button disabled={confirmDeleteName !== currChannel.name} className="decorated-button-delete-channel" onClick={handleDelete}>Delete channel</button>
                         </div> : null}
 
 
@@ -151,7 +154,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 
                     <div className='edit-modal-header'>
                         {/* <div>&nbsp;</div> */}
-                        <div className='edit-modal-title'>{determineName(currChannel[0], user)}</div>
+                        <div className='edit-modal-title'>{determineName(currChannel, user)}</div>
 
                         <button style={{top: "24px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
                             <i className="fa-solid fa-x"></i>
@@ -191,7 +194,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 
                         </div>
 
-                        {!currChannel[0].is_direct ? <div className="edit-modal-form-box">
+                        {!currChannel.is_direct ? <div className="edit-modal-form-box">
                             <div style={{paddingLeft: "7px", fontWeight: "bold"}}>Created by</div>
                             <div id="edit-owner-name">{`${owner.first_name} ${owner.last_name}`}</div>
                         </div> : null}

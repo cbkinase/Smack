@@ -1126,7 +1126,8 @@ input[type="file"] {
 
 }
 
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (max-width: 768px) {
+    /* I don't really love this solution to get iOS to stop zooming, but it's ok for now */
     .editor-focus {
         font-size: 16px;
     }

@@ -1120,6 +1120,16 @@ input[type="file"] {
         max-width: 95vw;
     }
 
+    .hide-if-small {
+        display: none;
+    }
+
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .editor-focus {
+        font-size: 16px;
+    }
 }
 
 @media screen and (max-height: 800px) {

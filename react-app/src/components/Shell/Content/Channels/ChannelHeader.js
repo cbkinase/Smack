@@ -75,7 +75,7 @@ function ChannelHeader() {
                     buttonText={currentChannel ? determineName(currentChannel, user) : ""}
                     className="content-header-channelname"
                  />
-                <div className="content-header-channeltopic">
+                <div className="content-header-channeltopic hide-if-small">
                     {currentChannel ? currentChannel.subject : ""}
                 </div>
             </div>

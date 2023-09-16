@@ -83,7 +83,7 @@ function Shell({ isLoaded }) {
     }, [dispatch, socket])
 
     return (
-        <div id="grid-container" className="grid-container-hiderightside">
+        <div id="grid-container" className="grid-container-hiderightside" style={{ height: "100dvh" }}>
             <Header isLoaded={isLoaded} />
             <Routes>
                 <Route path="/" element={<>

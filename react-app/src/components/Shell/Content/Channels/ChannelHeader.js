@@ -26,8 +26,8 @@ function ChannelHeader() {
                     navigate('/channels/explore');
                     return;
                 }
-                let channel = res.single_channel[0]
-                document.title = `${determineChannelName(res.single_channel[0], user)} - Smack`
+                let channel = res.single_channel
+                document.title = `${determineChannelName(res.single_channel, user)} - Smack`
 
                 if (!channel.is_direct) {
                     document.title = `${document.title.slice(1)}`
@@ -39,13 +39,15 @@ function ChannelHeader() {
         };
     }, [dispatch, channelId, navigate, user])
 
-    let currentChannel = Object.values(singleChannel);
+    let currentChannel = singleChannel;
 
-    if (currentChannel.length) {
-        userList = Object.values(currentChannel[0].Members);
+    if (!currentChannel) return null;
+
+    if (currentChannel) {
+        userList = Object.values(currentChannel.Members);
     }
 
-    if (currentChannel.length && userList) {
+    if (currentChannel && userList) {
         numMemb = userList.length
     }
 
@@ -59,8 +61,6 @@ function ChannelHeader() {
 
     }
 
-    if (!currentChannel.length) return null;
-
     return (
 
         <div className="content-heading-holder">
@@ -73,11 +73,11 @@ function ChannelHeader() {
                             user={user}
                             currChannel={currentChannel}/>}
 
-                    buttonText={currentChannel.length ? determineName(currentChannel[0], user) : ""}
+                    buttonText={currentChannel ? determineName(currentChannel, user) : ""}
                     className="content-header-channelname"
                  />
                 <div className="content-header-channeltopic">
-                    {currentChannel.length ? currentChannel[0].subject : ""}
+                    {currentChannel ? currentChannel.subject : ""}
                 </div>
             </div>
             <OpenModalButton

@@ -45,7 +45,7 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
       className="">
       <div className="channels-header">
         <h2 style={{ marginTop: "-10px" }}>
-          {determineName(currentChannel[0], user)}
+          {determineName(currentChannel, user)}
         </h2>
         <button style={{top: "18px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
           <i className="fa-solid fa-x"></i>
@@ -79,7 +79,7 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
             <ActivityStatus user={member} iconOnly={true} styles={{marginLeft: "5px", paddingTop: "5px"}} />
           </div>
         })}
-        {!isSelfDM(currentChannel[0], user)  ?
+        {!isSelfDM(currentChannel, user)  ?
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
           {<OpenModalButton
             className="login-input-submit-alt"

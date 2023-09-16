@@ -17,7 +17,7 @@ export default function PublicIntro({ channel, user }) {
             renderPersonPlus={true}
             modalComponent={
               <ChannelMembersAll
-                currentChannel={[channel]}
+                currentChannel={channel}
                 userList={Object.values(channel.Members)}
                 user={user} />}
             buttonText="Add people" />
@@ -29,7 +29,7 @@ export default function PublicIntro({ channel, user }) {
                 <EditChannelModal
                     channelId={channel.id}
                     user={user}
-                    currChannel={[channel]} />}
+                    currChannel={channel} />}
             buttonText="Edit channel" />
 
     const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);

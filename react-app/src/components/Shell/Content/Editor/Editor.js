@@ -230,8 +230,8 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
                                 }}
                                 // onKeyDown={throttle(handleTyping, 200)}
                                 placeholder={
-                                    currentChannel[channelId]
-                                        ? `${determineName(currentChannel[channelId], user)}`
+                                    currentChannel
+                                        ? `${determineName(currentChannel, user)}`
                                         : " "
                                 }
                             />

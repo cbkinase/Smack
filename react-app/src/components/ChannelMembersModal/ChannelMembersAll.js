@@ -65,7 +65,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
         className="view-all-channels">
         <div className="channels-header">
           <h2 style={{ marginTop: "-10px" }}>
-            {determineName(currentChannel[0], user)}
+            {determineName(currentChannel, user)}
           </h2>
           <button
               style={{ top: "18px" }}
@@ -93,7 +93,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
       className="">
       <div className="channels-header">
         <h2 style={{ marginTop: "-10px" }}>
-          {determineName(currentChannel[0], user)}
+          {determineName(currentChannel, user)}
         </h2>
         <button
           style={{ top: "18px" }}
@@ -118,7 +118,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
         {filteredMembers.length ? filteredMembers.map((member, index) => {
           return <div
                     onClick={async (e) => {
-                      await fetch(`/api/channels/${currentChannel[0].id}/users/${member.id}`, {
+                      await fetch(`/api/channels/${currentChannel.id}/users/${member.id}`, {
                         method: "POST",
                       });
                       closeModal();

@@ -5,7 +5,7 @@ import LoadingSpinner from "../LoadingSpinner";
 import ChannelMember from "./Subcomponents/ChannelMember";
 import MemberModalHeader from "./Subcomponents/MemberModalHeader";
 
-export default function ChannelMembersAll({ currentChannel, numMemb, userList, user }) {
+export default function ChannelMembersAll({ currentChannel, userList, user }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,6 +15,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
   useEffect(() => {
     (async function () {
       // Get and display all users except those already in channel
+      // TODO: offload this work to the SQL query
       let res = await fetch(`/api/users/`)
       let data = await res.json();
       let final = normalizeData(data.users);
@@ -53,8 +54,10 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
 
   return (
     <div className="channel-member-modal-container">
+
       <MemberModalHeader user={user} channel={currentChannel} />
-      {allUsers.length &&
+
+      {allUsers.length ?
         <input
           id="channel-search"
           type="text"
@@ -62,7 +65,8 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
           value={searchTerm}
           onChange={handleSearchChange}
         />
-      }
+      : null}
+
       <div className="channels-list">
         {filteredMembers.length
           ? filteredMembers.map(member => (
@@ -71,6 +75,7 @@ export default function ChannelMembersAll({ currentChannel, numMemb, userList, u
           : <p className="no-members-found">Sorry, no members found. Invite your friends to join Smack!</p>
         }
       </div>
+
     </div>
   );
 }

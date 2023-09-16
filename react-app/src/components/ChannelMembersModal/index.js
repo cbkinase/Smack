@@ -47,18 +47,20 @@ export default function ChannelMembersModal({ currentChannel, numMemb, userList,
 
   return <>
     <div className="channel-member-modal-container">
+
       <MemberModalHeader user={user} channel={currentChannel} />
+
       <input
         id="channel-search"
         type="text"
         placeholder="Find members"
         value={searchTerm}
-        onChange={handleSearchChange} />
+        onChange={handleSearchChange}
+      />
 
       <div className="channels-list">
         {filteredMembers.map((member) =>
-          <ChannelMember key={member.id} member={member} onClickFn={onMemberClick} />)
-        }
+          <ChannelMember key={member.id} member={member} onClickFn={onMemberClick} />)}
         {AddMembersButton}
       </div>
 

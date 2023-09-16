@@ -49,6 +49,7 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
         }
     }, [channelId, user.id, socket, setTypingUsers])
 
+    // eslint-disable-next-line
     const throttledHandleTyping = useCallback(
         throttle(() => {
             // Clear the existing timeout, if it exists

@@ -78,7 +78,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
     }
 
     return (
-        currChannel && user.id === currChannel.owner_id ?
+        user.id === currChannel.owner_id ?
             (
                 <div className="edit-modal-container">
                     <div style={{ paddingLeft: "17px" }} className='edit-modal-header'>

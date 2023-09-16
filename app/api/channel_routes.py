@@ -206,8 +206,8 @@ def get_all_messages_for_channel(channel_id):
     if current_user not in channel.users:
         return forbidden()
 
-    page = request.args.get('page', type=int) or 1
-    per_page = request.args.get('per_page', type=int) or 25
+    page = request.args.get('page', type=int)
+    per_page = request.args.get('per_page', type=int)
     channel_messages_query = Message.get_everything_for_channel_query(channel_id)
 
     if page and per_page:

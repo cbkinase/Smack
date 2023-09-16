@@ -35,7 +35,6 @@ function ChannelHeader() {
             })
         return () => {
             document.title = "Smack";
-            currentChannel = null;
         };
     }, [dispatch, channelId, navigate, user])
 

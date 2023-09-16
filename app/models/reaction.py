@@ -12,7 +12,7 @@ class Reaction(db.Model):
     message_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("messages.id")))
     reaction = db.Column(db.String, nullable=False)
 
-    messages = db.relationship("Message", back_populates="reactions")
+    message = db.relationship("Message", back_populates="reactions")
     user = db.relationship("User", back_populates="reactions")
 
 
@@ -28,7 +28,7 @@ class Reaction(db.Model):
     def create(cls, qty, users, messages):
         emoji_choices = ["😂", "❤️", "👍", "🎉", "😳", "💯"]
         return [cls(user=choice(users),
-                    messages=choice(messages),
+                    message=choice(messages),
                     reaction=choice(emoji_choices))
                     for _ in range(qty)]
 

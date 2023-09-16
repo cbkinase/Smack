@@ -6,7 +6,7 @@ import Shell from "./components/Shell";
 import LoginSignupPage from "./components/LoginSignupPage";
 import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 import LoadingSpinner from "./components/LoadingSpinner";
-import LandingPage from "./components/LandingPage/index"
+import LandingPage from "./components/LandingPage/index";
 import { getCookie } from "./utils/cookieFunctions";
 
 function App() {

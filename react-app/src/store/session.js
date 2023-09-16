@@ -24,11 +24,6 @@ const adjustUser = (user) => ({
 	payload: user,
 });
 
-const setSocket = () => ({
-	type: SET_SOCKET,
-	payload: io(),
-})
-
 const removeSocket = () => ({
 	type: REMOVE_SOCKET,
 })

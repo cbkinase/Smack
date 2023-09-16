@@ -20,7 +20,7 @@ class Message(db.Model):
 
     channels = db.relationship("Channel", back_populates="messages")
     users = db.relationship("User", back_populates="messages")
-    reactions = db.relationship("Reaction", back_populates="messages", cascade="all, delete, delete-orphan")
+    reactions = db.relationship("Reaction", back_populates="message", cascade="all, delete, delete-orphan")
     attachments = db.relationship("Attachment", back_populates="message", cascade="all, delete, delete-orphan")
 
 

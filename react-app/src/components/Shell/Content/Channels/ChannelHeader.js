@@ -76,7 +76,7 @@ function ChannelHeader() {
                     className="content-header-channelname"
                  />
                 <div className="content-header-channeltopic hide-if-small">
-                    {currentChannel ? currentChannel.subject : ""}
+                    <p style={{maxWidth: "28vw"}} className="ellipsis-if-long">{currentChannel ? currentChannel.subject : ""}</p>
                 </div>
             </div>
             <OpenModalButton

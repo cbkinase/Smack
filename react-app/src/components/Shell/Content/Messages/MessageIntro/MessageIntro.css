@@ -53,6 +53,7 @@
 #channel-intro-description {
     display: block;
     padding-top: 10px;
+    overflow-wrap: break-word;
 }
 
 .dm-intro-picture {

@@ -16,8 +16,6 @@ function ChannelHeader() {
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const singleChannel = useSelector((state) => state.channels.single_channel);
-    let numMemb = 0;
-    let userList;
 
     useEffect(() => {
         dispatch(ChlActions.OneChannelThunk(channelId))
@@ -42,13 +40,8 @@ function ChannelHeader() {
 
     if (!currentChannel) return null;
 
-    if (currentChannel) {
-        userList = Object.values(currentChannel.Members);
-    }
-
-    if (currentChannel && userList) {
-        numMemb = userList.length
-    }
+    const userList = Object.values(currentChannel.Members);
+    const numMemb = userList.length;
 
     function determineName(channel, user) {
         // The name displayed must be different depending on whether it's a DM or not.
@@ -76,7 +69,7 @@ function ChannelHeader() {
                     className="content-header-channelname"
                  />
                 <div className="content-header-channeltopic hide-if-small">
-                    {currentChannel ? currentChannel.subject : ""}
+                    <p style={{maxWidth: "28vw"}} className="ellipsis-if-long">{currentChannel ? currentChannel.subject : ""}</p>
                 </div>
             </div>
             <OpenModalButton

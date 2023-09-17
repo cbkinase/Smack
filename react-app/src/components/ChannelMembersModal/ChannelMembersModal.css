@@ -1,6 +1,6 @@
 .channel-member-modal-container {
-    max-width: 600px;
-    width: 85vw;
+    max-width: 600px !important;
+    width: 85vw !important;
     max-height: 70vh;
     padding: 0px 8px 8px 8px;
     display: flex;

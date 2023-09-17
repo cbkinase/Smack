@@ -22,7 +22,6 @@ const CreateChannelModal = ({ user }) => {
         const err = {};
         if (!name.length) err["name"] = "Name field must not be empty";
         if (name.length > 80) err["name"] = "Name can’t be longer than 80 characters."
-        // if (!subject.length) err["subject"] = "Channel topic cannot be empty "
         if (subject.length > 250) err["subject"] = "Channel topics must be max 250 characters long "
 
         setErrors(err)
@@ -52,7 +51,6 @@ const CreateChannelModal = ({ user }) => {
 
         <div className="edit-modal-container">
             <div className='edit-modal-header'>
-                {/* <div>&nbsp;</div> */}
                 <div style={{ paddingLeft: "7px" }} className='edit-modal-title'>{`Create a new channel`}</div>
 
                 <button style={{top: "24px"}} className="edit-modal-close-btn" onClick={() => closeModal()}>
@@ -93,9 +91,6 @@ const CreateChannelModal = ({ user }) => {
                 </div>
 
                 <div className="edit-modal-form-box">
-                    {/* <div style={{ paddingLeft: "7px", fontWeight: "bold" }}>Created by</div>
-                    <div id="edit-owner-name">{`${user.first_name} ${user.last_name}`}</div> */}
-                    {/* <div style={{height: "15px"}}></div> */}
                     <button
                         className="decorated-button-edit-channel"
                         disabled={name.length === 0}

@@ -1,8 +1,33 @@
-export default function formatLongDate (d, excludeHours) {
+export default function formatLongDate(d, excludeHours) {
 	const date = new Date(d);
-	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	const longMonths = ["January", "February", "March", "April", "May", "June",
-		"July", "August", "September", "October", "November", "December"];
+	const months = [
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"May",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec",
+	];
+	const longMonths = [
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December",
+	];
 	const day = date.getDate();
 
 	// Determine the suffix
@@ -16,12 +41,16 @@ export default function formatLongDate (d, excludeHours) {
 	}
 
 	if (excludeHours) {
-		return `${longMonths[date.getMonth()]} ${day}${suffix}, ${date.getFullYear()}`;
+		return `${
+			longMonths[date.getMonth()]
+		} ${day}${suffix}, ${date.getFullYear()}`;
 	}
 
 	// Construct formatted string
-	return `${months[date.getMonth()]} ${day}${suffix} at ` +
-           `${String(date.getHours()).padStart(2, "0")}:` +
-           `${String(date.getMinutes()).padStart(2, "0")}:` +
-           `${String(date.getSeconds()).padStart(2, "0")}`;
+	return (
+		`${months[date.getMonth()]} ${day}${suffix} at ` +
+		`${String(date.getHours()).padStart(2, "0")}:` +
+		`${String(date.getMinutes()).padStart(2, "0")}:` +
+		`${String(date.getSeconds()).padStart(2, "0")}`
+	);
 }

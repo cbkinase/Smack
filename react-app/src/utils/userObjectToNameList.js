@@ -1,4 +1,8 @@
-export default function userObjectToNameList (obj, currUser, withoutComma = false) {
+export default function userObjectToNameList(
+	obj,
+	currUser,
+	withoutComma = false,
+) {
 	/* Takes in an object that looks like
     {"1" :
         {"avatar": "", "first_name": "", "last_name": ""},

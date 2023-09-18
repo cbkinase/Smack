@@ -9,7 +9,12 @@ import ChannelMember from "./Subcomponents/ChannelMember";
 import MemberModalHeader from "./Subcomponents/MemberModalHeader";
 import "./ChannelMembersModal.css";
 
-export default function ChannelMembersModal ({ currentChannel, numMemb, userList, user }) {
+export default function ChannelMembersModal({
+	currentChannel,
+	numMemb,
+	userList,
+	user,
+}) {
 	const [, setSelectedUserRightBar] = useContext(SelectedUserRightBarContext);
 	const [searchTerm, setSearchTerm] = useState("");
 	const { closeModal } = useModal();
@@ -19,18 +24,27 @@ export default function ChannelMembersModal ({ currentChannel, numMemb, userList
 	};
 
 	const filteredMembers = userList.filter((member) => {
-		const fullName = member.first_name.toLowerCase() + " " + member.last_name.toLowerCase();
+		const fullName =
+			member.first_name.toLowerCase() +
+			" " +
+			member.last_name.toLowerCase();
 		return fullName.includes(searchTerm.toLowerCase());
 	});
 
-	function onMemberClick (member) {
+	function onMemberClick(member) {
 		setSelectedUserRightBar(member);
 		toggleRightPane();
 		closeModal();
 	}
 
 	const AddMembersButton = !isSelfDM(currentChannel, user) && (
-		<div style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}>
+		<div
+			style={{
+				display: "flex",
+				justifyContent: "center",
+				marginTop: "12px",
+			}}
+		>
 			<OpenModalButton
 				className="login-input-submit-alt"
 				modalComponent={
@@ -39,31 +53,37 @@ export default function ChannelMembersModal ({ currentChannel, numMemb, userList
 						numMemb={numMemb}
 						userList={userList}
 						user={user}
-					/>}
+					/>
+				}
 				buttonText="Add members"
 			/>
 		</div>
 	);
 
-	return <>
-		<div className="channel-member-modal-container">
+	return (
+		<>
+			<div className="channel-member-modal-container">
+				<MemberModalHeader user={user} channel={currentChannel} />
 
-			<MemberModalHeader user={user} channel={currentChannel} />
+				<input
+					id="channel-search"
+					type="text"
+					placeholder="Find members"
+					value={searchTerm}
+					onChange={handleSearchChange}
+				/>
 
-			<input
-				id="channel-search"
-				type="text"
-				placeholder="Find members"
-				value={searchTerm}
-				onChange={handleSearchChange}
-			/>
-
-			<div className="channels-list">
-				{filteredMembers.map((member) =>
-					<ChannelMember key={member.id} member={member} onClickFn={onMemberClick} />)}
-				{AddMembersButton}
+				<div className="channels-list">
+					{filteredMembers.map((member) => (
+						<ChannelMember
+							key={member.id}
+							member={member}
+							onClickFn={onMemberClick}
+						/>
+					))}
+					{AddMembersButton}
+				</div>
 			</div>
-
-		</div>
-	</>;
+		</>
+	);
 }

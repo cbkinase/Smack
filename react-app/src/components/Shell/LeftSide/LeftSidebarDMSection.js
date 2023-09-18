@@ -3,7 +3,7 @@ import DMChannel from "./Subcomponents/DMChannel";
 import { useState, Fragment } from "react";
 import { toggleRightPane } from "../../../utils/togglePaneFunctions";
 
-export default function LeftSideBarDMSection ({ channels, user }) {
+export default function LeftSideBarDMSection({ channels, user }) {
 	const { channelId } = useParams();
 
 	let defaultState = localStorage.getItem("DM_Section_Hidden");
@@ -16,7 +16,7 @@ export default function LeftSideBarDMSection ({ channels, user }) {
 	const [isHidden, setIsHidden] = useState(defaultState);
 	const caretDisplayMap = {
 		false: "down",
-		true: "right"
+		true: "right",
 	};
 	const toggleIsHidden = () => {
 		setIsHidden((val) => {
@@ -34,28 +34,54 @@ export default function LeftSideBarDMSection ({ channels, user }) {
 
 	return (
 		<>
-			<button onClick={toggleIsHidden} style={{ textDecoration: "none", marginLeft: "14px", width: "91%" }} >
-				<span style={{ width: "20px" }}><i className={`fas fa-caret-${caretDisplayMap[isHidden]}`}></i></span>
-				<span className="ellipsis-if-long" style={{ marginLeft: "-3px" }} >Direct Messages</span>
+			<button
+				onClick={toggleIsHidden}
+				style={{
+					textDecoration: "none",
+					marginLeft: "14px",
+					width: "91%",
+				}}
+			>
+				<span style={{ width: "20px" }}>
+					<i
+						className={`fas fa-caret-${caretDisplayMap[isHidden]}`}
+					></i>
+				</span>
+				<span
+					className="ellipsis-if-long"
+					style={{ marginLeft: "-3px" }}
+				>
+					Direct Messages
+				</span>
 			</button>
 
 			{channels.map((channel) => {
 				return (
-					<Fragment key={channel.id} >
-						{isHidden && channel.id !== +channelId
-							? null
-							: <NavLink
+					<Fragment key={channel.id}>
+						{isHidden && channel.id !== +channelId ? null : (
+							<NavLink
 								onClick={closeRightPane}
 								key={channel.id}
 								to={`/channels/${channel.id}`}
-								className="tooltip">
+								className="tooltip"
+							>
 								<div>
-									{Number(channel.id) === Number(channelId)
-										? <DMChannel isActive={true} channel={channel} user={user} />
-										: <DMChannel channel={channel} user={user} />
-									}
+									{Number(channel.id) ===
+									Number(channelId) ? (
+										<DMChannel
+											isActive={true}
+											channel={channel}
+											user={user}
+										/>
+									) : (
+										<DMChannel
+											channel={channel}
+											user={user}
+										/>
+									)}
 								</div>
-							</NavLink>}
+							</NavLink>
+						)}
 					</Fragment>
 				);
 			})}

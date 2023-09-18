@@ -7,7 +7,7 @@ import messageReducer from "./messages";
 const rootReducer = combineReducers({
 	session: reducer,
 	channels: channelReducer,
-	messages: messageReducer
+	messages: messageReducer,
 });
 
 let enhancer;
@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
 	const logger = require("redux-logger").default;
 	const composeEnhancers =
-        window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 	enhancer = composeEnhancers(applyMiddleware(thunk, logger));
 }
 

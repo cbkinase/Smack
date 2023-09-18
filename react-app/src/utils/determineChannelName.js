@@ -1,6 +1,6 @@
 import userObjectToNameList from "./userObjectToNameList";
 
-export default function determineChannelName (channel, user) {
+export default function determineChannelName(channel, user) {
 	// The name displayed must be different depending on whether it's a DM or not.
 	if (!channel.is_direct) return `# ${channel.name}`;
 	else if (channel.is_direct && Object.values(channel.Members).length > 1) {

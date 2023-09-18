@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./smack-logo-white.svg";
 
-function LeftSideHeader () {
+function LeftSideHeader() {
 	return (
 		<div
 			id="grid-leftside-heading"
@@ -12,7 +12,7 @@ function LeftSideHeader () {
 					src={`${logo}`}
 					alt="Smack"
 					style={{
-						width: "127px"
+						width: "127px",
 					}}
 				></img>
 			</div>

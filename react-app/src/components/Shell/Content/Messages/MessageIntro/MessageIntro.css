@@ -1,97 +1,97 @@
 .channel-intro-container {
-    padding: 40px 20px 30px 20px;
-    border-bottom: 1px solid #dddddd;
-    margin-bottom: 20px;
+	padding: 40px 20px 30px 20px;
+	border-bottom: 1px solid #dddddd;
+	margin-bottom: 20px;
 }
 
 #channel-intro-title {
-    font-size: 28px;
-    font-weight: 900;
-    padding-bottom: 12px;
+	font-size: 28px;
+	font-weight: 900;
+	padding-bottom: 12px;
 }
 
 #channel-intro-sub {
-    font-weight: bold;
-    padding-left: 2px;
-    padding-right: 2px;
-    overflow-wrap: break-word;
+	font-weight: bold;
+	padding-left: 2px;
+	padding-right: 2px;
+	overflow-wrap: break-word;
 }
 
 .channel-intro-about {
-    font-size: 18px;
-    padding-bottom: 20px;
-    line-height: 1.5;
+	font-size: 18px;
+	padding-bottom: 20px;
+	line-height: 1.5;
 }
 
 .channel-intro-btn {
-    text-decoration: none;
-    background: rgb(255,255,255);
-    border: 1px solid rgba(33,33,33,0.3) !important;
-    padding: 0 12px 1px;
-    height: 28px;
-    min-width: 125px;
-    font-size: .9rem;
-    margin-right: 16px;
-    font-weight: 700;
-    color: #1D1C1D;
-    border-radius: 5px;
+	text-decoration: none;
+	background: rgb(255, 255, 255);
+	border: 1px solid rgba(33, 33, 33, 0.3) !important;
+	padding: 0 12px 1px;
+	height: 28px;
+	min-width: 125px;
+	font-size: 0.9rem;
+	margin-right: 16px;
+	font-weight: 700;
+	color: #1d1c1d;
+	border-radius: 5px;
 }
 
 .channel-intro-btn:hover {
-    background: rgb(251,251,251);
+	background: rgb(251, 251, 251);
 }
 
 #intro-owner-name {
-    cursor: pointer;
-    font-weight: bold;
+	cursor: pointer;
+	font-weight: bold;
 }
 
 #intro-owner-name:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 #channel-intro-description {
-    display: block;
-    padding-top: 10px;
-    overflow-wrap: break-word;
+	display: block;
+	padding-top: 10px;
+	overflow-wrap: break-word;
 }
 
 .dm-intro-picture {
-    width: 102px;
-    border-radius: 5px;
-    height: 102px;
-    margin-right: 10px;
+	width: 102px;
+	border-radius: 5px;
+	height: 102px;
+	margin-right: 10px;
 }
 
 .dm-intro-picture-multi {
-    width: 56px;
-    border-radius: 5px;
-    height: 56px;
+	width: 56px;
+	border-radius: 5px;
+	height: 56px;
 }
 
 .dm-intro-picture-multi:hover {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .dm-intro-title-container {
-    display: flex;
-    align-items: center;
-    max-width: 90vw;
-    flex-wrap: wrap;
-    gap: 10px;
+	display: flex;
+	align-items: center;
+	max-width: 90vw;
+	flex-wrap: wrap;
+	gap: 10px;
 }
 
 #dm-intro-title:hover {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 #dm-intro-title {
-    margin-left: -5px;
+	margin-left: -5px;
 }
 
 .channel-intro-btn-dm {
-    height: 34px;
-    min-width: 110px;
-    max-width: 110px;
-    font-size: 15px;
+	height: 34px;
+	min-width: 110px;
+	max-width: 110px;
+	font-size: 15px;
 }

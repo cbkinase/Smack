@@ -1,4 +1,4 @@
-export default function throttle (func, limit) {
+export default function throttle(func, limit) {
 	// Ensures that a function is not called more than once in a given time limit
 	let inThrottle;
 	return function () {

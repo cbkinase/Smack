@@ -4,7 +4,7 @@ import LeftSideHeader from "./LeftSideHeader";
 import LeftSideLinks from "./LeftSideBar";
 import RouteIdContext from "../../../context/RouteId/RouteIdContext";
 
-function LeftSide () {
+function LeftSide() {
 	const [, setRouteId] = useContext(RouteIdContext);
 	const { channelId } = useParams();
 

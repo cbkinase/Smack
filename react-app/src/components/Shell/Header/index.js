@@ -3,20 +3,32 @@ import { useSelector } from "react-redux";
 import ProfileButton from "./ProfileButton";
 import { hideShowLeftPane } from "../../../utils/togglePaneFunctions";
 
-function Header ({ isLoaded }) {
-	const sessionUser = useSelector(state => state.session.user);
+function Header({ isLoaded }) {
+	const sessionUser = useSelector((state) => state.session.user);
 
 	return (
 		<div className="grid-header">
 			<div className="header-holder">
 				<div>
-					<button id="hideshow-leftpane-hamburger" onClick={hideShowLeftPane}
-						className="hideshow-leftpane">
-						<i className="fas fa-bars" style={{ fontSize: "18px" }}></i>
+					<button
+						id="hideshow-leftpane-hamburger"
+						onClick={hideShowLeftPane}
+						className="hideshow-leftpane"
+					>
+						<i
+							className="fas fa-bars"
+							style={{ fontSize: "18px" }}
+						></i>
 					</button>
-					<button id="hideshow-leftpane-arrow" onClick={hideShowLeftPane}
-						className="hideshow-leftpane">
-						<i className="fas fa-arrow-left" style={{ fontSize: "18px" }}></i>
+					<button
+						id="hideshow-leftpane-arrow"
+						onClick={hideShowLeftPane}
+						className="hideshow-leftpane"
+					>
+						<i
+							className="fas fa-arrow-left"
+							style={{ fontSize: "18px" }}
+						></i>
 					</button>
 				</div>
 				<ul>

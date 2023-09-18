@@ -7,7 +7,7 @@ import "./authors.css";
 
 export default function Authors () {
 	return (
-		<div className="landing-authors">
+		<div className="landing-authors fade-in-slow">
 			<a href="https://www.linkedin.com/in/cameron-beck-4a9a44274/"
 				target="_blank" rel="noreferrer noopener"
 			>

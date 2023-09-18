@@ -15,10 +15,6 @@ function RightSideInfo() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    // if (!selectedUserRightBar) {
-    //     return null;
-    // }
-
     const onMessageClick = async (e) => {
         const possibleChannel = userChannelDMSearch(user_channels, currUser, selectedUserRightBar);
         if (possibleChannel) {

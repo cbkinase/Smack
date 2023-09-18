@@ -1,7 +1,6 @@
 import React from 'react';
 import toggleRightPane from './toggleRightPane';
 
-
 export default function RightSideHeader() {
 
     return (
@@ -17,4 +16,3 @@ export default function RightSideHeader() {
         </div>
     );
 }
-

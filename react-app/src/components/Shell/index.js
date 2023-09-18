@@ -5,7 +5,6 @@ import LeftSide from "./LeftSide";
 import Content from "./Content";
 import RightSide from "./RightSide/RightSide";
 import { Route, Routes, Navigate } from "react-router-dom";
-import CreateChannel from "./Content/Channels/ChannelCreator";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
 import { UserChannelThunk, OneChannelThunk } from "../../store/channel";
@@ -95,11 +94,6 @@ function Shell({ isLoaded }) {
                     <LeftSide />
                     <RightSide />
                     <AllChannels />
-                </>} />
-                <Route path="/channels/new" element={<>
-                    <LeftSide />
-                    <RightSide />
-                    <CreateChannel />
                 </>} />
                 <Route path="/channels/direct" element={<>
                     <LeftSide />

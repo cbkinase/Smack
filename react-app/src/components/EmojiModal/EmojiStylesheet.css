@@ -1,21 +1,21 @@
 #emoji-modal-container {
-    display: flex;
-    max-width: 320px;
-    gap: 2px;
-    padding-left: 20px;
-    padding-right: 8px;
-    flex-direction: column;
-    max-height: 400px;
-    overflow-y: auto;
+	display: flex;
+	max-width: 320px;
+	gap: 2px;
+	padding-left: 20px;
+	padding-right: 8px;
+	flex-direction: column;
+	max-height: 400px;
+	overflow-y: auto;
 }
 
 .emoji-modal-section:not(:first-of-type) {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 
 .emoji-section-title {
-    font-size: 16px;
-    color: #3e3e3e;
-    margin-bottom: 5px;
-    font-weight: bold;
+	font-size: 16px;
+	color: #3e3e3e;
+	margin-bottom: 5px;
+	font-weight: bold;
 }

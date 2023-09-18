@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import debounce from "../utils/debounce";
 
-export default function useViewportWidth () {
-	const [viewportWidth, setViewportWidth] = useState(window.visualViewport.width);
+export default function useViewportWidth() {
+	const [viewportWidth, setViewportWidth] = useState(
+		window.visualViewport.width,
+	);
 
 	useEffect(() => {
-		const debouncedHandleResize = debounce(function handleResize () {
+		const debouncedHandleResize = debounce(function handleResize() {
 			setViewportWidth(window.visualViewport.width);
 		}, 50);
 

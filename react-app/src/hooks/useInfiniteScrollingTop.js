@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import debounce from "../utils/debounce";
 
-export default function useInfiniteScrollingTop (containerRef) {
+export default function useInfiniteScrollingTop(containerRef) {
 	const [page, setPage] = useState(1);
 
 	const handleScroll = () => {
@@ -20,7 +20,9 @@ export default function useInfiniteScrollingTop (containerRef) {
 	useEffect(() => {
 		const container = containerRef.current;
 		if (container) {
-			container.addEventListener("scroll", debouncedHandleScroll, { passive: true });
+			container.addEventListener("scroll", debouncedHandleScroll, {
+				passive: true,
+			});
 		}
 		return () => {
 			if (container) {

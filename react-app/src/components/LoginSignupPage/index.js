@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { login, signUp } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate, NavLink } from "react-router-dom";
-import signinupLogo from "./smack-logo-black.svg";
+import { Navigate, useNavigate } from "react-router-dom";
 import { deleteCookie, setCookie } from "../../utils/cookieFunctions";
 import Footer from "./Subcomponents/Footer";
 import LoginView from "./Subcomponents/LoginView";
 import SignUpView from "./Subcomponents/SignUpView";
+import LoginSignupTitle from "./Subcomponents/LoginSignupTitle";
 
-function LoginSignupPage ({ setHasVisited }) {
+function LoginSignupPage({ setHasVisited }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const sessionUser = useSelector((state) => state.session.user);
@@ -73,7 +73,9 @@ function LoginSignupPage ({ setHasVisited }) {
 	const handleSubmitSignup = async (e) => {
 		e.preventDefault();
 		if (password === confirmPassword) {
-			const data = await dispatch(signUp(username, email, password, first_name, last_name));
+			const data = await dispatch(
+				signUp(username, email, password, first_name, last_name),
+			);
 			if (data) {
 				setErrors(data);
 				return;
@@ -92,44 +94,44 @@ function LoginSignupPage ({ setHasVisited }) {
 		setHasVisited(false);
 	};
 
+	const commonProps = {
+		email,
+		setEmail,
+		password,
+		setPassword,
+		setFormType,
+		errors,
+	};
+
 	return (
 		<>
 			<div className="login-signup" style={{ height: "100%" }}>
-
-				<div style={{ textAlign: "center" }}>
-					<NavLink onClick={handleLogoClick} to="/">
-						<img src={`${signinupLogo}`} alt="Smack" style={{ width: "145px " }} />
-					</NavLink>
-				</div>
-
-				<div ref={formTitle}
-					style={{ textAlign: "center", fontSize: "48px", fontWeight: "700", paddingTop: "30px", paddingBottom: "14px" }}>
-                    Sign in to Smack
-				</div >
+				<LoginSignupTitle
+					handleLogoClick={handleLogoClick}
+					formTitle={formTitle}
+				/>
 
 				<LoginView
+					{...commonProps}
 					signInForm={signInForm}
-					errors={errors}
 					handleSubmitLogin={handleSubmitLogin}
-					email={email} setEmail={setEmail}
-					password={password} setPassword={setPassword}
 					handleDemo={handleDemo}
-					setFormType={setFormType} />
+				/>
 
 				<SignUpView
+					{...commonProps}
 					signUpForm={signUpForm}
 					handleSubmitSignup={handleSubmitSignup}
-					setFormType={setFormType}
-					email={email} setEmail={setEmail}
-					first_name={first_name} setFirstName={setFirstName}
-					last_name={last_name} setLastName={setLastName}
-					username={username} setUsername={setUsername}
-					password={password} setPassword={setPassword}
+					first_name={first_name}
+					setFirstName={setFirstName}
+					last_name={last_name}
+					setLastName={setLastName}
+					username={username}
+					setUsername={setUsername}
 					confirmPassword={confirmPassword}
 					setConfirmPassword={setConfirmPassword}
-					errors={errors} />
-
-			</div >
+				/>
+			</div>
 
 			<Footer />
 		</>

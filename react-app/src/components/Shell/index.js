@@ -12,20 +12,23 @@ import {
 	disconnectWebSocket,
 	setOnlineUsers,
 	removeOnlineUser,
-	addOnlineUser
+	addOnlineUser,
 } from "../../store/session";
 import RouteIdContext from "../../context/RouteId/RouteIdContext";
 
-function Shell ({ isLoaded }) {
+function Shell({ isLoaded }) {
 	const dispatch = useDispatch();
-	const socket = useSelector(state => state.session.socket);
-	const user = useSelector(state => state.session.user);
+	const socket = useSelector((state) => state.session.socket);
+	const user = useSelector((state) => state.session.user);
 	const [routeId] = useContext(RouteIdContext);
 
 	useEffect(() => {
 		// Disconnect the socket as the window is closing
 		const handleDisconnection = () => {
-			socket.emit("stopped_typing", { channel_id: routeId, user_id: user.id });
+			socket.emit("stopped_typing", {
+				channel_id: routeId,
+				user_id: user.id,
+			});
 			dispatch(disconnectWebSocket());
 		};
 
@@ -46,7 +49,9 @@ function Shell ({ isLoaded }) {
 			dispatch(UserChannelThunk());
 			// Refresh channel header info on receive
 			// ONLY if convoId === routeId
-			if (+routeId === +convoId) { dispatch(OneChannelThunk(convoId)); }
+			if (+routeId === +convoId) {
+				dispatch(OneChannelThunk(convoId));
+			}
 		});
 		/*
             There is almost certainly a better way to do this than performing additional queries, but it's an OK band-aid solution for now.
@@ -79,29 +84,53 @@ function Shell ({ isLoaded }) {
 	}, [dispatch, socket]);
 
 	return (
-		<div id="grid-container" className="grid-container-hiderightside" style={{ height: "100dvh" }}>
+		<div
+			id="grid-container"
+			className="grid-container-hiderightside"
+			style={{ height: "100dvh" }}
+		>
 			<Header isLoaded={isLoaded} />
 			<Routes>
-				<Route path="/" element={<>
-					<LeftSide />
-					<RightSide />
-					<AllChannels />
-				</>} />
-				<Route path="/channels/explore" element={<>
-					<LeftSide />
-					<RightSide />
-					<AllChannels />
-				</>} />
-				<Route path="/channels/direct" element={<>
-					<LeftSide />
-					<RightSide />
-					<DMChannels />
-				</>} />
-				<Route path="/channels/:channelId" element={<>
-					<LeftSide />
-					<RightSide />
-					<Content />
-				</>} />
+				<Route
+					path="/"
+					element={
+						<>
+							<LeftSide />
+							<RightSide />
+							<AllChannels />
+						</>
+					}
+				/>
+				<Route
+					path="/channels/explore"
+					element={
+						<>
+							<LeftSide />
+							<RightSide />
+							<AllChannels />
+						</>
+					}
+				/>
+				<Route
+					path="/channels/direct"
+					element={
+						<>
+							<LeftSide />
+							<RightSide />
+							<DMChannels />
+						</>
+					}
+				/>
+				<Route
+					path="/channels/:channelId"
+					element={
+						<>
+							<LeftSide />
+							<RightSide />
+							<Content />
+						</>
+					}
+				/>
 				<Route path="*" element={<Navigate to="/" />} />
 			</Routes>
 		</div>

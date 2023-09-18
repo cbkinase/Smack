@@ -6,7 +6,7 @@ import {
 	deleteMessage,
 	createReaction,
 	deleteReaction,
-	deleteAttachment
+	deleteAttachment,
 } from "../../../../store/messages";
 import { useParams } from "react-router-dom";
 import Editor from "../Editor/Editor";
@@ -24,7 +24,9 @@ const Messages = ({ scrollContainerRef }) => {
 	const [chatInput, setChatInput] = useState("");
 	const user = useSelector((state) => state.session.user);
 	const allMessages = useSelector((state) => state.messages.allMessages);
-	const currentChannel = useSelector((state) => state.channels.single_channel);
+	const currentChannel = useSelector(
+		(state) => state.channels.single_channel,
+	);
 	const socket = useSelector((state) => state.session.socket);
 	const [isLoaded, setIsLoaded] = useState(false);
 
@@ -57,13 +59,22 @@ const Messages = ({ scrollContainerRef }) => {
 
 		(async function () {
 			if (!hasMoreToLoad) return;
-			const res = await dispatch(getChannelMessages(channelId, page, perPage));
+			const res = await dispatch(
+				getChannelMessages(channelId, page, perPage),
+			);
 			setLoadedMore(true);
 			if (res.error) {
 				setHasMoreToLoad(false);
 			}
 		})();
-	}, [dispatch, page, scrollContainerRef, hasMoreToLoad, channelId, isLoaded]);
+	}, [
+		dispatch,
+		page,
+		scrollContainerRef,
+		hasMoreToLoad,
+		channelId,
+		isLoaded,
+	]);
 
 	// Handle adjusting the scroll position after the data has been fetched and rendered
 	useEffect(() => {
@@ -78,8 +89,10 @@ const Messages = ({ scrollContainerRef }) => {
 
 	// Load new channel messages on changing channel
 	useEffect(() => {
-		async function loadInitialChannelMessages () {
-			const msgs = await dispatch(getChannelMessages(channelId, 1, perPage));
+		async function loadInitialChannelMessages() {
+			const msgs = await dispatch(
+				getChannelMessages(channelId, 1, perPage),
+			);
 			setHasMoreToLoad(true);
 			setIsLoaded(true);
 			if (msgs.length < perPage) setHasMoreToLoad(false);
@@ -150,19 +163,19 @@ const Messages = ({ scrollContainerRef }) => {
 
 		socket.emit("join", {
 			channel_id: channelId,
-			user_id: user.id
+			user_id: user.id,
 		});
 
 		// If the user switches channels, stop the typing indicator on their current channel
 		return () => {
 			socket.emit("stopped_typing", {
 				channel_id: channelId,
-				user_id: user.id
+				user_id: user.id,
 			});
 			setTypingUsers({});
 			socket.emit("leave", {
 				channel_id: channelId,
-				user_id: user.id
+				user_id: user.id,
 			});
 			setIsLoaded(false);
 		};
@@ -172,7 +185,7 @@ const Messages = ({ scrollContainerRef }) => {
 		setChatInput(e.target.value);
 	};
 
-	async function handleSendingAttachments (attachmentBuffer) {
+	async function handleSendingAttachments(attachmentBuffer) {
 		const attachmentsArr = Object.values(attachmentBuffer);
 		const formData = new FormData();
 
@@ -182,7 +195,7 @@ const Messages = ({ scrollContainerRef }) => {
 
 		const uploadResponse = await fetch("/api/messages/attachments/upload", {
 			method: "POST",
-			body: formData
+			body: formData,
 		});
 
 		const uploadData = await uploadResponse.json();
@@ -201,7 +214,8 @@ const Messages = ({ scrollContainerRef }) => {
 
 		if (Object.keys(attachmentBuffer).length > 0) {
 			setAttachmentIsLoading(true);
-			const uploadedFiles = await handleSendingAttachments(attachmentBuffer);
+			const uploadedFiles =
+				await handleSendingAttachments(attachmentBuffer);
 			setAttachmentIsLoading(false);
 			socketPayload.attachments = uploadedFiles;
 		}
@@ -225,7 +239,7 @@ const Messages = ({ scrollContainerRef }) => {
 
 		socket.emit("stopped_typing", {
 			channel_id: channelId,
-			user_id: user.id
+			user_id: user.id,
 		});
 	};
 
@@ -241,7 +255,9 @@ const Messages = ({ scrollContainerRef }) => {
 			const FILE_CUTOFF_SIZE = CUTOFF_NUMBER * 1024 * 1024; // Expressed in MB
 
 			if (file.size >= FILE_CUTOFF_SIZE) {
-				alert(`Sorry, the maximum attachment size is currently ${CUTOFF_NUMBER} MB.`);
+				alert(
+					`Sorry, the maximum attachment size is currently ${CUTOFF_NUMBER} MB.`,
+				);
 				return;
 			}
 
@@ -270,7 +286,11 @@ const Messages = ({ scrollContainerRef }) => {
 	// delete attachment
 	const handleDeleteAttachment = async (e, msg, attachment) => {
 		e.preventDefault();
-		const socketPayload = { channel_id: msg.channel_id, id: attachment.id, message_id: msg.id };
+		const socketPayload = {
+			channel_id: msg.channel_id,
+			id: attachment.id,
+			message_id: msg.id,
+		};
 		socket.emit("deleteAttachment", socketPayload, (res) => {
 			if (res.status === "success") {
 				dispatch(deleteAttachment(attachment));
@@ -289,7 +309,7 @@ const Messages = ({ scrollContainerRef }) => {
 		channelId,
 		addAttachBuffer,
 		removeAttachBuffer,
-		handleDeleteAttachment
+		handleDeleteAttachment,
 	};
 
 	if (!isLoaded) {
@@ -299,17 +319,13 @@ const Messages = ({ scrollContainerRef }) => {
 	return (
 		<>
 			<div style={{ marginBottom: "10px" }}>
-
-				{hasMoreToLoad
-					? null
-					: <MessageBeginning
-						channel={currentChannel}
-						user={user}
-					/>
-				}
+				{hasMoreToLoad ? null : (
+					<MessageBeginning channel={currentChannel} user={user} />
+				)}
 
 				{Object.values(allMessages).map((message) => (
-					<MessageCard key={message.id}
+					<MessageCard
+						key={message.id}
 						message={message}
 						user={user}
 						socket={socket}
@@ -320,7 +336,8 @@ const Messages = ({ scrollContainerRef }) => {
 			</div>
 
 			<div id="editor-container">
-				<Editor functions={messageFunctions}
+				<Editor
+					functions={messageFunctions}
 					creating={true}
 					setChatInput={setChatInput}
 					user={user}

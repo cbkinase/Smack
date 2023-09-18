@@ -1,4 +1,4 @@
-export default function debounce (fn, ms) {
+export default function debounce(fn, ms) {
 	let timer;
 	return () => {
 		clearTimeout(timer);

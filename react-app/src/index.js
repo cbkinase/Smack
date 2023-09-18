@@ -1,5 +1,5 @@
 import React from "react";
-import { createRoot } from 'react-dom/client';
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
@@ -21,7 +21,7 @@ if (process.env.NODE_ENV !== "production") {
 // Wrap the application with the Modal provider and render the Modal component
 // after the App component so that all the Modal content will be layered as
 // HTML elements on top of the all the other HTML elements:
-function Root() {
+function Root () {
 	return (
 		<SelectedUserRightBarProvider>
 			<ModalProvider>
@@ -36,6 +36,6 @@ function Root() {
 	);
 }
 
-const container = document.getElementById('root');
+const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(<Root />);

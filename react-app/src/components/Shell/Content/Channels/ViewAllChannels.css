@@ -55,6 +55,6 @@
 }
 
 .view-all-channels, .view-all-channels-left-closed {
-  height: calc(100vh - 44px);
+  height: calc(100dvh - 44px);
   overflow: auto;
 }

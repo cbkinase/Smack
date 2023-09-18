@@ -9,44 +9,42 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./components/LandingPage/index";
 import { getCookie } from "./utils/cookieFunctions";
 
-function App() {
-    const dispatch = useDispatch();
-    const [isLoaded, setIsLoaded] = useState(false);
-    let previouslyVisited = getCookie("hasVisited");
-    previouslyVisited = previouslyVisited ? true : false;
-    const [hasVisited, setHasVisited] = useState(previouslyVisited);
+function App () {
+	const dispatch = useDispatch();
+	const [isLoaded, setIsLoaded] = useState(false);
+	let previouslyVisited = getCookie("hasVisited");
+	previouslyVisited = !!previouslyVisited;
+	const [hasVisited, setHasVisited] = useState(previouslyVisited);
 
-    useEffect(() => {
-        dispatch(authenticate()).then(() => setIsLoaded(true));
-    }, [dispatch]);
+	useEffect(() => {
+		dispatch(authenticate()).then(() => setIsLoaded(true));
+	}, [dispatch]);
 
-    const sessionUser = useSelector((state) => state.session.user);
+	const sessionUser = useSelector((state) => state.session.user);
 
-    if (!isLoaded) return <LoadingSpinner />;
+	if (!isLoaded) return <LoadingSpinner />;
 
-    if (!sessionUser && !hasVisited) {
-        return (
-            <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginSignupPage setHasVisited={setHasVisited} />} />
-                <Route path="*" element={<Navigate to="/" />} />
-            </Routes >
-        )
-    }
+	if (!sessionUser && !hasVisited) {
+		return (
+			<Routes>
+				<Route path="/" element={<LandingPage />} />
+				<Route path="/login" element={<LoginSignupPage setHasVisited={setHasVisited} />} />
+				<Route path="*" element={<Navigate to="/" />} />
+			</Routes >
+		);
+	}
 
-    if (!sessionUser) {
-        return (
-            <LoginSignupPage setHasVisited={setHasVisited} />
-        )
-    }
+	if (!sessionUser) {
+		return (
+			<LoginSignupPage setHasVisited={setHasVisited} />
+		);
+	}
 
-    return (
-        <RouteIdProvider>
-            <Shell isLoaded={isLoaded} />
-        </RouteIdProvider>
-    )
-
-
+	return (
+		<RouteIdProvider>
+			<Shell isLoaded={isLoaded} />
+		</RouteIdProvider>
+	);
 }
 
 export default App;

@@ -27,8 +27,6 @@
 @media screen and (max-width: 1200px) {
     .landing-authors {
         max-width: 70vw;
-        margin-top: 50%;
-
     }
 
 }
@@ -37,4 +35,10 @@
     .landing-authors {
         display: none;
     }
+}
+
+
+.fade-in-slow {
+    opacity: 0;
+    animation: fadeIn 4s ease-in-out forwards;
 }

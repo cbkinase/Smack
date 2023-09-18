@@ -29,7 +29,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 			err.subject = "Channel topic must not exceed 250 characters";
 
 		setErrors(err);
-	}, [name, subject]);
+	}, [name, subject, currChannel.is_direct]);
 
 	if (!currChannel) return null;
 
@@ -68,13 +68,18 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 	const owner = memList[ownerId];
 	const isUserOwner = user.id === currChannel.owner_id;
 
+	const commonProps = {
+		owner,
+		user,
+		currChannel,
+	};
+
 	if (isUserOwner) {
 		return (
 			<OwnerView
+				{...commonProps}
 				errors={errors}
 				hasSubmitted={hasSubmitted}
-				user={user}
-				currChannel={currChannel}
 				handleSubmit={handleSubmit}
 				handleDelete={handleDelete}
 				name={name}
@@ -86,9 +91,7 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 			/>
 		);
 	} else {
-		return (
-			<MemberView owner={owner} user={user} currChannel={currChannel} />
-		);
+		return <MemberView {...commonProps} />;
 	}
 };
 

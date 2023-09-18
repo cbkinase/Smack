@@ -13,7 +13,7 @@ function OpenModalButton({
 	renderDownArrow,
 	currUser,
 	renderPencil,
-	renderPersonPlus,
+	renderPersonPlus, // TODO: improve this interface to be more maintainable
 }) {
 	if (userList && userList.length > 1) {
 		userList = JSON.parse(JSON.stringify(userList));

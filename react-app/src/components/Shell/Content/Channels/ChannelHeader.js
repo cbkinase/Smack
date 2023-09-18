@@ -6,7 +6,6 @@ import * as ChlActions from "../../../../store/channel";
 import OpenModalButton from '../../../OpenModalButton';
 import EditChannelModal from '../../../EditFormModal/EditChannelModal';
 import ChannelMembersModal from '../../../ChannelMembersModal';
-import userObjectToNameList from '../../../../utils/userObjectToNameList';
 import determineChannelName from '../../../../utils/determineChannelName';
 
 function ChannelHeader() {
@@ -43,16 +42,6 @@ function ChannelHeader() {
     const userList = Object.values(currentChannel.Members);
     const numMemb = userList.length;
 
-    function determineName(channel, user) {
-        // The name displayed must be different depending on whether it's a DM or not.
-        if (!channel.is_direct) return `# ${channel.name}`
-        else if (channel.is_direct && Object.values(channel.Members).length > 1) {
-            return userObjectToNameList(channel.Members, user)
-        }
-        else return `${user.first_name} ${user.last_name}`
-
-    }
-
     return (
 
         <div className="content-heading-holder">
@@ -65,7 +54,7 @@ function ChannelHeader() {
                             user={user}
                             currChannel={currentChannel}/>}
 
-                    buttonText={currentChannel ? determineName(currentChannel, user) : ""}
+                    buttonText={currentChannel ? determineChannelName(currentChannel, user) : ""}
                     className="content-header-channelname"
                  />
                 <div className="content-header-channeltopic hide-if-small">

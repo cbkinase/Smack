@@ -9,7 +9,9 @@ const ErrorList = ({ errors, hasSubmitted }) => (
     </ul>
 );
 
-export default function OwnerView({ errors, setName, currChannel, handleDelete, handleSubmit, confirmDeleteName ,setConfirmDeleteName, name, hasSubmitted, user, subject, setSubject }) {
+export default function OwnerView({ errors, setName, currChannel, handleDelete,
+                                    handleSubmit, confirmDeleteName, setConfirmDeleteName,
+                                    name, hasSubmitted, user, subject, setSubject }) {
     const { closeModal } = useModal();
     return (
         <div className="edit-modal-container">

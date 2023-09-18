@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as ChlActions from "../../../../store/channel";
 import { NavLink } from "react-router-dom";
 import './ViewAllChannels.css';
-import userObjectToNameList from "../../../../utils/userObjectToNameList";
+import determineChannelName from "../../../../utils/determineChannelName";
 import { adjustLeftPane } from "../../../../utils/togglePaneFunctions";
 import useViewportWidth from "../../../../hooks/useViewportWidth";
 
@@ -31,8 +31,6 @@ function DMChannels() {
         setSearchTerm(event.target.value);
       };
 
-
-
     const allChannelsArr = Object.values(allChannels).filter((channel) => channel.is_direct /*
       In the event that we end up implementing private channels,
       We would also want to exclude is_private things from here as well.
@@ -42,19 +40,8 @@ function DMChannels() {
 
       && !channel.is_private */);
 
-
-
-    function determineName(channel, user, withoutComma=false) {
-        // The name displayed must be different depending on whether it's a DM or not.
-        if (!channel.is_direct) return `# ${channel.name}`
-        else if (channel.is_direct && Object.values(channel.Members).length > 1) {
-            return userObjectToNameList(channel.Members, user, withoutComma)
-        }
-        else return `${user.first_name} ${user.last_name}`
-
-    }
     const filteredChannels = allChannelsArr.filter((channel) => {
-      return determineName(channel, user, true).toLowerCase().includes(searchTerm.toLowerCase());
+      return determineChannelName(channel, user).toLowerCase().includes(searchTerm.toLowerCase());
     });
 
       return (
@@ -66,14 +53,8 @@ function DMChannels() {
           <input id="channel-search" type="text" placeholder="Search by users" value={searchTerm} onChange={handleSearchChange} />
           <div className="channels-list">
             {(allChannelsArr.length>0) && filteredChannels.map((channel, index) => {
-              return <NavLink key={index} className="channels-list-item" onClick={async e => {
-                // await fetch(`/api/channels/${channel.id}/users`, {
-                //     method: "POST",
-                // })
-                // dispatch(ChlActions.UserChannelThunk())
-            }} to={`/channels/${channel.id}`}>
-                <div style={{paddingLeft: "10px"}}>{determineName(channel, user)}</div>
-                {/* <p style={{paddingLeft: "10px", color: "grey", fontSize: "12px"}}>{channel.subject}</p> */}
+              return <NavLink key={index} className="channels-list-item" to={`/channels/${channel.id}`}>
+                <div style={{paddingLeft: "10px"}}>{determineChannelName(channel, user)}</div>
             </NavLink>
             })}
           </div>

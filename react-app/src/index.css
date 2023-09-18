@@ -303,7 +303,7 @@ a:active {
 
 .grid-container {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     height: 100cqh;
     height: 100svh;
     display: grid;
@@ -320,7 +320,7 @@ a:active {
 
 .grid-container-hiderightside {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     display: grid;
     grid-template-columns: 294px 1fr;
     grid-template-rows: 44px 55px 1fr 0px;
@@ -530,7 +530,7 @@ a:active {
 
 #grid-leftside {
     overflow-y: hidden;
-    max-height: calc(100vh - 44px - 53px); /* 44 and 53 are the px heights of the navbar/logo */
+    max-height: calc(100dvh - 44px - 53px); /* 44 and 53 are the px heights of the navbar/logo */
 }
 
 #grid-leftside:hover {

@@ -5,10 +5,21 @@ import { NavLink } from "react-router-dom";
 import './ViewAllChannels.css';
 import useViewportWidth from "../../../../hooks/useViewportWidth";
 import { adjustLeftPane } from "../../../../utils/togglePaneFunctions";
+import isUserInChannel from "../../../../utils/isUserInChannel";
+
+function PublicChannelCard({ user, channel, onChannelClick }) {
+  return (
+    <NavLink key={channel.id} className="channels-list-item" onClick={e => onChannelClick(user, channel)} to={`/channels/${channel.id}`}>
+      <div style={{ paddingLeft: "10px" }}># {channel.name}</div>
+      <p style={{ paddingLeft: "10px", color: "grey", fontSize: "12px" }}>{channel.subject}</p>
+    </NavLink>
+  )
+}
 
 function AllChannels() {
   const dispatch = useDispatch();
   const allChannels = useSelector((state) => state.channels.all_channels);
+  const user = useSelector((state) => state.session.user);
   const [searchTerm, setSearchTerm] = useState('');
   const viewportWidth = useViewportWidth();
 
@@ -29,8 +40,6 @@ function AllChannels() {
     setSearchTerm(event.target.value);
   };
 
-
-
   const allChannelsArr = Object.values(allChannels).filter((channel) => !channel.is_direct /*
       In the event that we end up implementing private channels,
       We would also want to exclude is_private things from here as well.
@@ -44,6 +53,16 @@ function AllChannels() {
     return channel.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  const onChannelClick = async (user, channel) => {
+    if (isUserInChannel(user, channel)) {
+      return;
+    }
+    await fetch(`/api/channels/${channel.id}/users`, {
+      method: "POST",
+    })
+    dispatch(ChlActions.UserChannelThunk())
+  }
+
   return (
     <>
       <div className="view-all-channels">
@@ -52,17 +71,9 @@ function AllChannels() {
         </div>
         <input id="channel-search" type="text" placeholder="Search by channel name" value={searchTerm} onChange={handleSearchChange} />
         <div className="channels-list">
-          {(allChannelsArr.length > 0) && filteredChannels.map((channel, index) => {
-            return <NavLink key={index} className="channels-list-item" onClick={async e => {
-              await fetch(`/api/channels/${channel.id}/users`, {
-                method: "POST",
-              })
-              dispatch(ChlActions.UserChannelThunk())
-            }} to={`/channels/${channel.id}`}>
-              <div style={{ paddingLeft: "10px" }}># {channel.name}</div>
-              <p style={{ paddingLeft: "10px", color: "grey", fontSize: "12px" }}>{channel.subject}</p>
-            </NavLink>
-          })}
+          {(allChannelsArr.length > 0) && filteredChannels.map((channel) =>
+            <PublicChannelCard key={channel.id} user={user} channel={channel} onChannelClick={onChannelClick} />
+          )}
         </div>
       </div>
     </>

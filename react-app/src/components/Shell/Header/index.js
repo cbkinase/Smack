@@ -1,9 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import ProfileButton from './ProfileButton';
-import { hideShowLeftPane } from '../../../utils/togglePaneFunctions';
+import React from "react";
+import { useSelector } from "react-redux";
+import ProfileButton from "./ProfileButton";
+import { hideShowLeftPane } from "../../../utils/togglePaneFunctions";
 
-function Header({ isLoaded }) {
+function Header ({ isLoaded }) {
 	const sessionUser = useSelector(state => state.session.user);
 
 	return (

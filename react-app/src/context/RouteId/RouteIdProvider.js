@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import RouteIdContext from './RouteIdContext';
+import React, { useState } from "react";
+import RouteIdContext from "./RouteIdContext";
 
 const RouteIdProvider = ({ children }) => {
-  const [routeId, setRouteId] = useState(null);
+	const [routeId, setRouteId] = useState(null);
 
-  return (
-    <RouteIdContext.Provider value={[routeId, setRouteId]}>
-      {children}
-    </RouteIdContext.Provider>
-  );
+	return (
+		<RouteIdContext.Provider value={[routeId, setRouteId]}>
+			{children}
+		</RouteIdContext.Provider>
+	);
 };
 
 export default RouteIdProvider;

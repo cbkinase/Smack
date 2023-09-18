@@ -7,11 +7,9 @@
     flex-direction: row;
     align-items: center;
     max-width: var(--content-width);
-    margin: 250px auto;
+    margin: 100px auto;
     padding: 0;
 }
-
-
 
 .landing-one-text {
     max-height: 600px;
@@ -36,45 +34,11 @@
 
 
 .landing-one-figures {
-    position: relative;
     max-height: 700px;
     max-width: calc(var(--content-width) / 2);
     margin-left: 40px;
 }
 
-
-#landing-one-figure-1 {
-    position: absolute;
-    top: -250px;
-    width: 335px;
-    height: 477px;
-    
-}
-#landing-one-figure-1 img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    border: 1px solid var(--smack-purple);
-    box-shadow: -10px 5px 4px rgba(0, 0, 0, .5);
-}
-#landing-one-figure-2 {
-    position: absolute;
-    top: -209px;
-    left: 200px;
-    width: 335px;
-    height: 477px;
-}
-
-#landing-one-figure-2 img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    object-position: 0% 0%;
-    border: 1px solid var(--smack-purple);
-    box-shadow: -10px 5px 4px rgba(0, 0, 0, .5);
-}
 
 /* Media */
 @media screen and (max-width: 1200px) {
@@ -91,34 +55,37 @@
         display: flex;
         flex-direction: column;
         max-width: var(--content-width);
-        margin: calc(.1 * var(--desktop-height)) auto;
+        margin: calc(.125 * var(--desktop-height)) auto;
         padding: 0;
+        row-gap: 100px;
     }
 
     .landing-one-text {
         text-align: center;
-        width: 80vw;
+        width: 70vw;
     }
 
     .landing-one-text div:first-child {
-        font-size: 4.3rem;
+        font-size: 350%;
         color: var(--smack-purple);
         font-weight: 600;
     }
 
     .landing-one-text div:nth-child(2) {
-        font-size: 1.6rem;
+        font-size: 150%;
         color: var(--smack-purple);
         opacity: 80%;
     }
 
     .landing-one-figures {
-        display: flex;
-        flex-direction: column;
-        margin-top: 50vh;
         width: 80vw;
     }
 
+    #smack-figure-1 {
+        width: 100%;
+        height: 100%;
+    }
+    
 
 }
 

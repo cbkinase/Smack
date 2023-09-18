@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import userObjectToNameList from "../../../utils/userObjectToNameList";
-import userObjectToAvatar from "../../../utils/userObjectToAvatar";
+import DMChannel from "./Subcomponents/DMChannel";
 import { useState, Fragment } from "react";
+import { toggleRightPane } from "../../../utils/togglePaneFunctions";
 
 export default function LeftSideBarDMSection({ channels, user }) {
     const { channelId } = useParams();
@@ -28,6 +28,12 @@ export default function LeftSideBarDMSection({ channels, user }) {
         });
     }
 
+    const closeRightPane = (e) => {
+        if (document.getElementsByClassName("grid-rightside-heading")[0]) {
+            toggleRightPane("close");
+        }
+    }
+
     return (
         <>
             <button onClick={toggleIsHidden} style={{ textDecoration: 'none', marginLeft: "14px", width: "91%" }} >
@@ -38,32 +44,19 @@ export default function LeftSideBarDMSection({ channels, user }) {
             {channels.map((channel) => {
                 return (
                     <Fragment key={channel.id} >
-                        {isHidden && channel.id !== +channelId ? null : <NavLink key={channel.id} to={`/channels/${channel.id}`} className="tooltip">
+                        {isHidden && channel.id !== +channelId
+                            ? null
+                            : <NavLink
+                                onClick={closeRightPane}
+                                key={channel.id}
+                                to={`/channels/${channel.id}`}
+                                className="tooltip">
                             <div>
-                                {Number(channel.id) === Number(channelId) ? (
-                                    <>
-                                        <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8', position: 'relative' }} >
-                                            {userObjectToAvatar(channel.Members, user, '#4a73a9', '#ffffff', 'rgb(39, 88, 149)')}
-                                            <span id={`${channel.id}-elip`} className="ellipsis-if-long">{userObjectToNameList(channel.Members, user)}</span>
-                                        </button>
-                                        {userObjectToNameList(channel.Members, user).length >= 28 && (
-                                            <span className="tooltiptext">{userObjectToNameList(channel.Members, user)}</span>
-                                        )}
-                                    </>
-                                ) : (
-                                    <>
-                                        <button style={{ textDecoration: 'none' }} >
-                                            {userObjectToAvatar(channel.Members, user, '#4b2b53', '#d7ccd9', '#3f0e40')}
-                                            <span id={`${channel.id}-elip`} className="ellipsis-if-long">{userObjectToNameList(channel.Members, user)}</span>
-                                        </button>
-                                        {userObjectToNameList(channel.Members, user).length >= 28 && (
-                                            <span className="tooltiptext">{userObjectToNameList(channel.Members, user)}</span>
-                                        )}
-
-                                    </>
-                                )}
+                                {Number(channel.id) === Number(channelId)
+                                    ? <DMChannel isActive={true} channel={channel} user={user} />
+                                    : <DMChannel channel={channel} user={user} />
+                                }
                             </div>
-
                         </NavLink>}
                     </Fragment>
                 )

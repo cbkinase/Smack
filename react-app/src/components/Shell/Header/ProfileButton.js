@@ -24,7 +24,7 @@ function ProfileButton({ user }) {
     socket.emit("stopped_typing", { "channel_id": routeId, user_id: user.id });
     await dispatch(disconnectWebSocket());
     dispatch(logout());
-    navigate("/")
+    navigate("/");
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
@@ -42,7 +42,7 @@ function ProfileButton({ user }) {
   // ###### EDIT USER ######
 
   const [errors, setErrors] = useState([]);
-  const [showType, setShowType] = useState('info')
+  const [showType, setShowType] = useState('info');
   const [first_name, setFirstName] = useState(user.first_name);
   const [last_name, setLastName] = useState(user.last_name);
   const [avatar, setAvatar] = useState(user.avatar);

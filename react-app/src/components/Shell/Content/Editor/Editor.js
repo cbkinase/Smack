@@ -229,7 +229,6 @@ export default function Editor({ functions, creating, setChatInput, chatInput, u
                                     throttledHandleTyping();
 
                                 }}
-                                // onKeyDown={throttle(handleTyping, 200)}
                                 placeholder={
                                     currentChannel
                                         ? `${determineName(currentChannel, user)}`

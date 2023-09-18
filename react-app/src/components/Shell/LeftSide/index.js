@@ -4,21 +4,18 @@ import LeftSideHeader from "./LeftSideHeader";
 import LeftSideLinks from "./LeftSideBar";
 import RouteIdContext from "../../../context/RouteId/RouteIdContext";
 
-function LeftSide({ isLoaded }) {
+function LeftSide() {
 
     const [, setRouteId] = useContext(RouteIdContext);
     const { channelId } = useParams();
-
 
     useEffect(() => {
         setRouteId(channelId);
       }, [channelId, setRouteId]);
 
-
     return (
         <>
             <LeftSideHeader />
-
             <LeftSideLinks />
         </>
     );

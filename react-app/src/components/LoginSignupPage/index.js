@@ -128,8 +128,8 @@ function LoginSignupPage({ setHasVisited }) {
                     password={password} setPassword={setPassword}
                     confirmPassword={confirmPassword}
                     setConfirmPassword={setConfirmPassword}
-                    errors={errors}
-                 />
+                    errors={errors} />
+
             </div >
 
             <Footer />

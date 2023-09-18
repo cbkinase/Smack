@@ -50,7 +50,6 @@ function LeftSideLinks() {
         }
     }
 
-
     return (
         <div id="grid-leftside" className="grid-leftside-threecolumn">
             <div className="leftside-link-holder">
@@ -135,7 +134,10 @@ function LeftSideLinks() {
                     .filter((channel) => !channel.is_direct)
                     .map((channel) => {
                         return (
-                            <NavLink hidden={isHidden && channel.id !== +channelId} key={channel.id} to={`/channels/${channel.id}`}>
+                            <NavLink
+                                onClick={closeRightPane}
+                                hidden={isHidden && channel.id !== +channelId}
+                                key={channel.id} to={`/channels/${channel.id}`}>
                                 <div key={channel.id}>
                                     {Number(channel.id) === Number(channelId) ? (
                                         <button style={{ textDecoration: 'none', backgroundColor: '#275895', color: '#e9e8e8' }} >

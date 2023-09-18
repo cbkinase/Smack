@@ -8,6 +8,7 @@ export default function Nav () {
 			<div className="landing-nav-content">
 				<img src={smackLogo} alt="smack logo"></img>
 				<NavLink to='/login'>Log In</NavLink>
+
 			</div>
 		</nav>
 	);

@@ -3,8 +3,8 @@ import OnlineStatus from "./OnlineStatus";
 import OfflineStatus from "./OfflineStatus";
 import IdleStatus from "./IdleStatus";
 
-export default function ActivityStatus ({ styles, user, iconOnly }) {
-	const onlineUsers = useSelector(state => state.session.onlineUsers);
+export default function ActivityStatus({ styles, user, iconOnly }) {
+	const onlineUsers = useSelector((state) => state.session.onlineUsers);
 
 	if (!onlineUsers) return null;
 	if (!user) return null;
@@ -20,9 +20,5 @@ export default function ActivityStatus ({ styles, user, iconOnly }) {
 		content = <OfflineStatus iconOnly={iconOnly} />;
 	}
 
-	return (
-		<div style={styles}>
-			{content}
-		</div>
-	);
+	return <div style={styles}>{content}</div>;
 }

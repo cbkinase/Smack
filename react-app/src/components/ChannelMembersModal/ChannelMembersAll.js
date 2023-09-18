@@ -5,7 +5,7 @@ import LoadingSpinner from "../LoadingSpinner";
 import ChannelMember from "./Subcomponents/ChannelMember";
 import MemberModalHeader from "./Subcomponents/MemberModalHeader";
 
-export default function ChannelMembersAll ({ currentChannel, userList, user }) {
+export default function ChannelMembersAll({ currentChannel, userList, user }) {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	const [searchTerm, setSearchTerm] = useState("");
@@ -32,13 +32,16 @@ export default function ChannelMembersAll ({ currentChannel, userList, user }) {
 	};
 
 	const filteredMembers = allUsers.filter((member) => {
-		const fullName = member.first_name.toLowerCase() + " " + member.last_name.toLowerCase();
+		const fullName =
+			member.first_name.toLowerCase() +
+			" " +
+			member.last_name.toLowerCase();
 		return fullName.includes(searchTerm.toLowerCase());
 	});
 
-	async function onMemberClick (member, currentChannel) {
+	async function onMemberClick(member, currentChannel) {
 		await fetch(`/api/channels/${currentChannel.id}/users/${member.id}`, {
-			method: "POST"
+			method: "POST",
 		});
 		closeModal();
 	}
@@ -54,28 +57,35 @@ export default function ChannelMembersAll ({ currentChannel, userList, user }) {
 
 	return (
 		<div className="channel-member-modal-container">
-
 			<MemberModalHeader user={user} channel={currentChannel} />
 
-			{allUsers.length
-				? <input
+			{allUsers.length ? (
+				<input
 					id="channel-search"
 					type="text"
 					placeholder="Find members"
 					value={searchTerm}
 					onChange={handleSearchChange}
 				/>
-				: null}
+			) : null}
 
 			<div className="channels-list">
-				{filteredMembers.length
-					? filteredMembers.map(member => (
-						<ChannelMember key={member.id} member={member} channel={currentChannel} onClickFn={onMemberClick} />
+				{filteredMembers.length ? (
+					filteredMembers.map((member) => (
+						<ChannelMember
+							key={member.id}
+							member={member}
+							channel={currentChannel}
+							onClickFn={onMemberClick}
+						/>
 					))
-					: <p className="no-members-found">Sorry, no members found. Invite your friends to join Smack!</p>
-				}
+				) : (
+					<p className="no-members-found">
+						Sorry, no members found. Invite your friends to join
+						Smack!
+					</p>
+				)}
 			</div>
-
 		</div>
 	);
 }

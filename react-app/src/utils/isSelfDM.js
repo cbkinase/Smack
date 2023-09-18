@@ -1,4 +1,4 @@
-export default function isSelfDM (channel, user) {
+export default function isSelfDM(channel, user) {
 	if (!channel.is_direct) return false;
 	const memberObj = channel.Members;
 	const new_obj = JSON.parse(JSON.stringify(memberObj));

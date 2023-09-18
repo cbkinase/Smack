@@ -21,9 +21,12 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 	useEffect(() => {
 		setErrors({});
 		const err = {};
-		if (!currChannel.is_direct && !name.length) err.name = "Name field must not be empty";
-		if (name.length > 80) err.name = "Name can’t be longer than 80 characters.";
-		if (subject.length > 250) err.subject = "Channel topic must not exceed 250 characters";
+		if (!currChannel.is_direct && !name.length)
+			err.name = "Name field must not be empty";
+		if (name.length > 80)
+			err.name = "Name can’t be longer than 80 characters.";
+		if (subject.length > 250)
+			err.subject = "Channel topic must not exceed 250 characters";
 
 		setErrors(err);
 	}, [name, subject]);
@@ -34,15 +37,19 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 		e.preventDefault();
 		setHasSubmitted(true);
 
-		if (Object.values(errors).length) { return alert("Oops, something went wrong with renaming the channel. Please try again."); }
+		if (Object.values(errors).length) {
+			return alert(
+				"Oops, something went wrong with renaming the channel. Please try again.",
+			);
+		}
 
 		dispatch(
 			EditChannelThunk(channelId, {
 				name,
 				subject,
 				is_private: currChannel.is_private,
-				is_direct: currChannel.is_direct
-			})
+				is_direct: currChannel.is_direct,
+			}),
 		);
 		if (!Object.values(errors).length) {
 			closeModal();
@@ -62,26 +69,26 @@ const EditChannelModal = ({ channelId, currChannel, user }) => {
 	const isUserOwner = user.id === currChannel.owner_id;
 
 	if (isUserOwner) {
-		return <OwnerView
-			errors={errors}
-			hasSubmitted={hasSubmitted}
-			user={user}
-			currChannel={currChannel}
-			handleSubmit={handleSubmit}
-			handleDelete={handleDelete}
-			name={name}
-			setName={setName}
-			confirmDeleteName={confirmDeleteName}
-			setConfirmDeleteName={setConfirmDeleteName}
-			subject={subject}
-			setSubject={setSubject}
-		/>;
+		return (
+			<OwnerView
+				errors={errors}
+				hasSubmitted={hasSubmitted}
+				user={user}
+				currChannel={currChannel}
+				handleSubmit={handleSubmit}
+				handleDelete={handleDelete}
+				name={name}
+				setName={setName}
+				confirmDeleteName={confirmDeleteName}
+				setConfirmDeleteName={setConfirmDeleteName}
+				subject={subject}
+				setSubject={setSubject}
+			/>
+		);
 	} else {
-		return <MemberView
-			owner={owner}
-			user={user}
-			currChannel={currChannel}
-		/>;
+		return (
+			<MemberView owner={owner} user={user} currChannel={currChannel} />
+		);
 	}
 };
 

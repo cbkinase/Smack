@@ -9,7 +9,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./components/LandingPage/index";
 import { getCookie } from "./utils/cookieFunctions";
 
-function App () {
+function App() {
 	const dispatch = useDispatch();
 	const [isLoaded, setIsLoaded] = useState(false);
 	let previouslyVisited = getCookie("hasVisited");
@@ -28,16 +28,17 @@ function App () {
 		return (
 			<Routes>
 				<Route path="/" element={<LandingPage />} />
-				<Route path="/login" element={<LoginSignupPage setHasVisited={setHasVisited} />} />
+				<Route
+					path="/login"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
 				<Route path="*" element={<Navigate to="/" />} />
-			</Routes >
+			</Routes>
 		);
 	}
 
 	if (!sessionUser) {
-		return (
-			<LoginSignupPage setHasVisited={setHasVisited} />
-		);
+		return <LoginSignupPage setHasVisited={setHasVisited} />;
 	}
 
 	return (

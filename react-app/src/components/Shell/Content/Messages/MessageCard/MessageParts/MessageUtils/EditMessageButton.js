@@ -4,12 +4,12 @@ import changeAdjustText from "../../../../../../../utils/changeAdjustText";
 
 let updatedMessage;
 
-export default function EditMessageButton ({
+export default function EditMessageButton({
 	message,
 	dispatch,
 	socket,
 	channelId,
-	editing
+	editing,
 }) {
 	const handleEdit = async (e, msg) => {
 		document.getElementById("edit-msg-form").remove();
@@ -20,7 +20,7 @@ export default function EditMessageButton ({
 			user_id: msg.user_id,
 			channel_id: channelId,
 			is_pinned: msg.is_pinned,
-			message_id: msg.id
+			message_id: msg.id,
 		};
 
 		socket.emit("edit", socketPayload, (res) => {
@@ -86,20 +86,11 @@ export default function EditMessageButton ({
 				editMode(e, message);
 				editing = true;
 			}}
-			onMouseOver={() =>
-				changeAdjustText(
-					"Edit Message",
-					message.id
-				)
-			}
-			onMouseOut={() =>
-				changeAdjustText("", message.id)
-			}
+			onMouseOver={() => changeAdjustText("Edit Message", message.id)}
+			onMouseOut={() => changeAdjustText("", message.id)}
 			className="message-adjust-edit"
 		>
-
 			<i className="far fa-edit"></i>
-
 		</span>
 	);
 }

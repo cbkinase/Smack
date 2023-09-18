@@ -1,44 +1,41 @@
 .landing-authors {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    column-gap: 60px;
-    max-width: calc(100px * 5 + 60px * 4);
-    margin: 0 auto;
-
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	column-gap: 60px;
+	max-width: calc(100px * 5 + 60px * 4);
+	margin: 0 auto;
 }
 
 .landing-authors img {
-    object-fit: cover;
-    width: 100px;
-    height: 100px;
-    border-radius: 100%;
-    opacity: 80%;
-    transition: opacity 0.3s ease-in-out;
-    box-sizing: border-box;
+	object-fit: cover;
+	width: 100px;
+	height: 100px;
+	border-radius: 100%;
+	opacity: 80%;
+	transition: opacity 0.3s ease-in-out;
+	box-sizing: border-box;
 }
 
 .landing-authors img:hover {
-    cursor: pointer;
-    opacity: 100%;
+	cursor: pointer;
+	opacity: 100%;
 }
 
 @media screen and (max-width: 1200px) {
-    .landing-authors {
-        max-width: 70vw;
-    }
-
+	.landing-authors {
+		max-width: 70vw;
+	}
 }
 
 @media screen and (max-width: 680px) {
-    .landing-authors {
-        display: none;
-    }
+	.landing-authors {
+		display: none;
+	}
 }
 
-
 .fade-in-slow {
-    opacity: 0;
-    animation: fadeIn 4s ease-in-out forwards;
+	opacity: 0;
+	animation: fadeIn 4s ease-in-out forwards;
 }

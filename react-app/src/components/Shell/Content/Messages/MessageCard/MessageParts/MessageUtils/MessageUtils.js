@@ -3,16 +3,23 @@ import AddReactionButton from "./AddReactionButton";
 import DeleteMessageButton from "./DeleteMessageButton";
 import EditMessageButton from "./EditMessageButton";
 
-export default function MessageUtils ({ message, user, socket, dispatch, channelId, editing }) {
+export default function MessageUtils({
+	message,
+	user,
+	socket,
+	dispatch,
+	channelId,
+	editing,
+}) {
 	return (
 		<div className="message-card-makechangebox">
-
 			<span
 				id={`message-adjust-text-${message.id}`}
 				className="message-adjust-text"
 			></span>
 
-			<AddReactionButton message={message}
+			<AddReactionButton
+				message={message}
 				user={user}
 				socket={socket}
 				dispatch={dispatch}
@@ -21,7 +28,8 @@ export default function MessageUtils ({ message, user, socket, dispatch, channel
 			{/* GOING TO FIX EDITMESSAGE TO DRILL LESS PROPS */}
 
 			{user.id === message.user_id && (
-				<EditMessageButton message={message}
+				<EditMessageButton
+					message={message}
 					user={user}
 					dispatch={dispatch}
 					socket={socket}
@@ -31,13 +39,13 @@ export default function MessageUtils ({ message, user, socket, dispatch, channel
 			)}
 
 			{user.id === message.user_id && (
-				<DeleteMessageButton message={message}
+				<DeleteMessageButton
+					message={message}
 					user={user}
 					socket={socket}
 					dispatch={dispatch}
 				/>
-			) }
-
+			)}
 		</div>
 	);
 }

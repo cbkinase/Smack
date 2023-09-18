@@ -4,7 +4,7 @@ import DirectMessageIntro from "./DirectMessageIntro";
 import SelfDMIntro from "./SelfDMIntro";
 import "./MessageIntro.css";
 
-export default function MessageBeginning ({ channel, user }) {
+export default function MessageBeginning({ channel, user }) {
 	if (!channel) return null;
 
 	if (isSelfDM(channel, user)) {

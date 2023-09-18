@@ -5,7 +5,9 @@ const SelectedUserRightBarProvider = ({ children }) => {
 	const [selectedUserRightBar, setSelectedUserRightBar] = useState(null);
 
 	return (
-		<SelectedUserRightBarContext.Provider value={[selectedUserRightBar, setSelectedUserRightBar]}>
+		<SelectedUserRightBarContext.Provider
+			value={[selectedUserRightBar, setSelectedUserRightBar]}
+		>
 			{children}
 		</SelectedUserRightBarContext.Provider>
 	);

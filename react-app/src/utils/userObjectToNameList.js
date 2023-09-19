@@ -2,6 +2,7 @@ export default function userObjectToNameList(
 	obj,
 	currUser,
 	withoutComma = false,
+	nameQtyCutoff = 5,
 ) {
 	/* Takes in an object that looks like
     {"1" :
@@ -15,17 +16,28 @@ export default function userObjectToNameList(
 
     */
 
-	const new_obj = JSON.parse(JSON.stringify(obj));
-	delete new_obj[currUser.id];
-	const obj_arr = Object.values(new_obj);
-	if (obj_arr.length === 0) {
+	const names = [];
+
+	for (const key in obj) {
+		if (key !== currUser.id.toString()) {
+			const user = obj[key];
+			names.push(`${user.first_name} ${user.last_name}`);
+
+			if (names.length >= nameQtyCutoff) {
+				names.push("...");
+				break;
+			}
+		}
+	}
+
+	if (names.length === 0) {
 		return (
 			<>
-				{currUser.first_name} {currUser.last_name}&nbsp;&nbsp;&nbsp;you
+				{currUser.first_name} {currUser.last_name}&nbsp;&nbsp;&nbsp;
+				<span style={{ opacity: "0.7" }}>you</span>
 			</>
 		);
 	}
-	return obj_arr
-		.map((user) => `${user.first_name} ${user.last_name}`)
-		.join(`${withoutComma ? " " : ", "}`);
+
+	return names.join(`${withoutComma ? " " : ", "}`);
 }

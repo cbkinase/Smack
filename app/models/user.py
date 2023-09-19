@@ -101,12 +101,11 @@ class User(db.Model, UserMixin):
         return user
 
 
-    @classmethod
-    def get_all_channels_for_user(cls, user, Channel):
+    def get_all_channels_for_user(self, Channel):
         user = User.query.options(
         joinedload(User.channels).joinedload(Channel.users),
-    ).filter(User.id == user.id).first()
-        return user
+    ).filter(User.id == self.id).first()
+        return user.channels
 
 
     def edit_from_form(self, form):

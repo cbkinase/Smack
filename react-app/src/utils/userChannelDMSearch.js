@@ -18,25 +18,26 @@ export default function userChannelDMSearch(
     (some of this logic is handled outside the function, but that's the goal)
 
     */
+	const isSelf = currUser.id === otherUser.id;
 
-	let obj_arr = Object.values(user_channels);
+	const findMatchingChannel = (channel) => {
+		// Ignore non-direct channels
+		if (!channel.is_direct) return false;
 
-	if (currUser.id === otherUser.id) {
-		obj_arr = obj_arr.filter(
-			(channel) =>
-				channel.is_direct &&
-				Object.values(channel.Members).length === 1,
-		);
-		return obj_arr[0];
-	}
-	obj_arr = obj_arr.filter(
-		(channel) =>
-			channel.is_direct && Object.values(channel.Members).length === 2,
-	);
-	obj_arr = obj_arr.filter(
-		(channel) =>
-			channel.Members[currUser.id] && channel.Members[otherUser.id],
-	);
+		const memberCount = Object.keys(channel.Members).length;
 
-	return obj_arr[0];
+		// In which currUser and otherUser are the same
+		if (isSelf) {
+			return memberCount === 1;
+		}
+
+		// In which currUser and otherUser are different
+		const bothMembersPresent =
+			channel.Members[currUser.id] && channel.Members[otherUser.id];
+		return memberCount === 2 && bothMembersPresent;
+	};
+
+	const channel = Object.values(user_channels).find(findMatchingChannel);
+
+	return channel;
 }

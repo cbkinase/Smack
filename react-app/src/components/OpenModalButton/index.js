@@ -16,7 +16,6 @@ function OpenModalButton({
 	renderPersonPlus, // TODO: improve this interface to be more maintainable
 }) {
 	if (userList && userList.length > 1) {
-		userList = JSON.parse(JSON.stringify(userList));
 		userList = userList.filter((user) => user.id !== currUser.id);
 	}
 
@@ -145,7 +144,14 @@ function OpenModalButton({
 			{buttonText}
 
 			{renderDownArrow && (
-				<span style={{ fontSize: "10px", paddingLeft: "5px" }}>
+				<span
+					style={{
+						fontSize: "10px",
+						paddingLeft: "5px",
+						position: "relative",
+						bottom: "3px",
+					}}
+				>
 					<i className="fa-sharp fa-solid fa-chevron-down"></i>
 				</span>
 			)}

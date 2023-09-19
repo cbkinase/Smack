@@ -30,17 +30,17 @@ def create_error_response(status_code: int, error_type: str, default_message: Op
     return response
 
 
-def bad_request(message: str = None):
+def bad_request(message = None):
     return create_error_response(400, 'Bad Request', message)
 
 
-def forbidden(message: str = None):
+def forbidden(message = None):
     return create_error_response(403, 'Forbidden', message)
 
 
-def not_found(message: str = None):
+def not_found(message = None):
     return create_error_response(404, 'Not Found', message)
 
 
-def internal_server_error(message: str = None):
+def internal_server_error(message = None):
     return create_error_response(500, 'Internal Server Error', message)

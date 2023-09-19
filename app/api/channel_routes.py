@@ -14,6 +14,7 @@ def all_channels():
     """
     Get all channels
     """
+    # TODO: pagination
     all_channels = Channel.get_all_channels_with_users()
     return { "all_channels": [channel.to_dict() for channel in all_channels] }
 
@@ -24,8 +25,8 @@ def user_channels():
     """
     Get all channels the currently logged in user is part of
     """
-    user = User.get_all_channels_for_user(current_user, Channel)
-    return { "user_channels": [channel.to_dict() for channel in user.channels] }
+    user_channels = current_user.get_all_channels_for_user(Channel)
+    return { "user_channels": [channel.to_dict() for channel in user_channels] }
 
 
 @channel_routes.route('/<channel_id>')
@@ -115,14 +116,17 @@ def add_channel_member(channel_id):
 
     try:
         current_user.join_channel(channel)
-        try:
-            # TODO: emit this only to the SIDs of relevant users + relevant room
-            socketio.emit("new_DM_convo", channel_id)
-        except Exception as e:
-            print(e)
-        return {"message": "Successfully added user to the channel"}
     except:
         return internal_server_error()
+
+    try:
+        # TODO: emit this only to the SIDs of relevant users + relevant room
+        socketio.emit("new_DM_convo", channel_id)
+    except Exception as e:
+        print(e)
+        # TODO: handle this better, should also be more specific about exceptions
+
+    return {"message": "Successfully added user to the channel"}
 
 
 @channel_routes.route("/<int:channel_id>/users/<int:user_id>", methods=["POST"])
@@ -142,14 +146,17 @@ def add_nonself_channel_member(channel_id, user_id):
 
     try:
         other_user.join_channel(channel)
-        try:
-            # TODO: emit this only to the SIDs of relevant users + relevant room
-            socketio.emit("new_DM_convo", channel_id)
-        except Exception as e:
-            print(e)
-        return {"message": "Successfully added user to the channel"}
     except:
         return internal_server_error()
+
+    try:
+        # TODO: emit this only to the SIDs of relevant users + relevant room
+        socketio.emit("new_DM_convo", channel_id)
+    except Exception as e:
+        print(e)
+        # TODO: handle this better, should also be more specific about exceptions
+
+    return {"message": "Successfully added user to the channel"}
 
 
 @channel_routes.route("/<int:channel_id>/members")
@@ -178,9 +185,8 @@ def delete_channel_member(channel_id, user_id):
     if not channel or not user_to_delete:
         return not_found()
 
-    if current_user.id != user_id:
-        if current_user.id != channel.owner_id:
-            return forbidden("Must either own the channel or be removing self")
+    if current_user.id != user_id and current_user.id != channel.owner_id:
+        return forbidden("Must either own the channel or be removing self")
 
     try:
         channel.remove_user(user_to_delete)

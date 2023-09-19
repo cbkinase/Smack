@@ -124,7 +124,7 @@ def add_channel_member(channel_id):
         socketio.emit("new_DM_convo", channel_id)
     except Exception as e:
         print(e)
-        # TODO: handle this better, should also be more speciifc about exceptions
+        # TODO: handle this better, should also be more specific about exceptions
 
     return {"message": "Successfully added user to the channel"}
 
@@ -154,10 +154,9 @@ def add_nonself_channel_member(channel_id, user_id):
         socketio.emit("new_DM_convo", channel_id)
     except Exception as e:
         print(e)
-        # TODO: handle this better, should also be more speciifc about exceptions
+        # TODO: handle this better, should also be more specific about exceptions
 
     return {"message": "Successfully added user to the channel"}
-
 
 
 @channel_routes.route("/<int:channel_id>/members")

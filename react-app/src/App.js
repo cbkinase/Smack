@@ -12,9 +12,7 @@ import { getCookie } from "./utils/cookieFunctions";
 function App() {
 	const dispatch = useDispatch();
 	const [isLoaded, setIsLoaded] = useState(false);
-	let previouslyVisited = getCookie("hasVisited");
-	previouslyVisited = !!previouslyVisited;
-	const [hasVisited, setHasVisited] = useState(previouslyVisited);
+	const [hasVisited, setHasVisited] = useState(!!getCookie("hasVisited"));
 
 	useEffect(() => {
 		dispatch(authenticate()).then(() => setIsLoaded(true));

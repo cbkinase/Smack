@@ -20,10 +20,12 @@ export default function userObjectToAvatar(
     left sidebar for direct messages depending on the number of users.
 
     */
-	const new_obj = JSON.parse(JSON.stringify(obj));
-	delete new_obj[currUser.id];
-
-	const obj_arr = Object.values(new_obj);
+	const obj_arr = [];
+	for (const key in obj) {
+		if (key !== currUser.id.toString()) {
+			obj_arr.push(obj[key]);
+		}
+	}
 	const activityStyles = {
 		display: "inline",
 		position: "absolute",

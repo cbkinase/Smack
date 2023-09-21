@@ -33,7 +33,6 @@ def login():
         # Add the user to the session, we are logged in!
         user = User.find_by_email(form.data['email'])
         login_user(user)
-        # send_email("cambeck366@gmail.com", "Someone logged into Smack!")
         return user.to_dict()
     return bad_request("Invalid credentials")
 

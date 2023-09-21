@@ -56,14 +56,16 @@ def sign_up():
     if form.validate_on_submit():
         user = User.from_form(form)
         token = user.generate_confirmation_token()
-        send_url = current_app.config['EMAIL_URL_PREFIX'] + f"/api/auth/confirm/{user.id}/{token}"
+        base_url = current_app.config['EMAIL_URL_PREFIX']
+        send_url = base_url + f"/api/auth/confirm/{user.id}/{token}"
         send_email(
             to=user.email,
             subject="Confirm Your Account",
             template="confirm_email",
             user=user,
             token=token,
-            send_url=send_url
+            send_url=send_url,
+            base_url=base_url
         )
         # login_user(user)
         return user.to_dict()
@@ -95,13 +97,15 @@ def confirm(user_id, token):
 @login_required
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
-    send_url = current_app.config['EMAIL_URL_PREFIX'] + f"/api/auth/confirm/{current_user.id}/{token}"
+    base_url = current_app.config['EMAIL_URL_PREFIX']
+    send_url = base_url + f"/api/auth/confirm/{current_user.id}/{token}"
     send_email(
             to=current_user.email,
             subject="Confirm Your Account",
             template="confirm_email",
             user=current_user,
             token=token,
-            send_url=send_url
+            send_url=send_url,
+            base_url=base_url
         )
     return {"status": "success", "message": "A new confirmation email has been sent"}

@@ -57,7 +57,7 @@ def sign_up():
         user = User.from_form(form)
         token = user.generate_confirmation_token()
         base_url = current_app.config['EMAIL_URL_PREFIX']
-        send_url = base_url + f"/api/auth/confirm/{user.id}/{token}"
+        send_url = base_url + f"/activate/{token}"
         send_email(
             to=user.email,
             subject="Confirm Your Account",
@@ -67,7 +67,7 @@ def sign_up():
             send_url=send_url,
             base_url=base_url
         )
-        # login_user(user)
+        login_user(user)
         return user.to_dict()
     return bad_request(validation_errors_to_error_messages(form.errors))
 
@@ -88,7 +88,7 @@ def confirm(user_id, token):
 
     if user.confirm(token):
         db.session.commit()
-        return {"status": "success", "message": "Account activated."}
+        return {"status": "success", "message": user.to_dict()}
     else:
         return bad_request("Invalid or expired confirmation link.")
 
@@ -98,7 +98,7 @@ def confirm(user_id, token):
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
     base_url = current_app.config['EMAIL_URL_PREFIX']
-    send_url = base_url + f"/api/auth/confirm/{current_user.id}/{token}"
+    send_url = base_url + f"/activate/{token}"
     send_email(
             to=current_user.email,
             subject="Confirm Your Account",

@@ -51,7 +51,7 @@ function LoginSignupPage({ setHasVisited }) {
 		}
 	}, [formType]);
 
-	if (sessionUser) return <Navigate to="/" />;
+	if (sessionUser?.confirmed) return <Navigate to="/" />;
 
 	const handleDemo = () => {
 		setEmail("demo@aa.io");
@@ -61,13 +61,20 @@ function LoginSignupPage({ setHasVisited }) {
 	const handleSubmitLogin = async (e) => {
 		e.preventDefault();
 		const data = await dispatch(login(email, password));
-		if (data) {
-			setErrors([data]);
+		if (data.error) {
+			setErrors([data.message]);
 			return;
 		}
 		setHasVisited(true);
 		setCookie("hasVisited", "true");
-		navigate("/channels/explore");
+		const user = data;
+		// If the current user hasn't confirmed their account, redirect them to
+		// page that prompts them to confirm their email address.
+		if (user.confirmed) {
+			navigate("/channels/explore");
+		} else {
+			navigate("/activate");
+		}
 	};
 
 	const handleSubmitSignup = async (e) => {
@@ -86,7 +93,7 @@ function LoginSignupPage({ setHasVisited }) {
 		}
 		setHasVisited(true);
 		setCookie("hasVisited", "true");
-		navigate("/channels/explore");
+		navigate("/activate");
 	};
 
 	const handleLogoClick = () => {

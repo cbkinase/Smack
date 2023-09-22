@@ -8,6 +8,9 @@ import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./components/LandingPage/index";
 import useCookieState from "./hooks/useCookieState";
+import ConfirmEmail from "./components/ConfirmEmail";
+import ConfirmSuccess from "./components/ConfirmEmail/ConfirmSuccess";
+import Activation from "./components/ConfirmEmail/Activation";
 
 function App() {
 	const dispatch = useDispatch();
@@ -37,6 +40,57 @@ function App() {
 
 	if (!sessionUser) {
 		return <LoginSignupPage setHasVisited={setHasVisited} />;
+	}
+
+	if (sessionUser && !sessionUser.confirmed) {
+		return (
+			<Routes>
+				<Route
+					path="/"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+				<Route
+					path="/login"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+				<Route
+					path="/activate"
+					element={
+						<ConfirmEmail
+							setHasVisited={setHasVisited}
+							user={sessionUser}
+						/>
+					}
+				/>
+				<Route
+					path="/activate/:token"
+					element={
+						<Activation
+							user={sessionUser}
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="/resend"
+					element={
+						<ConfirmSuccess
+							setHasVisited={setHasVisited}
+							user={sessionUser}
+						/>
+					}
+				/>
+				<Route
+					path="*"
+					element={
+						<ConfirmEmail
+							setHasVisited={setHasVisited}
+							user={sessionUser}
+						/>
+					}
+				/>
+			</Routes>
+		);
 	}
 
 	return (

@@ -10,7 +10,7 @@ const SET_ONLINE_USERS = "session/SET_ONLINE_USERS";
 const REMOVE_ONLINE_USER = "session/REMOVE_ONLINE_USERS";
 const ADD_ONLINE_USER = "session/ADD_ONLINE_USER";
 
-const setUser = (user) => ({
+export const setUser = (user) => ({
 	type: SET_USER,
 	payload: user,
 });
@@ -73,11 +73,11 @@ export const login = (email, password) => async (dispatch) => {
 	if (response.ok) {
 		const data = await response.json();
 		dispatch(setUser(data));
-		return null;
+		return data;
 	} else if (response.status < 500) {
 		const data = await response.json();
 		if (data.error) {
-			return data.message;
+			return data;
 		}
 	} else {
 		return ["An error occurred. Please try again."];
@@ -163,7 +163,7 @@ export const editUser =
 export default function reducer(state = initialState, action) {
 	switch (action.type) {
 		case SET_USER:
-			if (!state.socket) {
+			if (!state.socket && action.payload.confirmed) {
 				return { user: action.payload, socket: io() };
 			} else return { ...state, user: action.payload };
 		case REMOVE_USER:

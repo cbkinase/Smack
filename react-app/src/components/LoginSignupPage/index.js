@@ -130,6 +130,11 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 		errors,
 	};
 
+	async function requestNewLink() {
+		await fetch("/api/auth/confirm");
+		navigate("/resend");
+	}
+
 	// Not the DRYest, lol TODO
 	if (sessionUser && !sessionUser.confirmed) {
 		return (
@@ -182,6 +187,52 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 								onClick={handleLogout}
 							>
 								Log out
+							</button>
+						</div>
+						<div
+							style={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+								padding: "30px 0px",
+							}}
+						>
+							<div
+								style={{
+									height: "1px",
+									width: "100%",
+									backgroundColor: "#dddddd",
+								}}
+							></div>
+							<div
+								style={{
+									padding: "0px 20px",
+								}}
+							>
+								OR
+							</div>
+							<div
+								style={{
+									height: "1px",
+									width: "100%",
+									backgroundColor: "#dddddd",
+								}}
+							></div>
+						</div>
+						<div
+							style={{
+								textAlign: "center",
+								fontSize: "18px",
+								color: "#454245",
+							}}
+						>
+							Need a new code?&nbsp;&nbsp;&nbsp;<b>No problem!</b>
+							<br />
+							<button
+								className="create-account"
+								onClick={requestNewLink}
+							>
+								Request a new activation link
 							</button>
 						</div>
 					</div>

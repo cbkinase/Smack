@@ -32,7 +32,7 @@ export default function LoginView({
 						display: "block",
 					}}
 				>
-					<li>The provided credentials were invalid.</li>
+					<li>{errors[0]}</li>
 				</div>
 			)}
 

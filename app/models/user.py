@@ -1,6 +1,8 @@
 from .db import db, environment, SCHEMA
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from flask_login import UserMixin
+from flask import current_app
 from faker import Faker
 from sqlalchemy.orm import joinedload
 
@@ -15,6 +17,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    confirmed = db.Column(db.Boolean, default=False)
 
     channels = db.relationship(
         "Channel",
@@ -45,6 +48,7 @@ class User(db.Model, UserMixin):
     def to_dict(self):
         return {
             'id': self.id,
+            'confirmed': self.confirmed,
             'username': self.username,
             'email': self.email,
             'first_name': self.first_name,
@@ -119,3 +123,32 @@ class User(db.Model, UserMixin):
     def join_channel(self, channel):
         self.channels.append(channel)
         db.session.commit()
+
+
+    def generate_confirmation_token(self):
+        """Generate a JWS that expires with a default time of 1 hour"""
+        s = Serializer(
+            current_app.config['SECRET_KEY'],
+            salt=current_app.config['SECURITY_PASSWORD_SALT']
+            )
+        return s.dumps({'confirm': self.id}, salt=current_app.config['SECURITY_PASSWORD_SALT'])
+
+
+    def confirm(self, token, expiration=86400):
+        """Returns True on successful confirmation. Default expiration 24 hours."""
+        s = Serializer(
+            current_app.config['SECRET_KEY'],
+            salt=current_app.config['SECURITY_PASSWORD_SALT']
+            )
+        try:
+            data = s.loads(
+                token,
+                salt=current_app.config['SECURITY_PASSWORD_SALT'],
+                max_age=expiration)
+        except:
+            return False
+        if data.get('confirm') != self.id:
+            return False
+        self.confirmed = True
+        db.session.add(self)
+        return True

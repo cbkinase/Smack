@@ -57,7 +57,10 @@ def sign_up():
         user = User.from_form(form)
         token = user.generate_confirmation_token()
         # Should do some check for whether it's a valid Origin
-        base_url = request.headers.get("Origin") or current_app.config['EMAIL_URL_PREFIX']
+        base_url = request.headers.get("Origin") \
+            or request.args.get('source') \
+            or current_app.config['EMAIL_URL_PREFIX']
+
         send_url = base_url + f"/activate/{token}"
         send_email(
             to=user.email,
@@ -98,7 +101,10 @@ def confirm(user_id, token):
 @login_required
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
-    base_url = request.headers.get("Origin") or current_app.config['EMAIL_URL_PREFIX']
+    base_url = request.headers.get("Origin") \
+        or request.args.get('source') \
+        or current_app.config['EMAIL_URL_PREFIX']
+
     send_url = base_url + f"/activate/{token}"
     send_email(
             to=current_user.email,

@@ -131,7 +131,8 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 	};
 
 	async function requestNewLink() {
-		await fetch("/api/auth/confirm");
+		const baseURL = window.location.origin;
+		await fetch(`/api/auth/confirm?source=${encodeURIComponent(baseURL)}`);
 		navigate("/resend");
 	}
 

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { login, signUp } from "../../store/session";
+import { login, signUp, logout } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, NavLink } from "react-router-dom";
 import { deleteCookie, setCookie } from "../../utils/cookieFunctions";
 import Footer from "./Subcomponents/Footer";
 import LoginView from "./Subcomponents/LoginView";
 import SignUpView from "./Subcomponents/SignUpView";
 import LoginSignupTitle from "./Subcomponents/LoginSignupTitle";
+import signinupLogo from "./smack-logo-black.svg";
 
 function LoginSignupPage({ setHasVisited, mustActivate }) {
 	const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 	const formTitle = useRef(null);
 
 	useEffect(() => {
+		if (sessionUser && !sessionUser.confirmed) return;
 		const signIn = signInForm.current;
 		const signUp = signUpForm.current;
 		const titleText = formTitle.current;
@@ -48,15 +50,22 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 			signUp.style.display = "block";
 			titleText.innerText = "Sign up for Smack";
 		}
-	}, [formType]);
+	}, [formType, sessionUser]);
 
 	useEffect(() => {
 		if (mustActivate) {
 			setErrors([
-				"You must log in before you can activate your account.",
+				"You must be logged in on this device to activate your account.",
 			]);
 		}
 	}, [mustActivate]);
+
+	useEffect(() => {
+		document.title = "Login | Smack";
+		return () => {
+			document.title = "Smack";
+		};
+	}, []);
 
 	if (sessionUser?.confirmed) return <Navigate to="/" />;
 
@@ -108,6 +117,10 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 		setHasVisited(false);
 	};
 
+	const handleLogout = () => {
+		dispatch(logout());
+	};
+
 	const commonProps = {
 		email,
 		setEmail,
@@ -116,6 +129,67 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 		setFormType,
 		errors,
 	};
+
+	// Not the DRYest, lol TODO
+	if (sessionUser && !sessionUser.confirmed) {
+		return (
+			<>
+				<div className="login-signup" style={{ height: "100%" }}>
+					<div style={{ textAlign: "center" }}>
+						<NavLink onClick={handleLogoClick} to="/">
+							<img
+								src={`${signinupLogo}`}
+								alt="Smack Logo"
+								style={{ width: "145px " }}
+							/>
+						</NavLink>
+					</div>
+
+					<h1
+						style={{
+							textAlign: "center",
+							fontSize: "48px",
+							fontWeight: "700",
+							paddingTop: "30px",
+							paddingBottom: "14px",
+						}}
+					>
+						Already signed in
+					</h1>
+					<div style={{ display: "block", marginBottom: "90px" }}>
+						<div
+							style={{
+								textAlign: "center",
+								fontSize: "18px",
+								color: "#454245",
+							}}
+						>
+							But your account has yet to be activated.
+							<div style={{ height: "20px" }} />
+							Sign out below, or activate at{" "}
+							<b>{sessionUser.email}</b>
+						</div>
+						<div
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								gap: "12px",
+								paddingTop: "26px",
+							}}
+						>
+							<button
+								className="login-input-submit"
+								onClick={handleLogout}
+							>
+								Log out
+							</button>
+						</div>
+					</div>
+				</div>
+				<Footer />
+			</>
+		);
+	}
 
 	return (
 		<>

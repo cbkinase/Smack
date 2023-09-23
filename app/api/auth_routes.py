@@ -34,7 +34,7 @@ def login():
         user = User.find_by_email(form.data['email'])
         login_user(user)
         return user.to_dict()
-    return bad_request("Invalid credentials")
+    return bad_request("The provided credentials were invalid.")
 
 
 @auth_routes.route('/logout')

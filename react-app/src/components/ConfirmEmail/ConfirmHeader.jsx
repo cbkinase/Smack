@@ -1,17 +1,30 @@
 import signinupLogo from "../../components/LoginSignupPage/smack-logo-black.svg";
 import { NavLink } from "react-router-dom";
 
-export default function ConfirmHeader({ handleLogoClick, user, resend }) {
+export default function ConfirmHeader({
+	handleLogoClick,
+	user,
+	resend,
+	activationFailed,
+}) {
 	const censorWord = function (str) {
 		return str[0] + "*".repeat(str.length - 2) + str.slice(-1);
 	};
 
+	// eslint-disable-next-line
 	const censorEmail = function (email) {
 		const arr = email.split("@");
 		return censorWord(arr[0]) + "@" + censorWord(arr[1]);
 	};
 
-	const h1Content = resend ? "Check your email" : "Confirm Your Account";
+	let h1Content;
+	if (resend) {
+		h1Content = "Check your email";
+	} else if (activationFailed) {
+		h1Content = "Code expired";
+	} else {
+		h1Content = "Confirm your email";
+	}
 
 	return (
 		<div>
@@ -28,7 +41,7 @@ export default function ConfirmHeader({ handleLogoClick, user, resend }) {
 			<h1
 				style={{
 					textAlign: "center",
-					fontSize: "41px",
+					fontSize: "48px",
 					fontWeight: "700",
 					paddingTop: "30px",
 					paddingBottom: "14px",
@@ -36,15 +49,27 @@ export default function ConfirmHeader({ handleLogoClick, user, resend }) {
 			>
 				{h1Content}
 			</h1>
-			<p
-				style={{
-					textAlign: "center",
-					fontSize: "16px",
-					color: "#454245",
-				}}
-			>
-				We've sent an email to you at <b>{censorEmail(user.email)}</b>
-			</p>
+			{activationFailed ? (
+				<p
+					style={{
+						textAlign: "center",
+						fontSize: "16px",
+						color: "#454245",
+					}}
+				>
+					Sorry, your code for <b>{user.email}</b> has expired
+				</p>
+			) : (
+				<p
+					style={{
+						textAlign: "center",
+						fontSize: "16px",
+						color: "#454245",
+					}}
+				>
+					We've sent an email to you at <b>{user.email}</b>
+				</p>
+			)}
 		</div>
 	);
 }

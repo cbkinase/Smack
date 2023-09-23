@@ -10,7 +10,7 @@ const SET_ONLINE_USERS = "session/SET_ONLINE_USERS";
 const REMOVE_ONLINE_USER = "session/REMOVE_ONLINE_USERS";
 const ADD_ONLINE_USER = "session/ADD_ONLINE_USER";
 
-export const setUser = (user) => ({
+const setUser = (user) => ({
 	type: SET_USER,
 	payload: user,
 });

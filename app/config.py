@@ -12,8 +12,8 @@ class Config:
         'DATABASE_URL').replace('postgres://', 'postgresql://')
     SQLALCHEMY_ECHO = True
     SMACK_MAIL_SUBJECT_PREFIX = "[Smack]"
-    SMACK_MAIL_SENDER = "Smack Admin"
-    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
+    SMACK_MAIL_SENDER = os.environ.get("SMACK_ADMIN") or "Smack Admin"
+    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'mail.privateemail.com')
     MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in \
         ['true', 'on', '1']

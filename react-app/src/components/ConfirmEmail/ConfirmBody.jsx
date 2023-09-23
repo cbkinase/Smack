@@ -1,15 +1,20 @@
 import { useNavigate } from "react-router-dom";
 
-export default function ConfirmBody({ user, resend }) {
+export default function ConfirmBody({ user, resend, activationFailed }) {
 	const navigate = useNavigate();
 	async function requestNewLink() {
 		await fetch("/api/auth/confirm");
 		navigate("/resend");
 	}
 
-	const lowerText = resend
-		? "Please wait a moment while the email is delivered"
-		: "Didn't receive a confirmation email?";
+	let lowerText;
+	if (resend) {
+		lowerText = "Please wait a moment while the email is delivered.";
+	} else if (activationFailed) {
+		lowerText = `No problem, we can send another one to you.`;
+	} else {
+		lowerText = "Didn't receive a confirmation email?";
+	}
 
 	return (
 		<>

@@ -8,7 +8,7 @@ import LoginView from "./Subcomponents/LoginView";
 import SignUpView from "./Subcomponents/SignUpView";
 import LoginSignupTitle from "./Subcomponents/LoginSignupTitle";
 
-function LoginSignupPage({ setHasVisited }) {
+function LoginSignupPage({ setHasVisited, mustActivate }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const sessionUser = useSelector((state) => state.session.user);
@@ -19,7 +19,6 @@ function LoginSignupPage({ setHasVisited }) {
 	const [first_name, setFirstName] = useState("");
 	const [last_name, setLastName] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-
 	const [errors, setErrors] = useState([]);
 
 	const [formType, setFormType] = useState("login");
@@ -50,6 +49,14 @@ function LoginSignupPage({ setHasVisited }) {
 			titleText.innerText = "Sign up for Smack";
 		}
 	}, [formType]);
+
+	useEffect(() => {
+		if (mustActivate) {
+			setErrors([
+				"You must log in before you can activate your account.",
+			]);
+		}
+	}, [mustActivate]);
 
 	if (sessionUser?.confirmed) return <Navigate to="/" />;
 

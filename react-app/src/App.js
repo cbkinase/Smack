@@ -9,7 +9,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./components/LandingPage/index";
 import useCookieState from "./hooks/useCookieState";
 import ConfirmEmail from "./components/ConfirmEmail";
-import ConfirmSuccess from "./components/ConfirmEmail/ConfirmSuccess";
+import ConfirmResend from "./components/ConfirmEmail/ConfirmResend";
 import Activation from "./components/ConfirmEmail/Activation";
 
 function App() {
@@ -33,13 +33,60 @@ function App() {
 					path="/login"
 					element={<LoginSignupPage setHasVisited={setHasVisited} />}
 				/>
+				<Route
+					path="/activate"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="/activate/:token"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
 				<Route path="*" element={<Navigate to="/" />} />
 			</Routes>
 		);
 	}
 
 	if (!sessionUser) {
-		return <LoginSignupPage setHasVisited={setHasVisited} />;
+		return (
+			<Routes>
+				<Route
+					path="/"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+				<Route
+					path="/activate"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="/activate/:token"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="*"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+			</Routes>
+		);
 	}
 
 	if (sessionUser && !sessionUser.confirmed) {
@@ -74,7 +121,7 @@ function App() {
 				<Route
 					path="/resend"
 					element={
-						<ConfirmSuccess
+						<ConfirmResend
 							setHasVisited={setHasVisited}
 							user={sessionUser}
 						/>

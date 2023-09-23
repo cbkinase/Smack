@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 export default function ConfirmBody({ user, resend, activationFailed }) {
 	const navigate = useNavigate();
 	async function requestNewLink() {
-		await fetch("/api/auth/confirm");
+		const baseURL = window.location.origin;
+		await fetch(`/api/auth/confirm?source=${encodeURIComponent(baseURL)}`);
 		navigate("/resend");
 	}
 

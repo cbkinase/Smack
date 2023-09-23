@@ -26,7 +26,11 @@ redis_host = os.environ.get("REDIS_HOST") or "redis"
 if os.environ.get("FLASK_ENV") == "production":
     origins = [
         "https://cameron-smack.onrender.com",
-        "http://cameron-smack.onrender.com"
+        "http://cameron-smack.onrender.com",
+        "https://www.smack.fyi",
+        "https://smack.fyi",
+        "http://www.smack.fyi"
+        "http://smack.fyi"
     ]
     redis = Redis.from_url(redis_host, decode_responses=True)
 else:

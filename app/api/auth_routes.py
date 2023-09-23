@@ -1,9 +1,10 @@
-from flask import Blueprint, request
-from app.models import User
+from flask import Blueprint, request, current_app
+from app.models import User, db
 from app.forms import LoginForm
 from app.forms import SignUpForm
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from .errors import bad_request, validation_errors_to_error_messages
+from ..email import send_email
 
 auth_routes = Blueprint('auth', __name__)
 
@@ -33,7 +34,7 @@ def login():
         user = User.find_by_email(form.data['email'])
         login_user(user)
         return user.to_dict()
-    return bad_request("Invalid credentials")
+    return bad_request("The provided credentials were invalid.")
 
 
 @auth_routes.route('/logout')
@@ -54,6 +55,18 @@ def sign_up():
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
         user = User.from_form(form)
+        token = user.generate_confirmation_token()
+        base_url = current_app.config['EMAIL_URL_PREFIX']
+        send_url = base_url + f"/activate/{token}"
+        send_email(
+            to=user.email,
+            subject="Confirm Your Account",
+            template="confirm_email",
+            user=user,
+            token=token,
+            send_url=send_url,
+            base_url=base_url
+        )
         login_user(user)
         return user.to_dict()
     return bad_request(validation_errors_to_error_messages(form.errors))
@@ -65,3 +78,34 @@ def unauthorized():
     Returns unauthorized JSON when flask-login authentication fails
     """
     return {'error': 'Unauthorized'}, 401
+
+
+@auth_routes.route('/confirm/<int:user_id>/<token>')
+def confirm(user_id, token):
+    user = User.query.get(user_id)
+    if user.confirmed:
+        return bad_request("Account already confirmed/activated.")
+
+    if user.confirm(token):
+        db.session.commit()
+        return {"status": "success", "message": user.to_dict()}
+    else:
+        return bad_request("Invalid or expired confirmation link.")
+
+
+@auth_routes.route('/confirm')
+@login_required
+def resend_confirmation():
+    token = current_user.generate_confirmation_token()
+    base_url = current_app.config['EMAIL_URL_PREFIX']
+    send_url = base_url + f"/activate/{token}"
+    send_email(
+            to=current_user.email,
+            subject="Confirm Your Account",
+            template="confirm_email",
+            user=current_user,
+            token=token,
+            send_url=send_url,
+            base_url=base_url
+        )
+    return {"status": "success", "message": "A new confirmation email has been sent"}

@@ -8,6 +8,9 @@ import RouteIdProvider from "./context/RouteId/RouteIdProvider";
 import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./components/LandingPage/index";
 import useCookieState from "./hooks/useCookieState";
+import ConfirmEmail from "./components/ConfirmEmail";
+import ConfirmResend from "./components/ConfirmEmail/ConfirmResend";
+import Activation from "./components/ConfirmEmail/Activation";
 
 function App() {
 	const dispatch = useDispatch();
@@ -30,13 +33,111 @@ function App() {
 					path="/login"
 					element={<LoginSignupPage setHasVisited={setHasVisited} />}
 				/>
+				<Route
+					path="/activate"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="/activate/:token"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
 				<Route path="*" element={<Navigate to="/" />} />
 			</Routes>
 		);
 	}
 
 	if (!sessionUser) {
-		return <LoginSignupPage setHasVisited={setHasVisited} />;
+		return (
+			<Routes>
+				<Route
+					path="/"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+				<Route
+					path="/activate"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="/activate/:token"
+					element={
+						<LoginSignupPage
+							mustActivate
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="*"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+			</Routes>
+		);
+	}
+
+	if (sessionUser && !sessionUser.confirmed) {
+		return (
+			<Routes>
+				<Route
+					path="/"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+				<Route
+					path="/login"
+					element={<LoginSignupPage setHasVisited={setHasVisited} />}
+				/>
+				<Route
+					path="/activate"
+					element={
+						<ConfirmEmail
+							setHasVisited={setHasVisited}
+							user={sessionUser}
+						/>
+					}
+				/>
+				<Route
+					path="/activate/:token"
+					element={
+						<Activation
+							user={sessionUser}
+							setHasVisited={setHasVisited}
+						/>
+					}
+				/>
+				<Route
+					path="/resend"
+					element={
+						<ConfirmResend
+							setHasVisited={setHasVisited}
+							user={sessionUser}
+						/>
+					}
+				/>
+				<Route
+					path="*"
+					element={
+						<ConfirmEmail
+							setHasVisited={setHasVisited}
+							user={sessionUser}
+						/>
+					}
+				/>
+			</Routes>
+		);
 	}
 
 	return (

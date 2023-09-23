@@ -6,13 +6,16 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import generate_csrf
 from flask_login import LoginManager
+from flask_mail import Mail
 from .models import db, User
-from .api import register_api_blueprints
 from .seeds import seed_commands
 from .config import Config
 from .socket import socketio
 
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
+
+# Setup mail service
+mail = Mail()
 
 # Setup login manager
 login = LoginManager(app)
@@ -28,7 +31,11 @@ def load_user(id):
 app.cli.add_command(seed_commands)
 
 app.config.from_object(Config)
+mail.init_app(app)
+
+from .api import register_api_blueprints
 register_api_blueprints(app)
+
 db.init_app(app)
 Migrate(app, db)
 socketio.init_app(app, async_mode='gevent')

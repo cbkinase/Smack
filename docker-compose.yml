@@ -49,6 +49,9 @@ services:
       - WDS_SOCKET_PORT
       - REDIS_HOST
       - REDIS_PORT
+      - MAIL_USERNAME
+      - MAIL_PASSWORD
+      - SMACK_ADMIN
     volumes:
       - .:/app  # bind mount the application code
       - instancedata:/app/instance  # use a named volume for the instance directory

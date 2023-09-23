@@ -8,7 +8,7 @@ import LoginView from "./Subcomponents/LoginView";
 import SignUpView from "./Subcomponents/SignUpView";
 import LoginSignupTitle from "./Subcomponents/LoginSignupTitle";
 
-function LoginSignupPage({ setHasVisited }) {
+function LoginSignupPage({ setHasVisited, mustActivate }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const sessionUser = useSelector((state) => state.session.user);
@@ -19,7 +19,6 @@ function LoginSignupPage({ setHasVisited }) {
 	const [first_name, setFirstName] = useState("");
 	const [last_name, setLastName] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-
 	const [errors, setErrors] = useState([]);
 
 	const [formType, setFormType] = useState("login");
@@ -51,7 +50,15 @@ function LoginSignupPage({ setHasVisited }) {
 		}
 	}, [formType]);
 
-	if (sessionUser) return <Navigate to="/" />;
+	useEffect(() => {
+		if (mustActivate) {
+			setErrors([
+				"You must log in before you can activate your account.",
+			]);
+		}
+	}, [mustActivate]);
+
+	if (sessionUser?.confirmed) return <Navigate to="/" />;
 
 	const handleDemo = () => {
 		setEmail("demo@aa.io");
@@ -61,13 +68,20 @@ function LoginSignupPage({ setHasVisited }) {
 	const handleSubmitLogin = async (e) => {
 		e.preventDefault();
 		const data = await dispatch(login(email, password));
-		if (data) {
-			setErrors([data]);
+		if (data.error) {
+			setErrors([data.message]);
 			return;
 		}
 		setHasVisited(true);
 		setCookie("hasVisited", "true");
-		navigate("/channels/explore");
+		const user = data;
+		// If the current user hasn't confirmed their account, redirect them to
+		// page that prompts them to confirm their email address.
+		if (user.confirmed) {
+			navigate("/channels/explore");
+		} else {
+			navigate("/activate");
+		}
 	};
 
 	const handleSubmitSignup = async (e) => {
@@ -86,7 +100,7 @@ function LoginSignupPage({ setHasVisited }) {
 		}
 		setHasVisited(true);
 		setCookie("hasVisited", "true");
-		navigate("/channels/explore");
+		navigate("/activate");
 	};
 
 	const handleLogoClick = () => {

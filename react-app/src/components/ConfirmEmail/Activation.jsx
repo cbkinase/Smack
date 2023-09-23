@@ -13,7 +13,7 @@ export default function Activation({ user, setHasVisited }) {
 	const { token } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	const handleLogoClick = () => {
 		deleteCookie("hasVisited");
@@ -31,11 +31,11 @@ export default function Activation({ user, setHasVisited }) {
 		attemptActivateAccount().then((res) => {
 			if (res.status === "success")
 				dispatch(authenticate()).then(() => navigate("/"));
+			else setIsLoaded(true);
 		});
-		setIsLoading(false);
 	}, [token, user, navigate, setHasVisited, dispatch]);
 
-	if (isLoading) return <LoadingSpinner />;
+	if (!isLoaded) return <LoadingSpinner />;
 
 	return (
 		<>

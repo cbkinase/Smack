@@ -214,8 +214,11 @@ def handle_new_dm(data):
 
 @socketio.on("type")
 def handle_typing_event(data):
-    room = data['channel_id']
-    user_id = data['user_id']
+    try:
+        room = data['channel_id']
+        user_id = data['user_id']
+    except KeyError:
+        return
     name = f"{data['first_name']} {data['last_name']}"
 
     # Add the user to the room's typing hash in Redis
@@ -230,8 +233,11 @@ def handle_typing_event(data):
 
 @socketio.on('stopped_typing')
 def handle_stop_typing_event(data):
-    room = data['channel_id']
-    user_id = data['user_id']
+    try:
+        room = data['channel_id']
+        user_id = data['user_id']
+    except KeyError:
+        return
 
     # Remove the user from the room's typing hash in Redis
     redis.hdel(f"room:{room}", user_id)

@@ -45,6 +45,7 @@ faker = "==19.3.0"
 redis = "*"
 gevent-websocket = "*"
 flask-mail = "*"
+requests = "*"
 
 [dev-packages]
 

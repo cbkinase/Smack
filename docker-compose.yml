@@ -52,6 +52,8 @@ services:
       - MAIL_USERNAME
       - MAIL_PASSWORD
       - SMACK_ADMIN
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
     volumes:
       - .:/app  # bind mount the application code
       - instancedata:/app/instance  # use a named volume for the instance directory

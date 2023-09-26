@@ -1,3 +1,6 @@
+import OAuth from "./OAuth";
+import OrSeparator from "./OrSeparator";
+
 export default function SignUpView({
 	signUpForm,
 	handleSubmitSignup,
@@ -15,6 +18,7 @@ export default function SignUpView({
 	confirmPassword,
 	setConfirmPassword,
 	errors,
+	OAuthLink,
 }) {
 	return (
 		<div ref={signUpForm} style={{ display: "none", marginBottom: "90px" }}>
@@ -42,13 +46,15 @@ export default function SignUpView({
 				</div>
 			)}
 
+			<OAuth link={OAuthLink} isSigningUp />
+			<OrSeparator />
+
 			<form onSubmit={handleSubmitSignup}>
 				<div
 					style={{
 						display: "flex",
 						flexDirection: "column",
 						gap: "12px",
-						paddingTop: "26px",
 					}}
 				>
 					<input
@@ -117,36 +123,7 @@ export default function SignUpView({
 				</div>
 			</form>
 
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-					padding: "30px 0px",
-				}}
-			>
-				<div
-					style={{
-						height: "1px",
-						width: "100%",
-						backgroundColor: "#dddddd",
-					}}
-				></div>
-				<div
-					style={{
-						padding: "0px 20px",
-					}}
-				>
-					OR
-				</div>
-				<div
-					style={{
-						height: "1px",
-						width: "100%",
-						backgroundColor: "#dddddd",
-					}}
-				></div>
-			</div>
+			<OrSeparator />
 
 			<div
 				style={{

@@ -1,3 +1,6 @@
+import OAuth from "./OAuth";
+import OrSeparator from "./OrSeparator";
+
 export default function LoginView({
 	signInForm,
 	errors,
@@ -8,6 +11,7 @@ export default function LoginView({
 	setPassword,
 	handleDemo,
 	setFormType,
+	OAuthLink,
 }) {
 	return (
 		<div
@@ -35,6 +39,8 @@ export default function LoginView({
 					<li>{errors[0]}</li>
 				</div>
 			)}
+			<OAuth link={OAuthLink} />
+			<OrSeparator />
 
 			<form onSubmit={handleSubmitLogin}>
 				<div
@@ -42,7 +48,6 @@ export default function LoginView({
 						display: "flex",
 						flexDirection: "column",
 						gap: "12px",
-						paddingTop: "26px",
 					}}
 				>
 					<input
@@ -84,36 +89,7 @@ export default function LoginView({
 				</div>
 			</form>
 
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-					padding: "30px 0px",
-				}}
-			>
-				<div
-					style={{
-						height: "1px",
-						width: "100%",
-						backgroundColor: "#dddddd",
-					}}
-				></div>
-				<div
-					style={{
-						padding: "0px 20px",
-					}}
-				>
-					OR
-				</div>
-				<div
-					style={{
-						height: "1px",
-						width: "100%",
-						backgroundColor: "#dddddd",
-					}}
-				></div>
-			</div>
+			<OrSeparator />
 
 			<div
 				style={{

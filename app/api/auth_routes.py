@@ -166,6 +166,7 @@ def oauth2_authorize(provider):
         'response_type': 'code',
         'scope': ' '.join(provider_data['scopes']),
         'state': session['oauth2_state'],
+        'source': base_url
     })
 
     # Full OAuth2 provider authorization URL

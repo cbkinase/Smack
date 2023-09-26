@@ -2,6 +2,7 @@ from flask import Blueprint, request, current_app, session, redirect
 import secrets
 import requests
 import string
+import json
 from urllib.parse import urlencode
 from app.models import User, db
 from app.forms import LoginForm
@@ -152,12 +153,11 @@ def oauth2_authorize(provider):
     if provider_data is None:
         return not_found("Provider not found")
 
-    base_url = request.headers.get("Origin") \
-        or request.args.get('source') \
-        or current_app.config['EMAIL_URL_PREFIX']
+    base_url = request.args.get('source')
 
     # Generate a random string for the state parameter
     session['oauth2_state'] = secrets.token_urlsafe(16)
+    session['base_url'] = base_url
 
     # Create a query string with all the OAuth2 parameters
     qs = urlencode({
@@ -166,7 +166,6 @@ def oauth2_authorize(provider):
         'response_type': 'code',
         'scope': ' '.join(provider_data['scopes']),
         'state': session['oauth2_state'],
-        'source': base_url
     })
 
     # Full OAuth2 provider authorization URL
@@ -179,9 +178,9 @@ def oauth2_authorize(provider):
 @auth_routes.route('/callback/<provider>')
 def oauth2_callback(provider):
 
-    base_url = request.headers.get("Origin") \
-        or request.args.get('source') \
-        or current_app.config['EMAIL_URL_PREFIX']
+    base_url = session.get('base_url')
+    if 'base_url' in session:
+        del session['base_url']
 
     if not current_user.is_anonymous:
         return redirect(base_url)

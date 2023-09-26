@@ -78,7 +78,12 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 	// between components
 	useEffect(() => {
 		async function fetchData() {
-			const res = await fetch("/api/auth/authorize/google");
+			const baseURL = window.location.origin;
+			const res = await fetch(
+				`/api/auth/authorize/google?source=${encodeURIComponent(
+					baseURL,
+				)}`,
+			);
 			if (res.ok) {
 				const data = await res.json();
 

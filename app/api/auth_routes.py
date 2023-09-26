@@ -177,8 +177,13 @@ def oauth2_authorize(provider):
 
 @auth_routes.route('/callback/<provider>')
 def oauth2_callback(provider):
+
+    base_url = request.headers.get("Origin") \
+        or request.args.get('source') \
+        or current_app.config['EMAIL_URL_PREFIX']
+
     if not current_user.is_anonymous:
-        return bad_request("User already logged in")
+        return redirect(base_url)
 
     provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
     if provider_data is None:
@@ -206,10 +211,6 @@ def oauth2_callback(provider):
     # Make sure that the authorization code is present
     if 'code' not in request.args:
         return unauthorized()
-
-    base_url = request.headers.get("Origin") \
-        or request.args.get('source') \
-        or current_app.config['EMAIL_URL_PREFIX']
 
     # Exchange the authorization code for an access token
     response = requests.post(provider_data['token_url'], data={

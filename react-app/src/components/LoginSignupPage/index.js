@@ -9,12 +9,19 @@ import SignUpView from "./Subcomponents/SignUpView";
 import LoginSignupTitle from "./Subcomponents/LoginSignupTitle";
 import signinupLogo from "./smack-logo-black.svg";
 
+function decodeUrlParameter(url, parameterName) {
+	const params = new URLSearchParams(url.split("?")[1]);
+	const parameterValue = params.get(parameterName);
+	return parameterValue ? decodeURIComponent(parameterValue) : null;
+}
+
 function LoginSignupPage({ setHasVisited, mustActivate }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const sessionUser = useSelector((state) => state.session.user);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [OAuthLink, setOAuthLink] = useState(null);
 
 	const [username, setUsername] = useState("");
 	const [first_name, setFirstName] = useState("");
@@ -65,6 +72,37 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 		return () => {
 			document.title = "Smack";
 		};
+	}, []);
+
+	// Ensure consistency of 'state' variable for OAuth
+	// between components
+	useEffect(() => {
+		async function fetchData() {
+			const res = await fetch("/api/auth/authorize/google");
+			if (res.ok) {
+				const data = await res.json();
+
+				// Clean the URL's redirect_uri parameter
+				const cleanedRedirectUri = decodeUrlParameter(
+					data.message,
+					"redirect_uri",
+				);
+
+				if (cleanedRedirectUri) {
+					const cleanedURL = data.message.replace(
+						`redirect_uri=${encodeURIComponent(
+							cleanedRedirectUri,
+						)}`,
+						`redirect_uri=${cleanedRedirectUri}`,
+					);
+					setOAuthLink(cleanedURL);
+				} else {
+					setOAuthLink(data.message);
+				}
+				return data;
+			}
+		}
+		fetchData();
 	}, []);
 
 	if (sessionUser?.confirmed) return <Navigate to="/" />;
@@ -128,6 +166,7 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 		setPassword,
 		setFormType,
 		errors,
+		OAuthLink,
 	};
 
 	async function requestNewLink() {

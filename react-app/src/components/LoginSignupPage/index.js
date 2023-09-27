@@ -8,6 +8,8 @@ import LoginView from "./Subcomponents/LoginView";
 import SignUpView from "./Subcomponents/SignUpView";
 import LoginSignupTitle from "./Subcomponents/LoginSignupTitle";
 import signinupLogo from "./smack-logo-black.svg";
+import OrSeparator from "./Subcomponents/OrSeparator";
+import useQuery from "../../hooks/useQuery";
 
 function decodeUrlParameter(url, parameterName) {
 	const params = new URLSearchParams(url.split("?")[1]);
@@ -22,6 +24,7 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [OAuthLink, setOAuthLink] = useState(null);
+	const queryParams = useQuery();
 
 	const [username, setUsername] = useState("");
 	const [first_name, setFirstName] = useState("");
@@ -66,6 +69,12 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 			]);
 		}
 	}, [mustActivate]);
+
+	useEffect(() => {
+		if (queryParams.get("error")) {
+			setErrors(["Authentication failed. Please try again."]);
+		}
+	}, [queryParams]);
 
 	useEffect(() => {
 		document.title = "Login | Smack";
@@ -234,36 +243,9 @@ function LoginSignupPage({ setHasVisited, mustActivate }) {
 								Log out
 							</button>
 						</div>
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "space-between",
-								alignItems: "center",
-								padding: "30px 0px",
-							}}
-						>
-							<div
-								style={{
-									height: "1px",
-									width: "100%",
-									backgroundColor: "#dddddd",
-								}}
-							></div>
-							<div
-								style={{
-									padding: "0px 20px",
-								}}
-							>
-								OR
-							</div>
-							<div
-								style={{
-									height: "1px",
-									width: "100%",
-									backgroundColor: "#dddddd",
-								}}
-							></div>
-						</div>
+
+						<OrSeparator />
+
 						<div
 							style={{
 								textAlign: "center",

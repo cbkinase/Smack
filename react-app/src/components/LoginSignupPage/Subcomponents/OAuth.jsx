@@ -5,11 +5,15 @@ export default function OAuth({ isSigningUp, link }) {
 	const txt = isSigningUp ? "Continue With Google" : "Sign In With Google";
 
 	return (
-		<a href={link} class="google-btn">
-			<div class="google-icon-wrapper">
-				<img alt="Google Logo" class="google-icon" src={googleIcon} />
+		<a href={link} className="google-btn">
+			<div className="google-icon-wrapper">
+				<img
+					alt="Google Logo"
+					className="google-icon"
+					src={googleIcon}
+				/>
 			</div>
-			<p class="btn-text">
+			<p className="btn-text">
 				<b>{txt}</b>
 			</p>
 		</a>

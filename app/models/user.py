@@ -5,6 +5,8 @@ from flask_login import UserMixin
 from flask import current_app
 from faker import Faker
 from sqlalchemy.orm import joinedload
+import secrets
+import string
 
 
 class User(db.Model, UserMixin):
@@ -152,3 +154,39 @@ class User(db.Model, UserMixin):
         self.confirmed = True
         db.session.add(self)
         return True
+
+    @staticmethod
+    def generate_secure_password(length=16, include_extra=False):
+        """
+        Randomly generate a password of given length
+        :param include_extra: Whether to include digits and punctuation.
+        """
+        alphabet = string.ascii_letters
+
+        if include_extra:
+            alphabet += string.digits + string.punctuation
+
+        password = ''.join(secrets.choice(alphabet) for _ in range(length))
+        return password
+
+
+    @classmethod
+    def get_or_create_by_email(cls, email: str):
+        user = db.session.scalar(db.select(cls).where(cls.email == email))
+        if user is None:
+            user = cls(
+                email=email,
+                username=cls.generate_default_username(email),
+                confirmed=True,    # safe to assume the provider assures this?
+                password=cls.generate_secure_password(),
+                first_name="New",  # should make them add more info on regstrt
+                last_name="User"
+            )
+            db.session.add(user)
+            db.session.commit()
+        return user
+
+
+    @staticmethod
+    def generate_default_username(email: str) -> str:
+        return email.split('@')[0]

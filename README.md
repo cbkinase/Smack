@@ -1,13 +1,13 @@
-# Welcome to Smack!
 
-Smack is a project developed to emulate <a href="https://slack.com">Slack</a>.
+# Welcome to Smack!
+Smack is a project developed to emulate <a target="_blank" rel="noreferrer" href="https://slack.com">Slack</a>.
 
 Smack was a collaborative effort, with the following creators:
 
-- Cameron Beck <a target="_blank" href="https://github.com/cbkinase">(GitHub)</a>
-- Cynthia Liang <a href="https://github.com/cynthialiang00">(GitHub)</a>
-- Dave Titus <a href="https://github.com/dtitus929">(GitHub)</a>
-- Brian Hitchin <a href="https://github.com/brianhitchin">(GitHub)</a>
+- Cameron Beck <a target="_blank" rel="noreferrer" href="https://github.com/cbkinase">(GitHub)</a>
+- Cynthia Liang <a target="_blank" rel="noreferrer" href="https://github.com/cynthialiang00">(GitHub)</a>
+- Dave Titus <a target="_blank" rel="noreferrer" href="https://github.com/dtitus929">(GitHub)</a>
+- Brian Hitchin <a target="_blank" rel="noreferrer" href="https://github.com/brianhitchin">(GitHub)</a>
 
 ## About the Project
 
@@ -34,6 +34,7 @@ Smack is powered by...
 
 Currently, we support the following features:
 - Secure login/signup
+    - OAuth2 integration for quick third-party logins with trusted providers
 - Profile customization
 - Channels
     - Create public channels and invite users
@@ -51,12 +52,31 @@ Currently, we support the following features:
 
 Use Docker to run the application locally:
 
-1. Clone this repository.
-2. Run `bash start-docker.sh` in the root directory of the project.
-3. Your SQLite database will automatically persist on a Docker volume.
-4. Your nginx server will be available at `localhost:8080`, acting as a reverse proxy to route requests to the web application's services.
+1. Clone this repository
+2. Run `bash start-docker.sh` in the root directory of the project
+3. Your SQLite database will automatically persist on a Docker volume
+4. Your nginx server will be available at `localhost:8080`, acting as a reverse proxy to route requests to the web application's services
+
+### Caveats to Running Locally
 
 Please note that the attachment feature will not work locally until you provide AWS S3 credentials. To do so, you must specify the following environment variables:
+
 - `S3_BUCKET` - the name of your S3 bucket
 - `S3_KEY` - your access key ID
 - `S3_SECRET` - your secret access key
+
+
+In addition, you must specify the following environment variables to enable the sending of account activation emails:
+
+- `MAIL_USERNAME` - the email address to send from
+- `MAIL_PASSWORD` - the password to your mailbox
+- `SMACK_ADMIN` - the email address to send from
+- `MAIL_SERVER` - the SMTP server you choose
+
+
+To enable OAuth2 integration, you must also specify the following for each authentication provider:
+- Google:
+    - `GOOGLE_CLIENT_ID` - your Google OAuth 2.0 Client ID
+    - `GOOGLE_CLIENT_SECRET` - your Google OAuth 2.0 Client secret
+
+- ... more providers coming in the future!

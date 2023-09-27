@@ -1,8 +1,6 @@
 from flask import Blueprint, request, current_app, session, redirect
 import secrets
 import requests
-import string
-import json
 from urllib.parse import urlencode
 from app.models import User, db
 from app.forms import LoginForm
@@ -12,20 +10,6 @@ from .errors import bad_request, validation_errors_to_error_messages, not_found
 from ..email import send_email
 
 auth_routes = Blueprint('auth', __name__)
-
-
-def generate_secure_password(length=16, include_extra=False):
-    """
-    Randomly generate a password of given length
-    :param include_extra: Whether to include digits and punctuation. Defaults to True.
-    """
-    alphabet = string.ascii_letters
-
-    if include_extra:
-        alphabet += string.digits + string.punctuation
-
-    password = ''.join(secrets.choice(alphabet) for _ in range(length))
-    return password
 
 
 @auth_routes.route('/')
@@ -108,6 +92,9 @@ def unauthorized():
 
 @auth_routes.route('/confirm/<int:user_id>/<token>')
 def confirm(user_id, token):
+    """
+    Try to activate an account given a user ID and a token
+    """
     user = User.query.get(user_id)
     if user.confirmed:
         return bad_request("Account already confirmed/activated.")
@@ -122,6 +109,9 @@ def confirm(user_id, token):
 @auth_routes.route('/confirm')
 @login_required
 def resend_confirmation():
+    """
+    Send another activation email to the logged in user
+    """
     token = current_user.generate_confirmation_token()
     base_url = request.headers.get("Origin") \
         or request.args.get('source') \
@@ -145,6 +135,33 @@ def resend_confirmation():
 
 @auth_routes.route('/authorize/<provider>')
 def oauth2_authorize(provider):
+    """
+    Initiate the OAuth 2.0 authorization flow with the specified provider
+
+    Parameters:
+    - provider (str): The name of the OAuth 2.0 provider (e.g., 'google').
+
+    Request args:
+    - source (str): The base URL to which the user should be redirected after the authentication process.
+
+    Behavior:
+    - Generates and stores a random state parameter in the session for CSRF protection.
+    - Constructs the OAuth 2.0 authorization URL with required parameters.
+
+    Returns:
+    - A JSON object with the constructed authorization URL.
+    - An error response in case of invalid provider or if the user is already logged in.
+
+    Notes:
+    - Depends on the configuration of OAUTH2_PROVIDERS set in the application config.
+    - The generated `state` parameter is essential for the callback validation to prevent CSRF attacks.
+    - Users should be redirected to the returned URL to proceed with the OAuth 2.0 authentication flow.
+
+    Raises:
+    - 400 Bad Request: If the user is already logged in.
+    - 404 Not Found: If the specified provider is not found in the configuration.
+    """
+
     if not current_user.is_anonymous:
         return bad_request("User already logged in")
 
@@ -157,6 +174,8 @@ def oauth2_authorize(provider):
 
     # Generate a random string for the state parameter
     session['oauth2_state'] = secrets.token_urlsafe(16)
+
+    # Save the origin URL
     session['base_url'] = base_url
 
     # Create a query string with all the OAuth2 parameters
@@ -177,7 +196,45 @@ def oauth2_authorize(provider):
 
 @auth_routes.route('/callback/<provider>')
 def oauth2_callback(provider):
+    """
+    Handle the OAuth 2.0 callback from an external authentication provider
 
+    Parameters:
+    - provider (str): The name of the OAuth 2.0 provider (e.g., 'google').
+
+    Request args:
+    - code (str): The authorization code from the provider.
+    - state (str): The state parameter for CSRF protection.
+    - error (str, optional): Error message from the provider in case of failure.
+    - Check each provider's documentation for additional info.
+
+    Behavior:
+    - Validates the state parameter against the session to prevent CSRF attacks.
+    - Exchanges the authorization code for an access token.
+    - Retrieves user information using the access token.
+    - Finds or creates a user in the database based on the retrieved email.
+    - Logs the user in.
+
+    Returns:
+    - A redirect response to the origin URL on success.
+    - An error response in case of failure with relevant status codes.
+
+    Notes:
+    - Depends on the configuration of OAUTH2_PROVIDERS set in the application config.
+
+    Raises:
+    - 400 Bad Request: If state validation fails or if the error parameter is present.
+    - 401 Unauthorized: If the code is absent or if token exchange fails.
+    """
+
+    # TODO: error handling UX - redirect to error page (maybe using a query parameter to set React state)
+    # TODO: ensure `base_url` is within a set of trusted domains to prevent redirect vulnerabilities
+
+    # Ensure we redirect the user to the URL they came from
+    # (e.g. don't send them to cameron-smack.onrender.com when
+    # they're coming from smack.fyi) -- note this is done in this way
+    # because OAuth providers will only append query parameters it
+    # understands, like `code`, `state`, `scope`, etc.
     base_url = session.get('base_url')
     if 'base_url' in session:
         del session['base_url']
@@ -187,22 +244,22 @@ def oauth2_callback(provider):
 
     provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
     if provider_data is None:
-        return not_found("Provider not found")
+        return redirect(base_url + "?error=invalid_provider")
 
     # Handle authentication errors
     if 'error' in request.args:
         errs = []
         for k, v in request.args.items():
             if k.startswith('error'):
-                errs.push(f'{k}: {v}')
-        return bad_request(errs)
+                errs.append(f'{k}: {v}')
+        return redirect(base_url + "?error=authentication_failure")
 
     # Make sure that the state parameter matches the one we created in the
     # authorization request
     if request.args['state'] != session.get('oauth2_state'):
         if 'oauth2_state' in session:
             del session['oauth2_state']
-        return unauthorized()
+        return redirect(base_url + "?error=state_not_matching")
 
     # Clear oauth2_state from the session after validating it
     # to prevent potential replay attacks
@@ -210,7 +267,7 @@ def oauth2_callback(provider):
 
     # Make sure that the authorization code is present
     if 'code' not in request.args:
-        return unauthorized()
+        return redirect(base_url + "?error=no_auth_code")
 
     # Exchange the authorization code for an access token
     response = requests.post(provider_data['token_url'], data={
@@ -222,12 +279,12 @@ def oauth2_callback(provider):
     }, headers={'Accept': 'application/json'})
 
     if response.status_code != 200:
-        return unauthorized()
+        return redirect(base_url + "?error=exchange_failure")
 
     oauth2_token = response.json().get('access_token')
 
     if not oauth2_token:
-        return unauthorized()
+        return redirect(base_url + "?error=no_oauth_token")
 
     # Use the access token to get the user's email address
     response = requests.get(provider_data['userinfo']['url'], headers={
@@ -235,24 +292,10 @@ def oauth2_callback(provider):
         'Accept': 'application/json',
     })
     if response.status_code != 200:
-        return unauthorized()
+        return redirect(base_url + "?error=acquisition_failure")
 
     email = provider_data['userinfo']['email'](response.json())
-
-    # Find or create the user in the database
-    user = db.session.scalar(db.select(User).where(User.email == email))
-
-    if user is None:
-        user = User(
-            email=email,
-            username=email.split('@')[0],
-            confirmed=True,
-            password=generate_secure_password(),
-            first_name="Anonymous",
-            last_name="Andy"
-            )
-        db.session.add(user)
-        db.session.commit()
+    user = User.get_or_create_by_email(email)
 
     # Nice... we can log in :)
     login_user(user)

@@ -3,41 +3,55 @@ from redis import Redis
 from redis.exceptions import RedisError
 from typing import Optional, Type
 from flask import current_app, Flask
+from abc import ABC, abstractmethod
 
 
-class GenericCacheInterface:
+class GenericCacheInterface(ABC):
+    @abstractmethod
     def set(self, key, value):
         raise NotImplementedError
 
 
+    @abstractmethod
     def get(self, key):
         raise NotImplementedError
 
 
+    @abstractmethod
+    def delete(self, key):
+        raise NotImplementedError
+
+
+    @abstractmethod
     def add_channel_messages(self, channel_id: int, channel_info: dict) -> None:
         raise NotImplementedError
 
 
+    @abstractmethod
     def add_channel_metadata(self, channel_id: int, channel_info: dict) -> None:
         raise NotImplementedError
 
 
+    @abstractmethod
     def get_channel(self, channel_id: int) -> Optional[dict]:
         raise NotImplementedError
 
 
+    @abstractmethod
     def invalidate_channel(self, channel_id: int) -> None:
         raise NotImplementedError
 
 
 class RedisCache(GenericCacheInterface):
     def __init__(self):
-        self._url = os.environ.get("REDIS_HOST")
+        self._redis = self._create_redis_instance()
 
-        if self._url is None or self._url == "redis":
-            self._redis = Redis(host="redis", port=6379, decode_responses=True)
+    def _create_redis_instance(self):
+        url = os.environ.get("REDIS_HOST", "redis")
+        if url == "redis":
+            return Redis(host="redis", port=6379, decode_responses=True)
         else:
-            self._redis = Redis.from_url(self._url, decode_responses=True)
+            return Redis.from_url(url, decode_responses=True)
 
 
     def set(self, key, value):
@@ -45,6 +59,10 @@ class RedisCache(GenericCacheInterface):
 
 
     def get(self, key):
+        pass
+
+
+    def delete(self, key):
         pass
 
 
@@ -73,8 +91,10 @@ class Cache(GenericCacheInterface):
         with app.app_context():
             if current_app.config["CACHE_IMPLEMENTATION"] == "redis":
                 self._cache_instance = RedisCache()
+                self._implementation = RedisCache
             else:
                 raise ValueError("Invalid cache strategy provided in app config")
+
 
     def set(self, key, value):
         return self._cache_instance.set(key, value)
@@ -82,6 +102,10 @@ class Cache(GenericCacheInterface):
 
     def get(self, key):
         return self._cache_instance.get(key)
+
+
+    def delete(self, key):
+        return self._cache_instance.delete(key)
 
 
     def add_channel_messages(self, channel_id: int, channel_info: dict) -> None:
@@ -97,7 +121,6 @@ class Cache(GenericCacheInterface):
 
 
     def invalidate_channel(self, channel_id: int) -> None:
-        """Completely clears the cache entry for the given channel ID"""
         return self._cache_instance.invalidate_channel(channel_id)
 
 

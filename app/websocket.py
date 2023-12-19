@@ -67,8 +67,6 @@ def authenticated_only(f):
 def handle_chat(data):
     room = str(data.get('channel_id'))
     new_message = handle_chat_helper(data)
-    cache.add_channel_messages(1, {})
-    print(cache.get_channel(1))
 
     if "error" in new_message:
         error_status, error_message = parse_error_from_message(new_message)
@@ -148,19 +146,20 @@ def handle_connect(data):
     user_hash_key = f"user:{client_id}"
     print(f'Client {client_id} connected with sid {sid}')
     redis.hset(user_hash_key, sid, "online")
+    start_appearing_online = redis.hlen(user_hash_key) == 1
 
-    if redis.hlen(user_hash_key) == 1:
+    if start_appearing_online:
         redis.hset("online-users", client_id, "active")
+        online_users = redis.hgetall("online-users")
+
         # Notify relevant users
-        # TODO: optimize...
-        rooms = get_relevant_sids(current_user, redis)
+        rooms = get_relevant_sids(current_user, online_users, redis)
 
         for room in rooms:
             emit('user_online', {"id": client_id, "status": "active"}, room=room, include_self=False)
+    else:
+        online_users = redis.hgetall("online-users")
 
-    # Inform the user who just logged in of who is online.
-    # Should probably do some filtering based on relevance
-    online_users = redis.hgetall("online-users")
     emit("after_connecting", online_users, room=sid)
 
 
@@ -172,15 +171,15 @@ def handle_disconnect():
     user_hash_key = f"user:{client_id}"
     print(f'Client {client_id} disconnected with sid {sid}')
     redis.hdel(user_hash_key, sid)
+    is_fully_disconnected = redis.hlen(user_hash_key) == 0
 
-
-    if not redis.hlen(user_hash_key):
+    if is_fully_disconnected:
         redis.delete(user_hash_key)
         redis.hdel("online-users", client_id)
+        online_users = redis.hgetall("online-users")
 
         # Notify relevant users
-        # TODO: optimize...
-        rooms = get_relevant_sids(current_user, redis)
+        rooms = get_relevant_sids(current_user, online_users, redis)
 
         for room in rooms:
             emit('user_offline', client_id, room=room)

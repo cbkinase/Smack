@@ -38,3 +38,6 @@ class Config:
             'scopes': ['https://www.googleapis.com/auth/userinfo.email'],
         },
     }
+
+    # Swappable cache mechanism for testing, etc
+    CACHE_IMPLEMENTATION = "redis"

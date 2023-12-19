@@ -7,7 +7,9 @@ export default function MessageAvatar({
 	setSelectedUserRightBar,
 }) {
 	return (
-		<div>
+		<div
+			style={{ maxWidth: "36px", maxHeight: "36px", overflow: "hidden" }}
+		>
 			<img
 				onClick={() => {
 					setSelectedUserRightBar(messageUser);

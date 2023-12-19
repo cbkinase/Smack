@@ -1,7 +1,7 @@
 from gevent import monkey
 monkey.patch_all()
 import os
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, current_app
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import generate_csrf
@@ -10,7 +10,7 @@ from flask_mail import Mail
 from .models import db, User
 from .seeds import seed_commands
 from .config import Config
-from .socket import socketio
+from .websocket import socketio, cache
 
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
 
@@ -39,6 +39,7 @@ register_api_blueprints(app)
 db.init_app(app)
 Migrate(app, db)
 socketio.init_app(app, async_mode='gevent')
+cache.init_app(app)
 
 # Application Security
 CORS(app)

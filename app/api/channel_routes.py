@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from app.models import Channel, User, db, Message
 from flask_login import login_required, current_user
-from ..socket import socketio
+from ..websocket import socketio
 from .errors import not_found, forbidden, bad_request, internal_server_error
 from sqlalchemy.exc import SQLAlchemyError
 

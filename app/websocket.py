@@ -17,6 +17,10 @@ from .socket_helpers import (
     )
 from redis import Redis
 from functools import wraps
+from app.cache_layer import Cache
+
+# Setup caching layer
+cache = Cache()
 
 SUCCESS = "success"
 GENERIC_ERROR = "error"
@@ -63,6 +67,8 @@ def authenticated_only(f):
 def handle_chat(data):
     room = str(data.get('channel_id'))
     new_message = handle_chat_helper(data)
+    cache.add_channel_messages(1, {})
+    print(cache.get_channel(1))
 
     if "error" in new_message:
         error_status, error_message = parse_error_from_message(new_message)

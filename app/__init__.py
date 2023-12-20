@@ -10,7 +10,8 @@ from flask_mail import Mail
 from .models import db, User
 from .seeds import seed_commands
 from .config import Config
-from .websocket import socketio, cache
+from .websocket import socketio
+from app.cache_layer import cache
 
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
 

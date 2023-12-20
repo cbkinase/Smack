@@ -17,10 +17,7 @@ from .socket_helpers import (
     )
 from redis import Redis
 from functools import wraps
-from app.cache_layer import Cache
 
-# Setup caching layer
-cache = Cache()
 
 SUCCESS = "success"
 GENERIC_ERROR = "error"
@@ -153,7 +150,7 @@ def handle_connect(data):
         online_users = redis.hgetall("online-users")
 
         # Notify relevant users
-        rooms = get_relevant_sids(current_user, online_users, redis)
+        rooms = get_relevant_sids(current_user, online_users)
 
         for room in rooms:
             emit('user_online', {"id": client_id, "status": "active"}, room=room, include_self=False)
@@ -179,7 +176,7 @@ def handle_disconnect():
         online_users = redis.hgetall("online-users")
 
         # Notify relevant users
-        rooms = get_relevant_sids(current_user, online_users, redis)
+        rooms = get_relevant_sids(current_user, online_users)
 
         for room in rooms:
             emit('user_offline', client_id, room=room)

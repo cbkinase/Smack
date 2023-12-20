@@ -1,6 +1,5 @@
 from app.models import Channel
 from app.models.db import db, environment, SCHEMA
-from sqlalchemy.sql import text
 
 
 def seed_channels(users):
@@ -8,33 +7,27 @@ def seed_channels(users):
     marnie = users[1]
     bobbie = users[2]
     channel1 = Channel(
-        name = 'general',
-        subject = 'This channel is for team-wide communication.',
-        is_private = False,
-        is_direct = False,
-        owner = bobbie
-    )
-    channel2 = Channel(
-        name = 'help-requests',
-        subject = 'For technical issues! Ask for help or aid in answering a question.',
-        is_private = False,
-        is_direct = False,
-        owner = marnie
-    )
-    channel3 = Channel(
-        name = '',
-        subject = '',
-        is_private = True,
-        is_direct = True,
-        owner = demo
-    )
-
-    channel4 = Channel(
-        name='cooking',
-        subject='Share recipes and cooking tips',
+        name="general",
+        subject="This channel is for team-wide communication.",
         is_private=False,
         is_direct=False,
-        owner=bobbie
+        owner=bobbie,
+    )
+    channel2 = Channel(
+        name="help-requests",
+        subject="For technical issues! Ask for help or aid in answering a question.",
+        is_private=False,
+        is_direct=False,
+        owner=marnie,
+    )
+    channel3 = Channel(name="", subject="", is_private=True, is_direct=True, owner=demo)
+
+    channel4 = Channel(
+        name="cooking",
+        subject="Share recipes and cooking tips",
+        is_private=False,
+        is_direct=False,
+        owner=bobbie,
     )
 
     db.session.add(channel1)
@@ -58,7 +51,9 @@ def seed_channels(users):
 
 def undo_channels():
     if environment == "production":
-        db.session.execute(f"TRUNCATE table {SCHEMA}.channels RESTART IDENTITY CASCADE;")
+        db.session.execute(
+            f"TRUNCATE table {SCHEMA}.channels RESTART IDENTITY CASCADE;"
+        )
     else:
         db.session.execute("DELETE FROM channels")
     db.session.commit()

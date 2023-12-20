@@ -5,10 +5,10 @@ from ..websocket import socketio
 from .errors import not_found, forbidden, bad_request, internal_server_error
 from sqlalchemy.exc import SQLAlchemyError
 
-channel_routes = Blueprint('channels', __name__)
+channel_routes = Blueprint("channels", __name__)
 
 
-@channel_routes.route('/all')
+@channel_routes.route("/all")
 @login_required
 def all_channels():
     """
@@ -16,20 +16,20 @@ def all_channels():
     """
     # TODO: pagination
     all_channels = Channel.get_all_channels_with_users()
-    return { "all_channels": [channel.to_dict() for channel in all_channels] }
+    return {"all_channels": [channel.to_dict() for channel in all_channels]}
 
 
-@channel_routes.route('/user')
+@channel_routes.route("/user")
 @login_required
 def user_channels():
     """
     Get all channels the currently logged in user is part of
     """
     user_channels = current_user.get_all_channels_for_user(Channel)
-    return { "user_channels": [channel.to_dict() for channel in user_channels] }
+    return {"user_channels": [channel.to_dict() for channel in user_channels]}
 
 
-@channel_routes.route('/<channel_id>')
+@channel_routes.route("/<channel_id>")
 @login_required
 def one_channel(channel_id):
     """
@@ -43,7 +43,7 @@ def one_channel(channel_id):
     return {"single_channel": channel.to_dict()}
 
 
-@channel_routes.route('/', methods=['POST'])
+@channel_routes.route("/", methods=["POST"])
 @login_required
 def create_channel():
     """
@@ -53,11 +53,11 @@ def create_channel():
         new_channel = Channel.from_request(current_user, request)
         return new_channel.to_dict(), 201
 
-    except:
+    except:  # noqa: E722
         return bad_request("Please fill out all fields")
 
 
-@channel_routes.route('/<channel_id>', methods=['DELETE'])
+@channel_routes.route("/<channel_id>", methods=["DELETE"])
 @login_required
 def delete_channel(channel_id):
     """
@@ -73,12 +73,12 @@ def delete_channel(channel_id):
     try:
         db.session.delete(channel)
         db.session.commit()
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         return
     return {"message": "Channel successfully deleted."}
 
 
-@channel_routes.route('/<channel_id>', methods=['PUT'])
+@channel_routes.route("/<channel_id>", methods=["PUT"])
 @login_required
 def edit_channel(channel_id):
     """
@@ -95,7 +95,7 @@ def edit_channel(channel_id):
     try:
         channel.edit_from_json(request)
         return channel.to_dict()
-    except:
+    except:  # noqa: E722
         return bad_request("Please fill out all fields")
 
 
@@ -116,7 +116,7 @@ def add_channel_member(channel_id):
 
     try:
         current_user.join_channel(channel)
-    except:
+    except:  # noqa: E722
         return internal_server_error()
 
     try:
@@ -146,7 +146,7 @@ def add_nonself_channel_member(channel_id, user_id):
 
     try:
         other_user.join_channel(channel)
-    except:
+    except:  # noqa: E722
         return internal_server_error()
 
     try:
@@ -191,7 +191,7 @@ def delete_channel_member(channel_id, user_id):
     try:
         channel.remove_user(user_to_delete)
         return {"message": "Successfully deleted user from the channel"}
-    except:
+    except:  # noqa: E722
         return internal_server_error()
 
 
@@ -212,14 +212,16 @@ def get_all_messages_for_channel(channel_id):
     if current_user not in channel.users:
         return forbidden()
 
-    page = request.args.get('page', type=int)
-    per_page = request.args.get('per_page', type=int)
+    page = request.args.get("page", type=int)
+    per_page = request.args.get("per_page", type=int)
     channel_messages_query = Message.get_everything_for_channel_query(channel_id)
 
     if page and per_page:
-            try:
-                channel_messages = channel_messages_query.paginate(page=page, per_page=per_page).items
-            except:
-                return { "error": "No more records" }, 418
+        try:
+            channel_messages = channel_messages_query.paginate(
+                page=page, per_page=per_page
+            ).items
+        except:  # noqa: E722
+            return {"error": "No more records"}, 418
 
     return [msg.to_dict() for msg in channel_messages]

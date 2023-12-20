@@ -8,7 +8,6 @@ class RedisCache(BaseCacheInterface):
     def __init__(self):
         self._redis = self._create_redis_instance()
 
-
     def _create_redis_instance(self):
         url = os.environ.get("REDIS_HOST", "redis")
         if url == "redis":
@@ -16,22 +15,20 @@ class RedisCache(BaseCacheInterface):
         else:
             return Redis.from_url(url, decode_responses=True)
 
-
     def set(self, key, value):
         pass
-
 
     def get(self, key):
         pass
 
-
     def bulk_get(
-            self,
-            *,
-            keys: Iterable[str],
-            prepend_key_with: str = "",
-            hash_keys: bool = False,
-            command = str):
+        self,
+        *,
+        keys: Iterable[str],
+        prepend_key_with: str = "",
+        hash_keys: bool = False,
+        command=str,
+    ):
         pipeline = self._redis.pipeline()
         for key in keys:
             full_key = f"{prepend_key_with}{key}"
@@ -52,18 +49,14 @@ class RedisCache(BaseCacheInterface):
         results = pipeline.execute()
         return results
 
-
     def delete(self, key):
         pass
-
 
     def add_channel_metadata(self, channel_id: int, channel_info: dict) -> None:
         pass
 
-
     def get_channel(self, channel_id: int) -> Optional[dict]:
         pass
-
 
     def invalidate_channel(self, channel_id: int) -> None:
         pass

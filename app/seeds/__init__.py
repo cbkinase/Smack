@@ -30,13 +30,13 @@ def undo_attachments():
 
 # Creates a seed group to hold our commands
 # So we can type `flask seed --help`
-seed_commands = AppGroup('seed')
+seed_commands = AppGroup("seed")
 
 
 # Creates the `flask seed all` command
-@seed_commands.command('all')
+@seed_commands.command("all")
 def seed():
-    if environment == 'production':
+    if environment == "production":
         # Before seeding in production, you want to run the seed undo
         # command, which will  truncate all tables prefixed with
         # the schema name (see comment in seed_users.py undo_users function).
@@ -47,16 +47,14 @@ def seed():
         undo_channels()
         undo_users()
 
-
     users = seed_users()
     channels = seed_channels(users)
     msgs = seed_messages(users, channels)
     seed_reactions(users, msgs)
 
 
-
 # Creates the `flask seed undo` command
-@seed_commands.command('undo')
+@seed_commands.command("undo")
 def undo():
     undo_attachments()
     undo_reactions()

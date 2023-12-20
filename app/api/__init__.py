@@ -6,10 +6,10 @@ from .user_routes import user_routes
 
 def register_api_blueprints(app):
     blueprints = [
-        (user_routes, '/api/users'),
-        (auth_routes, '/api/auth'),
-        (message_routes, '/api/messages'),
-        (channel_routes, '/api/channels'),
+        (user_routes, "/api/users"),
+        (auth_routes, "/api/auth"),
+        (message_routes, "/api/messages"),
+        (channel_routes, "/api/channels"),
     ]
 
     for blueprint, prefix in blueprints:

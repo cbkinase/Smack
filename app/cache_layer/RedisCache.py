@@ -15,23 +15,34 @@ class RedisCache(BaseCacheInterface):
         else:
             return Redis.from_url(url, decode_responses=True)
 
-    def set(self, key, value, *, expiration=None, field=None):
-        if field is not None:
-            # When field is provided, use hset to set the field in the hash
-            self._redis.hset(key, field, value)
+    def set(self, key, value, expiration=None):
+        # TODO: make single dispatch generic?
+        # TODO: may want to use transactions
+        if isinstance(value, dict):
+            self._redis.hset(key, mapping=value)
             if expiration:
-                # Apply expiration to the entire hash key if specified
+                self._redis.expire(key, expiration)
+        elif isinstance(value, set):
+            self._redis.sadd(key, *value)
+            if expiration:
+                self._redis.expire(key, expiration)
+        elif isinstance(value, list):
+            self._redis.lpush(key, *value)
+            if expiration:
                 self._redis.expire(key, expiration)
         else:
-            # Standard set operation
             if expiration:
                 self._redis.setex(key, expiration, value)
             else:
                 self._redis.set(key, value)
 
-    def get(self, key, hash_key=False):
-        if hash_key:
+    def get(self, key, type_):
+        if type_ == dict:
             return self._redis.hgetall(key)
+        elif type_ == set:
+            return self._redis.smembers(key)
+        elif type_ == list:
+            return self._redis.lrange(key, 0, -1)
         else:
             return self._redis.get(key)
 
@@ -78,5 +89,5 @@ class RedisCache(BaseCacheInterface):
     def invalidate_channel(self, channel_id: int) -> None:
         pass
 
-    def user_active_sessions_quantity(self, user_key: str) -> bool:
+    def user_active_sessions_quantity(self, user_key) -> int:
         return self._redis.hlen(user_key)

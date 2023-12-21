@@ -8,12 +8,12 @@ class BaseCacheInterface(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, key):
+    def get(self, key, type_=str):
         raise NotImplementedError
 
-    # @abstractmethod
-    # def bulk_get(self, *args, **kwargs):
-    #     raise NotImplementedError
+    @abstractmethod
+    def bulk_get(self, *args, **kwargs):
+        raise NotImplementedError
 
     @abstractmethod
     def delete(self, key):
@@ -29,4 +29,8 @@ class BaseCacheInterface(ABC):
 
     @abstractmethod
     def invalidate_channel(self, channel_id: int) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def user_active_sessions_quantity(self, user_key) -> int:
         raise NotImplementedError

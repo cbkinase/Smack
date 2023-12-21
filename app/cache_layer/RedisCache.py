@@ -15,11 +15,25 @@ class RedisCache(BaseCacheInterface):
         else:
             return Redis.from_url(url, decode_responses=True)
 
-    def set(self, key, value):
-        pass
+    def set(self, key, value, *, expiration=None, field=None):
+        if field is not None:
+            # When field is provided, use hset to set the field in the hash
+            self._redis.hset(key, field, value)
+            if expiration:
+                # Apply expiration to the entire hash key if specified
+                self._redis.expire(key, expiration)
+        else:
+            # Standard set operation
+            if expiration:
+                self._redis.setex(key, expiration, value)
+            else:
+                self._redis.set(key, value)
 
-    def get(self, key):
-        pass
+    def get(self, key, hash_key=False):
+        if hash_key:
+            return self._redis.hgetall(key)
+        else:
+            return self._redis.get(key)
 
     def bulk_get(
         self,
@@ -27,7 +41,7 @@ class RedisCache(BaseCacheInterface):
         keys: Iterable[str],
         prepend_key_with: str = "",
         hash_keys: bool = False,
-        command=str,
+        command=None,
     ):
         pipeline = self._redis.pipeline()
         for key in keys:
@@ -49,14 +63,20 @@ class RedisCache(BaseCacheInterface):
         results = pipeline.execute()
         return results
 
-    def delete(self, key):
-        pass
+    def delete(self, key, field=None):
+        if field is not None:
+            return self._redis.hdel(key, field)
+        else:
+            return self._redis.delete(key)
 
     def add_channel_metadata(self, channel_id: int, channel_info: dict) -> None:
-        pass
+        self._redis.hset(f"channel:{channel_id}", mapping=channel_info)
 
     def get_channel(self, channel_id: int) -> Optional[dict]:
         pass
 
     def invalidate_channel(self, channel_id: int) -> None:
         pass
+
+    def user_active_sessions_quantity(self, user_key: str) -> bool:
+        return self._redis.hlen(user_key)

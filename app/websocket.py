@@ -16,14 +16,13 @@ from .socket_helpers import (
     construct_response,
     parse_error_from_message,
 )
-from redis import Redis
 from functools import wraps
+from app.cache_layer import cache
 
 
 SUCCESS = "success"
 GENERIC_ERROR = "error"
 GENERIC_SOCKET_ERROR = "socket_error"
-redis_host = os.environ.get("REDIS_HOST") or "redis"
 
 if os.environ.get("FLASK_ENV") == "production":
     origins = [
@@ -31,16 +30,11 @@ if os.environ.get("FLASK_ENV") == "production":
         "http://cameron-smack.onrender.com",
         "https://www.smack.fyi",
         "https://smack.fyi",
-        "http://www.smack.fyi" "http://smack.fyi",
+        "http://www.smack.fyi",
+        "http://smack.fyi",
     ]
-    redis = Redis.from_url(redis_host, decode_responses=True)
 else:
     origins = "*"
-    redis = Redis(
-        host=redis_host,
-        port=6379,
-        decode_responses=True,
-    )
 
 socketio = SocketIO(cors_allowed_origins=origins)
 
@@ -145,14 +139,14 @@ def handle_connect(data):
     client_id = str(current_user.id)
     user_hash_key = f"user:{client_id}"
     print(f"Client {client_id} connected with sid {sid}")
-    redis.hset(user_hash_key, sid, "online")
-    start_appearing_online = redis.hlen(user_hash_key) == 1
+    cache.set(user_hash_key, field=sid, value="online")
+    start_appearing_online = cache.user_active_sessions_quantity(user_hash_key) == 1
 
     if start_appearing_online:
-        redis.hset("online-users", client_id, "active")
-        online_users = redis.hgetall("online-users")
+        cache.set("online-users", field=client_id, value="active")
+        online_users = cache.get("online-users", hash_key=True)
 
-        # Notify relevant users
+        # Notify relevant users that `user` just logged in
         rooms = get_relevant_sids(current_user, online_users)
 
         for room in rooms:
@@ -163,8 +157,10 @@ def handle_connect(data):
                 include_self=False,
             )
     else:
-        online_users = redis.hgetall("online-users")
+        online_users = cache.get("online-users", hash_key=True)
 
+    # Send list of connected users to current client
+    # TODO: should maybe only include the intersection of online & relevant users
     emit("after_connecting", online_users, room=sid)
 
 
@@ -175,13 +171,13 @@ def handle_disconnect():
     client_id = str(current_user.id)
     user_hash_key = f"user:{client_id}"
     print(f"Client {client_id} disconnected with sid {sid}")
-    redis.hdel(user_hash_key, sid)
-    is_fully_disconnected = redis.hlen(user_hash_key) == 0
+    cache.delete(user_hash_key, field=sid)
+    is_fully_disconnected = cache.user_active_sessions_quantity(user_hash_key) == 0
 
     if is_fully_disconnected:
-        redis.delete(user_hash_key)
-        redis.hdel("online-users", client_id)
-        online_users = redis.hgetall("online-users")
+        cache.delete(user_hash_key)
+        cache.delete("online-users", field=client_id)
+        online_users = cache.get("online-users", hash_key=True)
 
         # Notify relevant users
         rooms = get_relevant_sids(current_user, online_users)
@@ -204,10 +200,11 @@ def on_leave(data):
     user_id = data["user_id"]
     leave_room(room)
     print(f"Client {user_id} left room {room}")
+    room_hash_key = f"room:{room}"
 
     # Indicate that the user has stopped typing
-    redis.hdel(f"room:{room}", user_id)
-    typing_users = redis.hgetall(f"room:{room}")
+    cache.delete(room_hash_key, field=user_id)
+    typing_users = cache.get(room_hash_key, hash_key=True)
     emit("stopped_typing", typing_users, room=room, include_self=False)
 
 
@@ -230,12 +227,13 @@ def handle_typing_event(data):
     except KeyError:
         return
     name = f"{data['first_name']} {data['last_name']}"
+    room_hash_key = f"room:{room}"
 
-    # Add the user to the room's typing hash in Redis
-    redis.hset(f"room:{room}", user_id, name)
+    # Add the user to the room's typing hash
+    cache.set(room_hash_key, field=user_id, value=name)
 
     # Retrieve all users currently typing in the room
-    typing_users = redis.hgetall(f"room:{room}")
+    typing_users = cache.get(room_hash_key, hash_key=True)
 
     emit("type", typing_users, room=room, include_self=False)
     return typing_users
@@ -248,12 +246,13 @@ def handle_stop_typing_event(data):
         user_id = data["user_id"]
     except KeyError:
         return
+    room_hash_key = f"room:{room}"
 
-    # Remove the user from the room's typing hash in Redis
-    redis.hdel(f"room:{room}", user_id)
+    # Remove the user from the room's typing hash
+    cache.delete(room_hash_key, field=user_id)
 
     # Retrieve the remaining users currently typing in the room
-    typing_users = redis.hgetall(f"room:{room}")
+    typing_users = cache.get(room_hash_key, hash_key=True)
 
     emit("stopped_typing", typing_users, room=room, include_self=False)
     return typing_users

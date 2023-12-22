@@ -1,4 +1,4 @@
-from flask import current_app, Flask
+from flask import current_app, Flask, request
 from app.cache_layer.BaseCacheInterface import BaseCacheInterface
 from app.cache_layer.RedisCache import RedisCache
 from functools import wraps
@@ -39,21 +39,24 @@ class Cache(BaseCacheInterface):
     def user_active_sessions_quantity(self, user_key) -> int:
         return self._cache_instance.user_active_sessions_quantity(user_key)
 
-    def register(self, timeout, return_type):
+    def register(self, timeout, return_type, include_request=False):
         def decorator(fn):
             @wraps(fn)
             def wrapped(*args, **kwargs):
                 # Check if the cache is initialized
                 if self._cache_instance:
-                    cache_key = make_cache_key(fn, *args, **kwargs)
+                    cache_key = make_cache_key(fn, include_request, *args, **kwargs)
                     result = self._cache_instance.get(cache_key, type_=return_type)
 
                     # TODO: handle when cache.get() actually returns empty/None
                     if result:
                         return result
-
                     result = fn(*args, **kwargs)
-                    self._cache_instance.set(cache_key, result, expiration=timeout)
+                    try:
+                        self._cache_instance.set(cache_key, result, expiration=timeout)
+                    except:  # noqa E722
+                        # TODO: serialization/deserialization
+                        pass
                     return result
                 else:
                     # If cache is not ready (i.e. app not yet initialized),
@@ -65,11 +68,23 @@ class Cache(BaseCacheInterface):
         return decorator
 
 
-def make_cache_key(fn, *args, **kwargs):
-    # TODO: possible to consider things like request.args?
+def make_cache_key(fn, include_request=False, *args, **kwargs):
     module = fn.__module__
     fn_name = fn.__name__
-    args_str = ":".join(map(str, args))
-    kwargs_str = ":".join(f"{k}={v}" for k, v in kwargs.items())
 
-    return f"{module}:{fn_name}:{args_str}:{kwargs_str}"
+    parts = [module, fn_name]
+
+    if args:
+        args_str = ":".join(map(str, args))
+        parts.append(args_str)
+
+    if kwargs:
+        kwargs_str = ":".join(f"{k}={v}" for k, v in kwargs.items())
+        parts.append(kwargs_str)
+
+    if include_request and request:
+        request_args_str = ":".join(f"{k}={v}" for k, v in request.args.items())
+        parts.append(request_args_str)
+
+    key = ":".join(parts)
+    return key

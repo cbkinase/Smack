@@ -1,0 +1,51 @@
+.pagination > button {
+	margin-left: 5px;
+	min-width: 35px;
+	background: none;
+	border: none;
+	padding: 5px 5px;
+	font-size: 16px;
+}
+
+.pagination > button:hover {
+	background: rgba(232, 232, 232, 0.5);
+}
+
+.pagination > button:first-of-type {
+	margin-left: 0px;
+}
+
+.pagination > button:last-of-type {
+	margin-right: 0px;
+}
+
+.active-page {
+	font-weight: bold;
+	background-color: rgba(39, 88, 149) !important;
+	opacity: 0.5;
+	color: white;
+}
+
+.pagination-nav {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 10px;
+}
+
+.pagination-select {
+	padding-left: 2px;
+	padding-right: 2px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.pagination-select-go {
+	background: none;
+	border: none;
+	padding: 5px 5px;
+}
+
+.pagination-select-go:hover {
+	background: rgba(232, 232, 232, 0.5);
+}

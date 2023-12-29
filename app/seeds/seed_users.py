@@ -4,7 +4,7 @@ from sqlalchemy.sql import text
 
 
 # Adds a demo user, you can add other users here if you want
-def seed_users():
+def seed_users(qty=10):
     demo = User(
         username="Demo",
         confirmed=True,
@@ -32,11 +32,11 @@ def seed_users():
         password="password",
         first_name="Cynthia",
         last_name="Liang",
-        avatar="https://media.licdn.com/dms/image/D5603AQHakP57WMkLXQ/profile-displayphoto-shrink_100_100/0/1683151843029?e=1697068800&v=beta&t=a-4a-yjPaCCqixbebU1hg-Gp5yBWyd2c0EsuP5SUy64",
+        # avatar="https://media.licdn.com/dms/image/D5603AQHakP57WMkLXQ/profile-displayphoto-shrink_100_100/0/1683151843029?e=1697068800&v=beta&t=a-4a-yjPaCCqixbebU1hg-Gp5yBWyd2c0EsuP5SUy64",
         bio="Hello, I'm Cynthia Liang.  Nice to meet you!",
     )
 
-    other_users = User.create(10)
+    other_users = User.create(qty)
     users = (demo, marnie, bobbie, *other_users)
     db.session.add_all(users)
     db.session.commit()

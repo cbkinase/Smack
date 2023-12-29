@@ -11,9 +11,11 @@ class Message(db.Model):
         __table_args__ = {"schema": SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")))
+    user_id = db.Column(
+        db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), index=True
+    )
     channel_id = db.Column(
-        db.Integer, db.ForeignKey(add_prefix_for_prod("channels.id"))
+        db.Integer, db.ForeignKey(add_prefix_for_prod("channels.id")), index=True
     )
     content = db.Column(db.Text, nullable=False)
     is_pinned = db.Column(db.Boolean, nullable=False, default=False)
@@ -38,7 +40,7 @@ class Message(db.Model):
             "is_pinned": self.is_pinned,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
-            "User": self.users.to_dict(),
+            "User": self.users.to_safe_dict(),
             "Reactions": {
                 reaction.id: reaction.to_dict() for reaction in self.reactions
             },
@@ -56,7 +58,7 @@ class Message(db.Model):
             "is_pinned": self.is_pinned,
             "created_at": self.created_at.strftime("%a, %d %b %Y %H:%M:%S GMT"),
             "updated_at": self.updated_at.strftime("%a, %d %b %Y %H:%M:%S GMT"),
-            "User": self.users.to_dict(),
+            "User": self.users.to_safe_dict(),
             "Reactions": {
                 reaction.id: reaction.to_dict() for reaction in self.reactions
             },

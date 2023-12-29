@@ -15,7 +15,7 @@ def download_attachment(content_name):
     try:
         aws_url = download_file_from_s3(content_name)
         return {"url": aws_url}, 200
-    except:  # noqa: E722
+    except Exception:
         return bad_request("Failed to get AWS URL")
 
 

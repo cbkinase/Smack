@@ -47,10 +47,14 @@ def seed():
         undo_channels()
         undo_users()
 
-    users = seed_users()
-    channels = seed_channels(users)
-    msgs = seed_messages(users, channels)
-    seed_reactions(users, msgs)
+    base = 20
+    mult = 100
+    prod = base * mult
+
+    users = seed_users(prod)
+    channels = seed_channels(users, prod, per_channel=prod // 2)
+    msgs = seed_messages(users, channels, 100 * prod)
+    seed_reactions(users, msgs, 300 * prod)
 
 
 # Creates the `flask seed undo` command

@@ -122,7 +122,7 @@ export default function userObjectToAvatar(
 					borderColor: bdrColor,
 				}}
 			>
-				{obj_arr.length}
+				{obj_arr.length > 5 ? "5+" : obj_arr.length}
 			</span>
 		</>
 	);

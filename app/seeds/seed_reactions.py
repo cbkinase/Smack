@@ -2,7 +2,7 @@ from app.models import Reaction
 from app.models.db import db, environment, SCHEMA
 
 
-def seed_reactions(users, messages):
+def seed_reactions(users, messages, qty=80):
     demo = users[0]
     marnie = users[1]
     bobbie = users[2]
@@ -35,7 +35,7 @@ def seed_reactions(users, messages):
     for rction in rctions:
         db.session.add(rction)
 
-    other_reactions = Reaction.create(80, users, messages)
+    other_reactions = Reaction.create(qty, users, messages)
     db.session.add_all(other_reactions)
     db.session.commit()
 

@@ -6,6 +6,7 @@ from flask import current_app
 from faker import Faker
 from sqlalchemy.orm import joinedload
 import secrets
+from random import randint
 import string
 
 
@@ -16,8 +17,8 @@ class User(db.Model, UserMixin):
         __table_args__ = {"schema": SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    email = db.Column(db.String(255), nullable=False, unique=True)
+    username = db.Column(db.String(50), nullable=False, unique=True, index=True)
+    email = db.Column(db.String(255), nullable=False, unique=True, index=True)
     hashed_password = db.Column(db.String(255), nullable=False)
     confirmed = db.Column(db.Boolean, default=False)
 
@@ -61,6 +62,15 @@ class User(db.Model, UserMixin):
             "bio": self.bio,
         }
 
+    def to_safe_dict(self):
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "avatar": self.avatar,
+            "bio": self.bio,
+        }
+
     @classmethod
     def create(cls, qty):
         fake = Faker()
@@ -71,6 +81,8 @@ class User(db.Model, UserMixin):
 
         while len(profiles) < qty:
             profile = fake.profile()
+            profile["mail"] += str(randint(0, 1000))
+            profile["username"] += str(randint(0, 1000))
             if profile["mail"] not in emails and profile["username"] not in usernames:
                 profiles.append(profile)
                 emails.add(profile["mail"])
@@ -152,7 +164,7 @@ class User(db.Model, UserMixin):
                 salt=current_app.config["SECURITY_PASSWORD_SALT"],
                 max_age=expiration,
             )
-        except:  # noqa: E722
+        except Exception:
             return False
         if data.get("confirm") != self.id:
             return False

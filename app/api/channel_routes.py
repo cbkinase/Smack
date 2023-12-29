@@ -1,9 +1,11 @@
 from flask import Blueprint, request
-from app.models import Channel, User, db, Message
+from app.models import Channel, User, db, Message, channel_user
 from flask_login import login_required, current_user
 from ..websocket import socketio
 from .errors import not_found, forbidden, bad_request, internal_server_error
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.sql import exists, func
+from sqlalchemy import and_
 
 channel_routes = Blueprint("channels", __name__)
 
@@ -15,7 +17,8 @@ def all_channels():
     Get all channels
     """
     # TODO: pagination
-    all_channels = Channel.get_all_channels_with_users()
+    # all_channels = Channel.get_all_channels_with_users()
+    all_channels = Channel.query.limit(13).all()
     return {"all_channels": [channel.to_dict() for channel in all_channels]}
 
 
@@ -29,13 +32,138 @@ def user_channels():
     return {"user_channels": [channel.to_dict() for channel in user_channels]}
 
 
+@channel_routes.route("/user-short")
+@login_required
+def user_short_channels():
+    short_user_channels = (
+        Channel.query.join(Channel.users)
+        .filter(User.id == current_user.id)
+        .limit(50)
+        .all()
+    )
+
+    return {
+        "user_channels": [
+            channel.to_short_dict()
+            if not channel.is_direct
+            else channel.to_dict_n_members(10)
+            for channel in short_user_channels
+        ]
+    }
+
+
+@channel_routes.route("/all-public")
+@login_required
+def all_public_channels():
+    page = request.args.get("page", type=int)
+    per_page = request.args.get("per_page", type=int)
+
+    if page and per_page:
+        try:
+            next_channels = Channel.query.filter(
+                Channel.is_direct == False  # noqa: E712
+            ).paginate(page=page, per_page=per_page)
+            return {
+                "all_channels": [
+                    channel.to_dict_n_members(50) for channel in next_channels.items
+                ],
+                "total_pages": next_channels.pages,
+                "total_items": next_channels.total,
+            }
+        except Exception:
+            return {"error": "No more records"}, 418
+
+    raise NotImplementedError
+
+
+@channel_routes.route("user-direct")
+def all_user_dms():
+    page = request.args.get("page", type=int)
+    per_page = request.args.get("per_page", type=int)
+
+    if page and per_page:
+        try:
+            next_channels = Channel.query.filter(
+                Channel.is_direct == True,  # noqa: E712
+                exists().where(
+                    and_(
+                        channel_user.c.users_id == current_user.id,
+                        channel_user.c.channels_id == Channel.id,
+                    )
+                ),
+            ).paginate(page=page, per_page=per_page)
+            return {
+                "all_channels": [
+                    channel.to_dict_n_members(10) for channel in next_channels.items
+                ],
+                "total_pages": next_channels.pages,
+                "total_items": next_channels.total,
+            }
+        except Exception:
+            return {"error": "No more records"}, 418
+
+    raise NotImplementedError
+
+
+def find_dm_channel(current_user_id, other_user_id):
+    if current_user_id == other_user_id:
+        return None
+
+    # Subquery to get channels and member counts
+    member_count_subquery = (
+        db.session.query(
+            channel_user.c.channels_id,
+            func.count(channel_user.c.users_id).label("member_count"),
+        )
+        .group_by(channel_user.c.channels_id)
+        .subquery()
+    )
+
+    # Subquery to filter only channels that contain both users
+    user_filter_subquery = (
+        db.session.query(channel_user.c.channels_id)
+        .filter(channel_user.c.users_id.in_([current_user_id, other_user_id]))
+        .group_by(channel_user.c.channels_id)
+        .having(func.count(channel_user.c.channels_id) == 2)
+        .subquery()
+    )
+
+    # Main query to find channels with exactly two members, who are the specified users
+    channel = (
+        Channel.query.join(
+            member_count_subquery, Channel.id == member_count_subquery.c.channels_id
+        )
+        .join(user_filter_subquery, Channel.id == user_filter_subquery.c.channels_id)
+        .filter(member_count_subquery.c.member_count == 2)
+        .first()
+    )
+
+    return channel
+
+
+@channel_routes.route("find-dm-channel")
+def get_dm_channel():
+    current_user_id = request.args.get("current_user_id", type=int)
+    other_user_id = request.args.get("other_user_id", type=int)
+
+    if not current_user_id or not other_user_id:
+        return bad_request("Missing user IDs")
+
+    channel = find_dm_channel(current_user_id, other_user_id)
+
+    if channel:
+        return channel.to_dict()
+    else:
+        return not_found("Channel not found")
+
+
 @channel_routes.route("/<channel_id>")
 @login_required
 def one_channel(channel_id):
     """
     Get the details of a single channel by ID
     """
-    channel = Channel.get_channel_with_users(channel_id)
+    channel = Channel.get_channel(channel_id)
 
     if not channel:
         return not_found("Channel not found")
@@ -53,7 +181,7 @@ def create_channel():
         new_channel = Channel.from_request(current_user, request)
         return new_channel.to_dict(), 201
 
-    except:  # noqa: E722
+    except Exception:
         return bad_request("Please fill out all fields")
 
 
@@ -84,7 +212,7 @@ def edit_channel(channel_id):
     """
     Edit a channel by ID
     """
-    channel = Channel.get_channel_with_users(channel_id)
+    channel = Channel.get_channel(channel_id)
 
     if not channel:
         return not_found("Channel not found")
@@ -95,7 +223,7 @@ def edit_channel(channel_id):
     try:
         channel.edit_from_json(request)
         return channel.to_dict()
-    except:  # noqa: E722
+    except Exception:
         return bad_request("Please fill out all fields")
 
 
@@ -116,7 +244,7 @@ def add_channel_member(channel_id):
 
     try:
         current_user.join_channel(channel)
-    except:  # noqa: E722
+    except Exception:
         return internal_server_error()
 
     try:
@@ -135,7 +263,7 @@ def add_nonself_channel_member(channel_id, user_id):
     """
     Have an authenticated user add another user of `user_id` to a channel of `channel_id`
     """
-    channel = Channel.get_channel_with_users(channel_id)
+    channel = Channel.get_channel(channel_id)
     other_user = User.query.get(user_id)
 
     if not channel or not other_user:
@@ -146,7 +274,7 @@ def add_nonself_channel_member(channel_id, user_id):
 
     try:
         other_user.join_channel(channel)
-    except:  # noqa: E722
+    except Exception:
         return internal_server_error()
 
     try:
@@ -165,12 +293,12 @@ def get_all_channel_members(channel_id):
     """
     Returns all users who are members of the given channel
     """
-    channel = Channel.get_channel_with_users(channel_id)
+    channel = Channel.get_channel(channel_id)
 
     if not channel:
         return not_found("Channel not found")
 
-    return {"Users": [user.to_dict() for user in channel.users]}
+    return {"Users": [user.to_safe_dict() for user in channel.users]}
 
 
 @channel_routes.route("/<int:channel_id>/members/<int:user_id>", methods=["DELETE"])
@@ -191,7 +319,7 @@ def delete_channel_member(channel_id, user_id):
     try:
         channel.remove_user(user_to_delete)
         return {"message": "Successfully deleted user from the channel"}
-    except:  # noqa: E722
+    except Exception:
         return internal_server_error()
 
 
@@ -204,7 +332,7 @@ def get_all_messages_for_channel(channel_id):
     """
     Get the messages for a particular channel
     """
-    channel = Channel.get_channel_with_users(channel_id)
+    channel = Channel.get_channel(channel_id)
 
     if not channel:
         return not_found("Channel not found")
@@ -221,7 +349,7 @@ def get_all_messages_for_channel(channel_id):
             channel_messages = channel_messages_query.paginate(
                 page=page, per_page=per_page
             ).items
-        except:  # noqa: E722
+        except Exception:
             return {"error": "No more records"}, 418
 
     return [msg.to_dict() for msg in channel_messages]

@@ -2,7 +2,7 @@ from app.models import Message
 from app.models.db import db, environment, SCHEMA
 
 
-def seed_messages(users, channels):
+def seed_messages(users, channels, qty=40):
     demo = users[0]
     marnie = users[1]
     bobbie = users[2]
@@ -90,9 +90,7 @@ def seed_messages(users, channels):
     for msg in msgs:
         db.session.add(msg)
 
-    other_messages = Message.create(
-        40, [demo, marnie, bobbie], [channel1, channel2, channel3]
-    )
+    other_messages = Message.create(qty, users, channels)
     db.session.add_all(other_messages)
     db.session.commit()
     return (*msgs, *other_messages)

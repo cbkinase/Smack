@@ -1,8 +1,9 @@
 from app.models import Channel
 from app.models.db import db, environment, SCHEMA
+from random import sample
 
 
-def seed_channels(users):
+def seed_channels(users, qty=0, per_channel=5):
     demo = users[0]
     marnie = users[1]
     bobbie = users[2]
@@ -46,7 +47,19 @@ def seed_channels(users):
     channel4.users.append(bobbie)
     db.session.commit()
 
-    return (channel1, channel2, channel3)
+    channels = Channel.create(qty, users)
+
+    for c in channels:
+        owner = c.owner
+        c.users.append(owner)
+        possible_users = [u for u in users if u != owner]
+        selected_users = sample(possible_users, min(per_channel, len(possible_users)))
+        c.users.extend(selected_users)
+        db.session.add(c)
+
+    db.session.commit()
+
+    return (channel1, channel2, channel3, *channels)
 
 
 def undo_channels():

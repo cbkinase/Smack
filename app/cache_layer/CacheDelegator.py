@@ -54,7 +54,7 @@ class Cache(BaseCacheInterface):
                     result = fn(*args, **kwargs)
                     try:
                         self._cache_instance.set(cache_key, result, expiration=timeout)
-                    except:  # noqa E722
+                    except Exception:
                         # TODO: serialization/deserialization
                         pass
                     return result

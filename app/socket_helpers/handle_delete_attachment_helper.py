@@ -15,5 +15,5 @@ def handle_delete_attachment_helper(data):
         db.session.delete(this_attachment)
         db.session.commit()
         return data
-    except:  # noqa: E722
+    except Exception:
         return write_error_message("Failed to delete attachment")

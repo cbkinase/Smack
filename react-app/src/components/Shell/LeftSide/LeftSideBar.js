@@ -35,7 +35,7 @@ function LeftSideLinks() {
 	const userChannels = useSelector((state) => state.channels.user_channels);
 
 	useEffect(() => {
-		dispatch(ChlActions.UserChannelThunk());
+		dispatch(ChlActions.ShortUserChannelThunk());
 	}, [dispatch]);
 
 	const userChannelList = Object.values(userChannels);

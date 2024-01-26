@@ -98,6 +98,9 @@ const Messages = ({ scrollContainerRef }) => {
 			if (msgs.length < perPage) setHasMoreToLoad(false);
 		}
 		loadInitialChannelMessages();
+		return () => {
+			setPage(1);
+		}
 	}, [dispatch, channelId, setPage]);
 
 	useEffect(() => {

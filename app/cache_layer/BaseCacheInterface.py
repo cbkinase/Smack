@@ -4,7 +4,7 @@ from typing import Optional
 
 class BaseCacheInterface(ABC):
     @abstractmethod
-    def set(self, key, value):
+    def set(self, key, value, expiration=None, jsonify=False):
         raise NotImplementedError
 
     @abstractmethod

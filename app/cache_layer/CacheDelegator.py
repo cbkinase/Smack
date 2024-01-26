@@ -1,5 +1,6 @@
 from flask import current_app, Flask, request
 from app.cache_layer.BaseCacheInterface import BaseCacheInterface
+from app.cache_layer.DataTypes import DataType
 from app.cache_layer.RedisCache import RedisCache
 from functools import wraps
 
@@ -15,10 +16,10 @@ class Cache(BaseCacheInterface):
             else:
                 raise ValueError("Invalid cache strategy provided in app config")
 
-    def set(self, key, value, **kwargs):
-        return self._cache_instance.set(key, value, **kwargs)
+    def set(self, key, value, expiration=None, jsonify=False):
+        return self._cache_instance.set(key, value, expiration, jsonify)
 
-    def get(self, key, type_=str):
+    def get(self, key, type_=DataType.DEFAULT):
         return self._cache_instance.get(key, type_)
 
     def bulk_get(self, *args, **kwargs):
@@ -43,20 +44,18 @@ class Cache(BaseCacheInterface):
         def decorator(fn):
             @wraps(fn)
             def wrapped(*args, **kwargs):
-                # Check if the cache is initialized
+                # Make sure cache is initialized
                 if self._cache_instance:
                     cache_key = make_cache_key(fn, include_request, *args, **kwargs)
                     result = self._cache_instance.get(cache_key, type_=return_type)
-
                     # TODO: handle when cache.get() actually returns empty/None
                     if result:
                         return result
                     result = fn(*args, **kwargs)
-                    try:
-                        self._cache_instance.set(cache_key, result, expiration=timeout)
-                    except Exception:
-                        # TODO: serialization/deserialization
-                        pass
+                    jsonify = return_type == DataType.JSON
+                    self._cache_instance.set(
+                        cache_key, result, expiration=timeout, jsonify=jsonify
+                    )
                     return result
                 else:
                     # If cache is not ready (i.e. app not yet initialized),

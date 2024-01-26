@@ -6,6 +6,8 @@ from .errors import not_found, forbidden, bad_request, internal_server_error
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import exists, func
 from sqlalchemy import and_
+from app.cache_layer import cache
+from app.cache_layer.DataTypes import DataType
 
 channel_routes = Blueprint("channels", __name__)
 
@@ -38,7 +40,7 @@ def user_short_channels():
     short_user_channels = (
         Channel.query.join(Channel.users)
         .filter(User.id == current_user.id)
-        .limit(50)
+        .limit(20)
         .all()
     )
 
@@ -46,7 +48,7 @@ def user_short_channels():
         "user_channels": [
             channel.to_short_dict()
             if not channel.is_direct
-            else channel.to_dict_n_members(10)
+            else channel.to_dict_n_members(6)
             for channel in short_user_channels
         ]
     }
@@ -54,6 +56,7 @@ def user_short_channels():
 
 @channel_routes.route("/all-public")
 @login_required
+@cache.register(timeout=30, return_type=DataType.JSON, include_request=True)
 def all_public_channels():
     page = request.args.get("page", type=int)
     per_page = request.args.get("per_page", type=int)
@@ -76,7 +79,8 @@ def all_public_channels():
     raise NotImplementedError
 
 
-@channel_routes.route("user-direct")
+@channel_routes.route("/user-direct")
+@login_required
 def all_user_dms():
     page = request.args.get("page", type=int)
     per_page = request.args.get("per_page", type=int)
@@ -106,8 +110,16 @@ def all_user_dms():
 
 
 def find_dm_channel(current_user_id, other_user_id):
+    # TODO: Ok, so this is obviously pretty terrible and won't scale well
+    # (even at only ~5k channels with ~2k members each, it takes ~200ms)
+    # may need to store Channel.member_count as a column directly (?)
+
     if current_user_id == other_user_id:
-        return None
+        target_users = [current_user_id]
+    else:
+        target_users = [current_user_id, other_user_id]
+
+    member_count_target = len(target_users)
 
     # Subquery to get channels and member counts
     member_count_subquery = (
@@ -119,31 +131,32 @@ def find_dm_channel(current_user_id, other_user_id):
         .subquery()
     )
 
-    # Subquery to filter only channels that contain both users
+    # Subquery to filter only channels that contain desired user(s)
     user_filter_subquery = (
         db.session.query(channel_user.c.channels_id)
-        .filter(channel_user.c.users_id.in_([current_user_id, other_user_id]))
+        .filter(channel_user.c.users_id.in_(target_users))
         .group_by(channel_user.c.channels_id)
-        .having(func.count(channel_user.c.channels_id) == 2)
+        .having(func.count(channel_user.c.channels_id) == member_count_target)
         .subquery()
     )
 
-    # Main query to find channels with exactly two members, who are the specified users
+    # Main query to find channels with exactly 1 or 2 members, who are the specified users
     channel = (
         Channel.query.join(
             member_count_subquery, Channel.id == member_count_subquery.c.channels_id
         )
         .join(user_filter_subquery, Channel.id == user_filter_subquery.c.channels_id)
-        .filter(member_count_subquery.c.member_count == 2)
+        .filter(member_count_subquery.c.member_count == member_count_target)
         .first()
     )
 
     return channel
 
 
-@channel_routes.route("find-dm-channel")
+@channel_routes.route("/find-dm-channel")
+@login_required
 def get_dm_channel():
-    current_user_id = request.args.get("current_user_id", type=int)
+    current_user_id = current_user.id
     other_user_id = request.args.get("other_user_id", type=int)
 
     if not current_user_id or not other_user_id:

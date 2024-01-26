@@ -18,6 +18,7 @@ from .socket_helpers import (
 )
 from functools import wraps
 from app.cache_layer import cache
+from app.cache_layer.DataTypes import DataType
 
 
 SUCCESS = "success"
@@ -144,7 +145,7 @@ def handle_connect(data):
 
     if start_appearing_online:
         cache.set("online-users", {client_id: "active"})
-        online_users = cache.get("online-users", type_=dict)
+        online_users = cache.get("online-users", type_=DataType.DICT)
 
         # Notify relevant users that `user` just logged in
         rooms = get_relevant_sids(current_user, online_users)
@@ -157,7 +158,7 @@ def handle_connect(data):
                 include_self=False,
             )
     else:
-        online_users = cache.get("online-users", type_=dict)
+        online_users = cache.get("online-users", type_=DataType.DICT)
 
     # Send list of connected users to current client
     # TODO: should maybe only include the intersection of online & relevant users
@@ -177,7 +178,7 @@ def handle_disconnect():
     if is_fully_disconnected:
         cache.delete(user_hash_key)
         cache.delete("online-users", field=client_id)
-        online_users = cache.get("online-users", type_=dict)
+        online_users = cache.get("online-users", type_=DataType.DICT)
 
         # Notify relevant users
         rooms = get_relevant_sids(current_user, online_users)
@@ -204,7 +205,7 @@ def on_leave(data):
 
     # Indicate that the user has stopped typing
     cache.delete(room_hash_key, field=user_id)
-    typing_users = cache.get(room_hash_key, type_=dict)
+    typing_users = cache.get(room_hash_key, type_=DataType.DICT)
     emit("stopped_typing", typing_users, room=room, include_self=False)
 
 
@@ -233,7 +234,7 @@ def handle_typing_event(data):
     cache.set(room_hash_key, {user_id: name})
 
     # Retrieve all users currently typing in the room
-    typing_users = cache.get(room_hash_key, type_=dict)
+    typing_users = cache.get(room_hash_key, type_=DataType.DICT)
 
     emit("type", typing_users, room=room, include_self=False)
     return typing_users
@@ -252,7 +253,7 @@ def handle_stop_typing_event(data):
     cache.delete(room_hash_key, field=user_id)
 
     # Retrieve the remaining users currently typing in the room
-    typing_users = cache.get(room_hash_key, type_=dict)
+    typing_users = cache.get(room_hash_key, type_=DataType.DICT)
 
     emit("stopped_typing", typing_users, room=room, include_self=False)
     return typing_users

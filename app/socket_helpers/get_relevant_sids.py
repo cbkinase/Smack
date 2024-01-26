@@ -1,8 +1,9 @@
 from app.models import db, channel_user
 from app.cache_layer import cache
+from app.cache_layer.DataTypes import DataType
 
 
-@cache.register(timeout=30, return_type=set)
+@cache.register(timeout=30, return_type=DataType.SET)
 def get_relevant_user_ids(user):
     # IDs of the channels that the user is in
     user_channels = (

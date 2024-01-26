@@ -1,32 +1,39 @@
-from app.models import db, Channel, channel_user
+from app.models import db, channel_user
+from app.cache_layer import cache
+from app.cache_layer.DataTypes import DataType
 
 
+@cache.register(timeout=30, return_type=DataType.SET)
 def get_relevant_user_ids(user):
-    # Current criteria: has a shared DM channel.
-    # Should probably do some sort of caching (maybe?)
-    users_in_direct_channels = db.session.query(channel_user.c.users_id)\
-    .join(Channel, channel_user.c.channels_id == Channel.id)\
-    .filter(
-        Channel.is_direct == True,  # can always get rid of this if we decide to be less conservative
-        channel_user.c.users_id != user.id
-    ).distinct().all()
+    # IDs of the channels that the user is in
+    user_channels = (
+        db.session.query(channel_user.c.channels_id)
+        .filter(channel_user.c.users_id == user.id)
+        .subquery()
+    )
 
-    user_ids = [item[0] for item in users_in_direct_channels]
-    return user_ids
+    # IDs of the users in the same channels as the user
+    users_in_mutual_channels = (
+        db.session.query(channel_user.c.users_id)
+        .join(user_channels, channel_user.c.channels_id == user_channels.c.channels_id)
+        .filter(channel_user.c.users_id != user.id)
+        .distinct()
+    )
+
+    return {str(user_id[0]) for user_id in users_in_mutual_channels.all()}
 
 
-def get_relevant_sids(user, redis):
-    # TODO: actually fix this implementation.
-    # But note that this means when a user joins a channel,
-    # We may want to update their 'interaction partners' so statuses don't get stale
+def get_relevant_sids(user, online_users):
+    relevant_ids = get_relevant_user_ids(user)
+    interlinked_online_users = relevant_ids.intersection(online_users)
+
     all_sids = []
 
-    # Fetch all user keys
-    user_keys = redis.keys("user:*")
+    sids_for_users = cache.bulk_get(
+        keys=interlinked_online_users, prepend_key_with="user:", command="hkeys"
+    )
 
-    # For each user key, fetch all SIDs
-    for user_key in user_keys:
-        sids_for_user = redis.hkeys(user_key)
+    for sids_for_user in sids_for_users:
         all_sids.extend(sids_for_user)
 
     return all_sids

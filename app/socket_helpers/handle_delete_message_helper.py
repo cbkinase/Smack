@@ -4,12 +4,11 @@ from .write_error_message import write_error_message
 
 
 def handle_delete_message_helper(data):
-    message_id = data.get('message_id')
+    message_id = data.get("message_id")
     message = Message.query.get(message_id)
     message_attachments = message.attachments
 
     for attachment in message_attachments:
-
         remove_attachment = remove_file_from_s3(attachment.content)
 
         if not remove_attachment:

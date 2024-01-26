@@ -1,18 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as ChlActions from "../../../../store/channel";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./ViewAllChannels.css";
 import determineChannelName from "../../../../utils/determineChannelName";
 import { adjustLeftPane } from "../../../../utils/togglePaneFunctions";
 import useViewportWidth from "../../../../hooks/useViewportWidth";
+import Pagination from "../../../Pagination";
+import useQuery from "../../../../hooks/useQuery";
 
 function DMChannels() {
 	const dispatch = useDispatch();
-	const user = useSelector((state) => state.session.user);
-	const allChannels = useSelector((state) => state.channels.user_channels);
-	const [searchTerm, setSearchTerm] = useState("");
+	const navigate = useNavigate();
+	const query = useQuery();
 	const viewportWidth = useViewportWidth();
+	const user = useSelector((state) => state.session.user);
+	const allChannels = useSelector((state) => state.channels.all_channels);
+	const totalPages = useSelector(
+		(state) => state.channels.pagination.all_channels,
+	);
+	const [searchTerm, setSearchTerm] = useState("");
+	const pageQuery = Number(query.get("page")) || 1;
+	const [page, setPage] = useState(pageQuery);
+	const [perPage, _] = useState(13);
+
+	useEffect(() => {
+		navigate(`?page=${page}`);
+	}, [page, navigate]);
+
+	useEffect(() => {
+		setPage(pageQuery);
+	}, [pageQuery]);
 
 	useEffect(() => {
 		if (viewportWidth >= 768) {
@@ -23,23 +41,14 @@ function DMChannels() {
 	}, [viewportWidth]);
 
 	useEffect(() => {
-		dispatch(ChlActions.UserChannelThunk());
-	}, [dispatch]);
+		dispatch(ChlActions.AllChannelThunk(page, perPage, true));
+	}, [dispatch, page, perPage]);
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
 	};
 
-	const allChannelsArr = Object.values(allChannels).filter(
-		(channel) => channel.is_direct /*
-      In the event that we end up implementing private channels,
-      We would also want to exclude is_private things from here as well.
-      Perhaps with the exception of private channels the user is in?
-
-      For now, it's not relevant.
-
-      && !channel.is_private */,
-	);
+	const allChannelsArr = Object.values(allChannels);
 
 	const filteredChannels = allChannelsArr.filter((channel) => {
 		return determineChannelName(channel, user)
@@ -75,6 +84,13 @@ function DMChannels() {
 								</NavLink>
 							);
 						})}
+				</div>
+				<div className="channels-pagination">
+					<Pagination
+						currentPage={page}
+						onPageChange={setPage}
+						totalPages={totalPages}
+					/>
 				</div>
 			</div>
 		</>

@@ -53,7 +53,7 @@ Currently, we support the following features:
 Use Docker to run the application locally:
 
 1. Clone this repository
-2. Run `bash start-docker.sh` in the root directory of the project
+2. Run `bash docker-start.sh` in the root directory of the project
 3. Your SQLite database will automatically persist on a Docker volume
 4. Your nginx server will be available at `localhost:8080`, acting as a reverse proxy to route requests to the web application's services
 

@@ -2,6 +2,7 @@ const initialState = {
 	all_channels: {},
 	user_channels: {},
 	single_channel: null,
+	pagination: {},
 };
 
 const ALL_CHANNEL = "channel/all";
@@ -53,14 +54,20 @@ export const DeleteChannel = (id) => {
 	};
 };
 
-export const AllChannelThunk = () => async (dispatch) => {
-	const response = await fetch("/api/channels/all");
+export const AllChannelThunk =
+	(page, per_page, direct = false) =>
+	async (dispatch) => {
+		const response = await fetch(
+			`/api/channels/${
+				direct ? "user-direct" : "all-public"
+			}?page=${page}&per_page=${per_page}`,
+		);
 
-	if (response.ok) {
-		const data = await response.json();
-		dispatch(AllChannel(data));
-	}
-};
+		if (response.ok) {
+			const data = await response.json();
+			dispatch(AllChannel(data));
+		}
+	};
 
 export const OneChannelThunk = (id) => async (dispatch) => {
 	const response = await fetch(`/api/channels/${id}`);
@@ -77,6 +84,15 @@ export const OneChannelThunk = (id) => async (dispatch) => {
 
 export const UserChannelThunk = () => async (dispatch) => {
 	const response = await fetch("/api/channels/user");
+
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(UserChannel(data));
+	}
+};
+
+export const ShortUserChannelThunk = () => async (dispatch) => {
+	const response = await fetch("/api/channels/user-short");
 
 	if (response.ok) {
 		const data = await response.json();
@@ -138,6 +154,7 @@ const channelReducer = (state = initialState, action) => {
 			action.payload.all_channels.forEach((chnl) => {
 				newState.all_channels[chnl.id] = chnl;
 			});
+			newState.pagination.all_channels = action.payload.total_pages;
 			return newState;
 		case USER_CHANNELS:
 			newState = { ...state, user_channels: {} };

@@ -5,14 +5,16 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 def handle_add_reaction_helper(data):
-    message_id = data.get('message_id')
-    rxn = data.get('reaction')
+    message_id = data.get("message_id")
+    rxn = data.get("reaction")
 
     if not message_id or not rxn:
         return write_error_message("Incomplete data")
 
     try:
-        existing_reaction = Reaction.find_existing_reaction(message_id, current_user, rxn)
+        existing_reaction = Reaction.find_existing_reaction(
+            message_id, current_user, rxn
+        )
 
         if existing_reaction:
             return write_error_message("User already has reacted with this reaction")

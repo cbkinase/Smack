@@ -7,12 +7,12 @@ from app.forms import LoginForm
 from app.forms import SignUpForm
 from flask_login import current_user, login_user, logout_user, login_required
 from .errors import bad_request, validation_errors_to_error_messages, not_found
-from ..email import send_email
+from ..send_email import send_email
 
-auth_routes = Blueprint('auth', __name__)
+auth_routes = Blueprint("auth", __name__)
 
 
-@auth_routes.route('/')
+@auth_routes.route("/")
 def authenticate():
     """
     Authenticates a user.
@@ -23,7 +23,7 @@ def authenticate():
     return unauthorized()
 
 
-@auth_routes.route('/login', methods=['POST'])
+@auth_routes.route("/login", methods=["POST"])
 def login():
     """
     Logs a user in
@@ -31,38 +31,41 @@ def login():
     form = LoginForm()
     # Get the csrf_token from the request cookie and put it into the
     # form manually so validate_on_submit can be used
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form["csrf_token"].data = request.cookies["csrf_token"]
     if form.validate_on_submit():
         # Add the user to the session, we are logged in!
-        user = User.find_by_email(form.data['email'])
+        user = User.find_by_email(form.data["email"])
         login_user(user)
         return user.to_dict()
     return bad_request("The provided credentials were invalid.")
 
 
-@auth_routes.route('/logout')
+@auth_routes.route("/logout")
 def logout():
     """
     Logs a user out
     """
     logout_user()
-    return {'message': 'User logged out'}
+    return {"message": "User logged out"}
 
 
-@auth_routes.route('/signup', methods=['POST'])
+@auth_routes.route("/signup", methods=["POST"])
 def sign_up():
     """
     Creates a new user and logs them in
     """
     form = SignUpForm()
-    form['csrf_token'].data = request.cookies['csrf_token']
+    form["csrf_token"].data = request.cookies["csrf_token"]
     if form.validate_on_submit():
         user = User.from_form(form)
         token = user.generate_confirmation_token()
+
         # Should do some check for whether it's a valid Origin
-        base_url = request.headers.get("Origin") \
-            or request.args.get('source') \
-            or current_app.config['EMAIL_URL_PREFIX']
+        base_url = (
+            request.headers.get("Origin")
+            or request.args.get("source")  # noqa: W503
+            or current_app.config["EMAIL_URL_PREFIX"]  # noqa: W503
+        )
 
         send_url = base_url + f"/activate/{token}"
         send_email(
@@ -72,25 +75,25 @@ def sign_up():
             user=user,
             token=token,
             send_url=send_url,
-            base_url=base_url
+            base_url=base_url,
         )
         login_user(user)
         return user.to_dict()
     return bad_request(validation_errors_to_error_messages(form.errors))
 
 
-@auth_routes.route('/unauthorized')
+@auth_routes.route("/unauthorized")
 def unauthorized():
     """
     Returns unauthorized JSON when flask-login authentication fails
     """
-    return {'error': 'Unauthorized'}, 401
+    return {"error": "Unauthorized"}, 401
 
 
 ################ EMAIL CONFIRMATION ################
 
 
-@auth_routes.route('/confirm/<int:user_id>/<token>')
+@auth_routes.route("/confirm/<int:user_id>/<token>")
 def confirm(user_id, token):
     """
     Try to activate an account given a user ID and a token
@@ -106,34 +109,36 @@ def confirm(user_id, token):
         return bad_request("Invalid or expired confirmation link.")
 
 
-@auth_routes.route('/confirm')
+@auth_routes.route("/confirm")
 @login_required
 def resend_confirmation():
     """
     Send another activation email to the logged in user
     """
     token = current_user.generate_confirmation_token()
-    base_url = request.headers.get("Origin") \
-        or request.args.get('source') \
-        or current_app.config['EMAIL_URL_PREFIX']
+    base_url = (
+        request.headers.get("Origin")
+        or request.args.get("source")  # noqa: W503
+        or current_app.config["EMAIL_URL_PREFIX"]  # noqa: W503
+    )
 
     send_url = base_url + f"/activate/{token}"
     send_email(
-            to=current_user.email,
-            subject="Confirm Your Account",
-            template="confirm_email",
-            user=current_user,
-            token=token,
-            send_url=send_url,
-            base_url=base_url
-        )
+        to=current_user.email,
+        subject="Confirm Your Account",
+        template="confirm_email",
+        user=current_user,
+        token=token,
+        send_url=send_url,
+        base_url=base_url,
+    )
     return {"status": "success", "message": "A new confirmation email has been sent"}
 
 
 ################ OAUTH2 ################
 
 
-@auth_routes.route('/authorize/<provider>')
+@auth_routes.route("/authorize/<provider>")
 def oauth2_authorize(provider):
     """
     Initiate the OAuth 2.0 authorization flow with the specified provider
@@ -165,36 +170,35 @@ def oauth2_authorize(provider):
     if not current_user.is_anonymous:
         return bad_request("User already logged in")
 
-    provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
+    provider_data = current_app.config["OAUTH2_PROVIDERS"].get(provider)
 
     if provider_data is None:
         return not_found("Provider not found")
 
-    base_url = request.args.get('source')
+    base_url = request.args.get("source")
 
     # Generate a random string for the state parameter
-    session['oauth2_state'] = secrets.token_urlsafe(16)
+    session["oauth2_state"] = secrets.token_urlsafe(16)
 
     # Save the origin URL
-    session['base_url'] = base_url
+    session["base_url"] = base_url
 
     # Create a query string with all the OAuth2 parameters
-    qs = urlencode({
-        'client_id': provider_data['client_id'],
-        'redirect_uri':  f"{base_url}/api/auth/callback/{provider}",
-        'response_type': 'code',
-        'scope': ' '.join(provider_data['scopes']),
-        'state': session['oauth2_state'],
-    })
+    qs = urlencode(
+        {
+            "client_id": provider_data["client_id"],
+            "redirect_uri": f"{base_url}/api/auth/callback/{provider}",
+            "response_type": "code",
+            "scope": " ".join(provider_data["scopes"]),
+            "state": session["oauth2_state"],
+        }
+    )
 
     # Full OAuth2 provider authorization URL
-    return {
-        "status": "success",
-        "message": provider_data['authorize_url'] + '?' + qs
-        }
+    return {"status": "success", "message": provider_data["authorize_url"] + "?" + qs}
 
 
-@auth_routes.route('/callback/<provider>')
+@auth_routes.route("/callback/<provider>")
 def oauth2_callback(provider):
     """
     Handle the OAuth 2.0 callback from an external authentication provider
@@ -235,66 +239,73 @@ def oauth2_callback(provider):
     # they're coming from smack.fyi) -- note this is done in this way
     # because OAuth providers will only append query parameters it
     # understands, like `code`, `state`, `scope`, etc.
-    base_url = session.get('base_url')
-    if 'base_url' in session:
-        del session['base_url']
+    base_url = session.get("base_url")
+    if "base_url" in session:
+        del session["base_url"]
 
     if not current_user.is_anonymous:
         return redirect(base_url)
 
-    provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
+    provider_data = current_app.config["OAUTH2_PROVIDERS"].get(provider)
     if provider_data is None:
         return redirect(base_url + "?error=invalid_provider")
 
     # Handle authentication errors
-    if 'error' in request.args:
+    if "error" in request.args:
         errs = []
         for k, v in request.args.items():
-            if k.startswith('error'):
-                errs.append(f'{k}: {v}')
+            if k.startswith("error"):
+                errs.append(f"{k}: {v}")
         return redirect(base_url + "?error=authentication_failure")
 
     # Make sure that the state parameter matches the one we created in the
     # authorization request
-    if request.args['state'] != session.get('oauth2_state'):
-        if 'oauth2_state' in session:
-            del session['oauth2_state']
+    if request.args["state"] != session.get("oauth2_state"):
+        if "oauth2_state" in session:
+            del session["oauth2_state"]
         return redirect(base_url + "?error=state_not_matching")
 
     # Clear oauth2_state from the session after validating it
     # to prevent potential replay attacks
-    del session['oauth2_state']
+    del session["oauth2_state"]
 
     # Make sure that the authorization code is present
-    if 'code' not in request.args:
+    if "code" not in request.args:
         return redirect(base_url + "?error=no_auth_code")
 
     # Exchange the authorization code for an access token
-    response = requests.post(provider_data['token_url'], data={
-        'client_id': provider_data['client_id'],
-        'client_secret': provider_data['client_secret'],
-        'code': request.args['code'],
-        'grant_type': 'authorization_code',
-        'redirect_uri': f"{base_url}/api/auth/callback/{provider}",
-    }, headers={'Accept': 'application/json'})
+    response = requests.post(
+        provider_data["token_url"],
+        data={
+            "client_id": provider_data["client_id"],
+            "client_secret": provider_data["client_secret"],
+            "code": request.args["code"],
+            "grant_type": "authorization_code",
+            "redirect_uri": f"{base_url}/api/auth/callback/{provider}",
+        },
+        headers={"Accept": "application/json"},
+    )
 
     if response.status_code != 200:
         return redirect(base_url + "?error=exchange_failure")
 
-    oauth2_token = response.json().get('access_token')
+    oauth2_token = response.json().get("access_token")
 
     if not oauth2_token:
         return redirect(base_url + "?error=no_oauth_token")
 
     # Use the access token to get the user's email address
-    response = requests.get(provider_data['userinfo']['url'], headers={
-        'Authorization': 'Bearer ' + oauth2_token,
-        'Accept': 'application/json',
-    })
+    response = requests.get(
+        provider_data["userinfo"]["url"],
+        headers={
+            "Authorization": "Bearer " + oauth2_token,
+            "Accept": "application/json",
+        },
+    )
     if response.status_code != 200:
         return redirect(base_url + "?error=acquisition_failure")
 
-    email = provider_data['userinfo']['email'](response.json())
+    email = provider_data["userinfo"]["email"](response.json())
     user = User.get_or_create_by_email(email)
 
     # Nice... we can log in :)

@@ -13,7 +13,7 @@ def handle_delete_reaction_helper(data):
     try:
         db.session.delete(reaction)
         db.session.commit()
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         return write_error_message("Failed to delete reaction")
 
     return data

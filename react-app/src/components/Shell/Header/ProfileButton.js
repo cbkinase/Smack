@@ -30,8 +30,7 @@ function ProfileButton({ user }) {
 			user_id: user.id,
 		});
 		await dispatch(disconnectWebSocket());
-		dispatch(logout());
-		navigate("/");
+		dispatch(logout()).then(() => navigate("/"));
 	};
 
 	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");

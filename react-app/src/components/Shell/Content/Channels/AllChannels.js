@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as ChlActions from "../../../../store/channel";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./ViewAllChannels.css";
 import useViewportWidth from "../../../../hooks/useViewportWidth";
 import { adjustLeftPane } from "../../../../utils/togglePaneFunctions";
 import isUserInChannel from "../../../../utils/isUserInChannel";
+import Pagination from "../../../Pagination";
+import useQuery from "../../../../hooks/useQuery";
 
 function PublicChannelCard({ user, channel, onChannelClick }) {
+	const usersInChannel = Object.values(channel.Members).length;
+	const usersToPrint = usersInChannel >= 50 ? "50+" : usersInChannel;
 	return (
 		<NavLink
 			key={channel.id}
@@ -17,6 +21,10 @@ function PublicChannelCard({ user, channel, onChannelClick }) {
 		>
 			<div style={{ paddingLeft: "10px" }}># {channel.name}</div>
 			<p style={{ paddingLeft: "10px", color: "grey", fontSize: "12px" }}>
+				{usersToPrint} Member{usersToPrint !== 1 ? "s" : ""}{" "}
+				<span style={{ paddingLeft: "3px", paddingRight: "3px" }}>
+					·
+				</span>{" "}
 				{channel.subject}
 			</p>
 		</NavLink>
@@ -25,10 +33,26 @@ function PublicChannelCard({ user, channel, onChannelClick }) {
 
 function AllChannels() {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const query = useQuery();
+	const viewportWidth = useViewportWidth();
 	const allChannels = useSelector((state) => state.channels.all_channels);
 	const user = useSelector((state) => state.session.user);
+	const totalPages = useSelector(
+		(state) => state.channels.pagination.all_channels,
+	);
 	const [searchTerm, setSearchTerm] = useState("");
-	const viewportWidth = useViewportWidth();
+	const pageQuery = Number(query.get("page")) || 1;
+	const [page, setPage] = useState(pageQuery);
+	const [perPage, _] = useState(10);
+
+	useEffect(() => {
+		navigate(`?page=${page}`);
+	}, [page, navigate]);
+
+	useEffect(() => {
+		setPage(pageQuery);
+	}, [pageQuery]);
 
 	useEffect(() => {
 		if (viewportWidth >= 768) {
@@ -39,23 +63,14 @@ function AllChannels() {
 	}, [viewportWidth]);
 
 	useEffect(() => {
-		dispatch(ChlActions.AllChannelThunk());
-	}, [dispatch]);
+		dispatch(ChlActions.AllChannelThunk(page, perPage));
+	}, [dispatch, page, perPage]);
 
 	const handleSearchChange = (event) => {
 		setSearchTerm(event.target.value);
 	};
 
-	const allChannelsArr = Object.values(allChannels).filter(
-		(channel) => !channel.is_direct /*
-      In the event that we end up implementing private channels,
-      We would also want to exclude is_private things from here as well.
-      Perhaps with the exception of private channels the user is in?
-
-      For now, it's not relevant.
-
-      && !channel.is_private */,
-	);
+	const allChannelsArr = Object.values(allChannels);
 
 	const filteredChannels = allChannelsArr.filter((channel) => {
 		return channel.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -68,14 +83,14 @@ function AllChannels() {
 		await fetch(`/api/channels/${channel.id}/users`, {
 			method: "POST",
 		});
-		dispatch(ChlActions.UserChannelThunk());
+		dispatch(ChlActions.ShortUserChannelThunk());
 	};
 
 	return (
 		<>
 			<div className="view-all-channels">
 				<div className="channels-header">
-					<h2>All Public Channels on Smack</h2>
+					<h2>Public Channels on Smack</h2>
 				</div>
 				<input
 					id="channel-search"
@@ -94,6 +109,13 @@ function AllChannels() {
 								onChannelClick={onChannelClick}
 							/>
 						))}
+				</div>
+				<div className="channels-pagination">
+					<Pagination
+						currentPage={page}
+						onPageChange={setPage}
+						totalPages={totalPages}
+					/>
 				</div>
 			</div>
 		</>

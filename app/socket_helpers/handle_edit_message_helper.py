@@ -3,6 +3,7 @@ from datetime import datetime
 
 
 def handle_edit_message_helper(data):
+    # TODO: Fix edits where all content is deleted
     new_content = data["content"]
     new_pinned = data["is_pinned"]
     message_id = data["message_id"]

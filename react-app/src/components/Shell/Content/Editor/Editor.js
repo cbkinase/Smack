@@ -273,7 +273,7 @@ export default function Editor({
 										? `${determineName(
 												currentChannel,
 												user,
-										  )}`
+											)}`
 										: " "
 								}
 							/>

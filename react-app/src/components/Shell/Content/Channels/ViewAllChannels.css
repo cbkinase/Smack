@@ -58,3 +58,10 @@
 	height: calc(100dvh - 44px);
 	overflow: auto;
 }
+
+.channels-pagination {
+	padding-top: 30px;
+	padding-bottom: 10px;
+	display: flex;
+	justify-content: center;
+}

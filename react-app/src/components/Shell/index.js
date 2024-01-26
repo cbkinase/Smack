@@ -7,7 +7,7 @@ import RightSide from "./RightSide/RightSide";
 import { Route, Routes, Navigate } from "react-router-dom";
 import AllChannels from "./Content/Channels/AllChannels";
 import DMChannels from "./Content/Channels/DMChannels";
-import { UserChannelThunk, OneChannelThunk } from "../../store/channel";
+import { ShortUserChannelThunk, OneChannelThunk } from "../../store/channel";
 import {
 	disconnectWebSocket,
 	setOnlineUsers,
@@ -46,7 +46,7 @@ function Shell({ isLoaded }) {
 
 		socket.on("new_DM_convo", (convoId) => {
 			// Refresh the left sidebar info on receive
-			dispatch(UserChannelThunk());
+			dispatch(ShortUserChannelThunk());
 			// Refresh channel header info on receive
 			// ONLY if convoId === routeId
 			if (+routeId === +convoId) {

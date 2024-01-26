@@ -5,33 +5,11 @@ from ..websocket import socketio
 from .errors import not_found, forbidden, bad_request, internal_server_error
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import exists, func
-from sqlalchemy import and_
+from sqlalchemy import and_, not_
 from app.cache_layer import cache
 from app.cache_layer.DataTypes import DataType
 
 channel_routes = Blueprint("channels", __name__)
-
-
-@channel_routes.route("/all")
-@login_required
-def all_channels():
-    """
-    Get all channels
-    """
-    # TODO: pagination
-    # all_channels = Channel.get_all_channels_with_users()
-    all_channels = Channel.query.limit(13).all()
-    return {"all_channels": [channel.to_dict() for channel in all_channels]}
-
-
-@channel_routes.route("/user")
-@login_required
-def user_channels():
-    """
-    Get all channels the currently logged in user is part of
-    """
-    user_channels = current_user.get_all_channels_for_user(Channel)
-    return {"user_channels": [channel.to_dict() for channel in user_channels]}
 
 
 @channel_routes.route("/user-short")
@@ -110,10 +88,6 @@ def all_user_dms():
 
 
 def find_dm_channel(current_user_id, other_user_id):
-    # TODO: Ok, so this is obviously pretty terrible and won't scale well
-    # (even at only ~5k channels with ~2k members each, it takes ~200ms)
-    # may need to store Channel.member_count as a column directly (?)
-
     if current_user_id == other_user_id:
         target_users = [current_user_id]
     else:
@@ -121,36 +95,32 @@ def find_dm_channel(current_user_id, other_user_id):
 
     member_count_target = len(target_users)
 
-    # Subquery to get channels and member counts
-    member_count_subquery = (
-        db.session.query(
-            channel_user.c.channels_id,
-            func.count(channel_user.c.users_id).label("member_count"),
-        )
-        .group_by(channel_user.c.channels_id)
-        .subquery()
-    )
-
-    # Subquery to filter only channels that contain desired user(s)
+    # Subquery to filter only channels that contain desired user(s) and no more
     user_filter_subquery = (
         db.session.query(channel_user.c.channels_id)
         .filter(channel_user.c.users_id.in_(target_users))
         .group_by(channel_user.c.channels_id)
-        .having(func.count(channel_user.c.channels_id) == member_count_target)
+        .having(func.count(channel_user.c.users_id) == member_count_target)
         .subquery()
     )
 
-    # Main query to find channels with exactly 1 or 2 members, who are the specified users
-    channel = (
-        Channel.query.join(
-            member_count_subquery, Channel.id == member_count_subquery.c.channels_id
+    # Main query
+    channels_query = Channel.query.filter(
+        and_(
+            Channel.id == user_filter_subquery.c.channels_id,
+            Channel.is_direct == True,  # noqa: E712
+            not_(
+                exists().where(
+                    and_(
+                        channel_user.c.channels_id == Channel.id,
+                        channel_user.c.users_id.notin_(target_users),
+                    )
+                )
+            ),
         )
-        .join(user_filter_subquery, Channel.id == user_filter_subquery.c.channels_id)
-        .filter(member_count_subquery.c.member_count == member_count_target)
-        .first()
     )
 
-    return channel
+    return channels_query.first()
 
 
 @channel_routes.route("/find-dm-channel")

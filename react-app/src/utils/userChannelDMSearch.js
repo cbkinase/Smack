@@ -1,43 +1,23 @@
-export default function userChannelDMSearch(
-	user_channels,
-	currUser,
-	otherUser,
-) {
+export default async function userChannelDMSearch(otherUser) {
 	/*
-
-    Given an object of user_channels, a current user, and an 'other' user,
-    we need to determine whether such a DM already exists.
-    This logic is important for when we click on the "message" button
-    in the right sidebar.
 
     Overall:
     - if the channel already exists, route the current user to
     that channel.
-    - if not, create the DM channel and add both users as members
+    - if not, create the DM channel and add both users as members (or just 1 for self DM)
 
     (some of this logic is handled outside the function, but that's the goal)
 
     */
-	const isSelf = currUser.id === otherUser.id;
 
-	const findMatchingChannel = (channel) => {
-		// Ignore non-direct channels
-		if (!channel.is_direct) return false;
+	const res = await fetch(
+		`/api/channels/find-dm-channel?other_user_id=${otherUser.id}`,
+	);
 
-		const memberCount = Object.keys(channel.Members).length;
+	if (!res.ok) {
+		return null;
+	}
 
-		// In which currUser and otherUser are the same
-		if (isSelf) {
-			return memberCount === 1;
-		}
-
-		// In which currUser and otherUser are different
-		const bothMembersPresent =
-			channel.Members[currUser.id] && channel.Members[otherUser.id];
-		return memberCount === 2 && bothMembersPresent;
-	};
-
-	const channel = Object.values(user_channels).find(findMatchingChannel);
-
+	const channel = await res.json();
 	return channel;
 }

@@ -15,10 +15,23 @@ channel_routes = Blueprint("channels", __name__)
 @channel_routes.route("/user-short")
 @login_required
 def user_short_channels():
-    short_user_channels = (
+    """
+    List of channels displayed on a logged in users left sidebar
+    """
+    LIMIT = 20
+    short_user_public = (
         Channel.query.join(Channel.users)
-        .filter(User.id == current_user.id)
-        .limit(20)
+        .filter(User.id == current_user.id, Channel.is_direct == False)  # noqa: E712
+        .order_by(Channel.updated_at.desc())
+        .limit(LIMIT)
+        .all()
+    )
+
+    short_user_dms = (
+        Channel.query.join(Channel.users)
+        .filter(User.id == current_user.id, Channel.is_direct == True)  # noqa: E712
+        .order_by(Channel.updated_at.desc())
+        .limit(LIMIT)
         .all()
     )
 
@@ -27,7 +40,7 @@ def user_short_channels():
             channel.to_short_dict()
             if not channel.is_direct
             else channel.to_dict_n_members(6)
-            for channel in short_user_channels
+            for channel in [*short_user_public, *short_user_dms]
         ]
     }
 
@@ -87,7 +100,7 @@ def all_user_dms():
     raise NotImplementedError
 
 
-def find_dm_channel(current_user_id, other_user_id):
+def find_dm_between(current_user_id, other_user_id):
     if current_user_id == other_user_id:
         target_users = [current_user_id]
     else:
@@ -132,7 +145,7 @@ def get_dm_channel():
     if not current_user_id or not other_user_id:
         return bad_request("Missing user IDs")
 
-    channel = find_dm_channel(current_user_id, other_user_id)
+    channel = find_dm_between(current_user_id, other_user_id)
 
     if channel:
         return channel.to_dict()

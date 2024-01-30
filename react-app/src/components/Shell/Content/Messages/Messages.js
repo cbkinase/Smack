@@ -100,7 +100,7 @@ const Messages = ({ scrollContainerRef }) => {
 		loadInitialChannelMessages();
 		return () => {
 			setPage(1);
-		}
+		};
 	}, [dispatch, channelId, setPage]);
 
 	useEffect(() => {

@@ -22,7 +22,7 @@ function DMChannels() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const pageQuery = Number(query.get("page")) || 1;
 	const [page, setPage] = useState(pageQuery);
-	const [perPage, _] = useState(13);
+	const [perPage, ] = useState(13);
 
 	useEffect(() => {
 		navigate(`?page=${page}`);

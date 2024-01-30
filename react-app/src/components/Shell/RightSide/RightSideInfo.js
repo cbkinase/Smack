@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import userChannelDMSearch from "../../../utils/userChannelDMSearch";
 import { useNavigate } from "react-router-dom";
 import { AddChannelThunk, ShortUserChannelThunk } from "../../../store/channel";
@@ -9,17 +9,11 @@ import ActivityStatus from "../../ActivityStatus";
 
 function RightSideInfo() {
 	const [selectedUserRightBar] = useContext(SelectedUserRightBarContext);
-	const user_channels = useSelector((state) => state.channels.user_channels);
-	const currUser = useSelector((state) => state.session.user);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	const onMessageClick = async () => {
-		const possibleChannel = userChannelDMSearch(
-			user_channels,
-			currUser,
-			selectedUserRightBar,
-		);
+		const possibleChannel = await userChannelDMSearch(selectedUserRightBar);
 		if (possibleChannel) {
 			navigate(`/channels/${possibleChannel.id}`);
 			toggleRightPane();

@@ -41,7 +41,8 @@ register_api_blueprints(app)
 
 db.init_app(app)
 Migrate(app, db)
-socketio.init_app(app, async_mode="gevent")
+socketio_async_mode = "gevent" if os.environ.get("FLASK_ENV") == "production" else None
+socketio.init_app(app, async_mode=socketio_async_mode)
 cache.init_app(app)
 
 # Application Security
